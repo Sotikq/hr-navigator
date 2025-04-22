@@ -5,29 +5,45 @@ const { createUser, findUserByEmail } = require('../models/User');
 const JWT_SECRET = process.env.JWT_SECRET;
 
 async function register(req, res) {
-  const { email, password, role } = req.body;
-  if (!email || !password || !role) return res.status(400).json({ error: 'Все поля обязательны' });
+  try {
+    const { email, name, password } = req.body;
 
-  const existingUser = await findUserByEmail(email);
-  if (existingUser) return res.status(400).json({ error: 'Пользователь уже существует' });
+    if (!email || !name || !password) {
+      return res.status(400).json({ error: 'Заполните все поля' });
+    }
 
-  const passwordHash = await bcrypt.hash(password, 10);
-  const user = await createUser({ email, passwordHash, role });
+    const existing = await findUserByEmail(email);
+    if (existing) return res.status(409).json({ error: 'Email уже зарегистрирован' });
 
-  res.status(201).json({ message: 'Регистрация прошла успешно', user });
+    const passwordHash = await bcrypt.hash(password, 10);
+    const user = await createUser({ email, passwordHash, name });
+
+    res.status(201).json({ message: 'Регистрация успешна', user });
+  } catch (err) {
+    console.error('Ошибка регистрации:', err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
 }
 
 async function login(req, res) {
-  const { email, password } = req.body;
-  const user = await findUserByEmail(email);
+  try {
+    const { email, password } = req.body;
 
-  if (!user) return res.status(401).json({ error: 'Неверный email или пароль' });
+    const user = await findUserByEmail(email);
+    if (!user) return res.status(404).json({ error: 'Пользователь не найден' });
 
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) return res.status(401).json({ error: 'Неверный email или пароль' });
+    const isValid = await bcrypt.compare(password, user.password_hash);
+    if (!isValid) return res.status(401).json({ error: 'Неверный пароль' });
 
-  const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
-  res.json({ message: 'Вход выполнен успешно', token });
+    const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '2h' });
+    res.json({ message: 'Успешный вход', token });
+  } catch (err) {
+    console.error('Ошибка входа:', err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
 }
 
-module.exports = { register, login };
+module.exports = {
+  register,
+  login,
+};

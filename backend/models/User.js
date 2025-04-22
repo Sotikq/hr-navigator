@@ -1,16 +1,22 @@
 const pool = require('../config/db');
 
-async function createUser({ email, passwordHash, role }) {
-  const result = await pool.query(
-    `INSERT INTO users (email, password, role) VALUES ($1, $2, $3) RETURNING *`,
-    [email, passwordHash, role]
-  );
-  return result.rows[0];
+async function createUser({ email, passwordHash, name, role = 'user' }) {
+  const query = `
+    INSERT INTO users (email, password_hash, name, role)
+    VALUES ($1, $2, $3, $4)
+    RETURNING id, email, name, role, is_active, created_at
+  `;
+  const values = [email, passwordHash, name, role];
+  const { rows } = await pool.query(query, values);
+  return rows[0];
 }
 
 async function findUserByEmail(email) {
-  const result = await pool.query(`SELECT * FROM users WHERE email = $1`, [email]);
-  return result.rows[0];
+  const { rows } = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+  return rows[0];
 }
 
-module.exports = { createUser, findUserByEmail };
+module.exports = {
+  createUser,
+  findUserByEmail,
+};
