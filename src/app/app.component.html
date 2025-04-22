@@ -1,0 +1,23 @@
+<header class="header">
+    <div class="logo">
+        <!-- <img src="images/logo.png" alt="HR Навигатор" class="logo-img"> -->
+        <h1 class="logo-text">HR Навигатор</h1>
+    </div>
+    <nav class="nav" id="navMenu">
+        <ul>
+            <li><a (click)="goToPage('')">Главная</a></li>
+            <li><a (click)="goToPage('courses')">Курсы</a></li>
+            <li><a (click)="check()">О нас</a></li>
+        </ul>
+    </nav>
+    <div  >
+      
+      @if (currentUser){
+        <button class="auth-button" (click)="goToProfile()" >{{currentUser.username}}</button>
+      }
+      @else {
+        <button class="auth-button" (click)="goToLogin()" >Вход / Регистрация</button>
+      }
+    </div>
+  </header>
+  <router-outlet></router-outlet>

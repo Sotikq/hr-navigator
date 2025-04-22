@@ -1,0 +1,213 @@
+.courses-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+  min-height: 78vh;  
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 30px;
+  justify-content: center;
+}
+
+.filters input,
+.filters select {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  min-width: 200px;
+}
+
+.course-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.course-card {
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.3s;
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Устанавливаем гибкость для заполнения контейнера */
+  min-height: 400px; /* Минимальная высота карточки, чтобы она была одинаковой для всех */
+  justify-content: space-between;
+}
+
+.course-card:hover {
+  transform: translateY(-5px);
+}
+
+.course-category {
+  position: absolute;
+  top: 10px;
+  background-color: #FF6B6B;
+  color: white;
+  padding: 5px 10px;
+  font-size: 12px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.course-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.course-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-grow: 1; /* Заставляем блок с информацией занимать оставшееся пространство */
+  padding: 15px;
+  height: 150px; /* Устанавливаем фиксированную высоту для блока с информацией */
+}
+
+.course-info h3 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.4; /* Обеспечивает адекватное расстояние между строками */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; /* Обеспечиваем, что текст не будет переноситься */
+}
+
+.course-info p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; /* Обрезаем длинные описания */
+}
+
+.course-price {
+  font-size: 18px;
+  font-weight: bold;
+  color: #e67e22; /* Цвет для выделения */
+  background-color: #f9f1e0; /* Легкий фон */
+  padding: 10px;
+  border-radius: 5px;
+  display: inline-block; /* Для компактности */
+  margin-top: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Легкая тень для выделения */
+  text-align: center; /* Центрируем текст */
+  width: 100%; /* Чтобы цена занимала всю ширину родительского контейнера */
+  box-sizing: border-box; /* Учитываем padding в ширину */
+}
+
+.course-price strong {
+  color: #333; /* Цвет для слова "Цена" */
+}
+
+
+// modal
+
+.modal {
+  display: flex;
+  position: fixed;
+  z-index: 1001;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+ 
+}
+
+.modal-content {
+  position: absolute;
+  padding: 30px;
+  top: 50%;
+  left: 50%;
+  background: #fff;
+  border-radius: 15px;
+  max-width: 800px;
+  width: 100%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+
+.modal-body {
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.modal-left {
+  flex: 1;
+  text-align: center;
+  width: 100%;
+  p{
+      font-size: 16px;
+      color: #555;
+      margin-top: 10px;
+      line-height: 1.5;
+  }
+}
+
+.modal-left img {
+  width: 100%;
+  max-width: 200px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.modal-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #0077cc;
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  margin-top: 10px;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.modal-button:hover {
+  background-color: #005fa3;
+}
+
+.modal-right {
+  flex: 2;
+}
+
+#modalBigDescription {
+  display: block;
+  margin-top: 10px;
+  padding: 15px;
+  background-color: #f9f9f9; /* светлый фон */
+  border-left: 4px solid #007BFF; /* синий акцент слева */
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1.6;
+  white-space: pre-line; /* поддержка \n как переносов */
+  color: #333;
+}
+
+.modal-right p strong {
+  color: #222;
+  font-weight: 600;
+}

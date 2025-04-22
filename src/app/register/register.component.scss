@@ -1,0 +1,54 @@
+.register-page {
+    max-width: 400px;
+    margin: 60px auto;
+    padding: 30px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  
+    h2 {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+  
+    .form-group {
+      margin-bottom: 18px;
+  
+      label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 6px;
+      }
+  
+      input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 15px;
+      }
+  
+      .error {
+        color: #e11d48;
+        font-size: 13px;
+        margin-top: 4px;
+      }
+    }
+  
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+  
+      &:hover {
+        background-color: #1d4ed8;
+      }
+    }
+  }
+  

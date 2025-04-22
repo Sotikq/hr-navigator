@@ -1,0 +1,231 @@
+<div class="profile-page">
+  <!-- Сайдбар -->
+  <aside class="sidebar">
+    <div style="text-align: center; margin-bottom: 30px">
+      <img
+        id="sidebarAvatar"
+        src=" /avatar.jpg"
+        alt="Avatar"
+        style="
+          width: 100px;
+          height: 100px;
+          border-radius: 50%;
+          object-fit: cover;
+          margin-bottom: 10px;
+        "
+      />
+      <h3 id="sidebarUsername" style="color: #333; font-size: 18px">
+        Султан Фазылханов
+      </h3>
+    </div>
+    <nav class="sidebar-nav">
+      
+
+          @for (tab of tabs; track $index) {
+              
+                  <a
+                  class="sidebar-link"
+                  (click)="currentPageSwitch(tab)"
+                  [class.active]="currentPage == tab"
+                  >{{ tab }}
+                </a>
+            
+        }
+    
+      
+    </nav>
+  </aside>
+
+  <!-- Контент -->
+  <main class="profile-content">
+    @if (currentPage=="profile"){
+
+    <div class="profile-section" id="profile">
+      <h2 style="color: #6c5ce7; margin-bottom: 20px">Мои курсы</h2>
+      <div class="course-grid">
+        <div class="student-course-card">
+          <img src=" /course1.png" alt="Курс 1" />
+          <div class="student-course-info">
+            <h3>Эффективный рекрутинг</h3>
+            <p class="course-date">Дата окончания: 25 мая 2025</p>
+            <p style="font-size: 14px; color: #555; margin-bottom: 5px">
+              Completed: 10/15
+            </p>
+            <div class="progress-container">
+              <div class="progress-bar" style="width: 65%"></div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="student-course-card"
+          [routerLink]="['/course-completion']"
+          style="cursor: pointer"
+        >
+          <img src=" /course2.png" alt="Курс 2" />
+          <div class="student-course-info">
+            <h3>HR-менеджер с нуля</h3>
+            <p class="course-date">Дата окончания: 10 июня 2025</p>
+            <p style="font-size: 14px; color: #555; margin-bottom: 5px">
+              Completed: 13/15
+            </p>
+            <div class="progress-container">
+              <div class="progress-bar" style="width: 80%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="student-course-card">
+          <img src=" /course3.png" alt="Курс 3" />
+          <div class="student-course-info">
+            <h3>Развитие Soft Skills</h3>
+            <p class="course-date">Дата окончания: 1 июля 2025</p>
+            <p style="font-size: 14px; color: #555; margin-bottom: 5px">
+              Completed: 4/12
+            </p>
+            <div class="progress-container">
+              <div class="progress-bar" style="width: 40%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h1
+        [routerLink]="['/courses']"
+        style="
+          text-decoration: none;
+          color: #6c5ce7;
+          padding: 10px;
+          font-size: 20px;
+          cursor: pointer;
+        "
+        >Все доступные курсы
+    </h1>
+    </div>
+    }
+    <!-- settings form -->
+    @if (currentPage=="settings") {
+    <div class="profile-section" id="settings">
+      <h2 style="color: #6c5ce7; margin-bottom: 20px">Настройки аккаунта</h2>
+
+      <!-- Фото профиля -->
+      <div style="text-align: center; margin-bottom: 30px">
+        <label for="profileImageInput" style="cursor: pointer">
+          <img
+            id="profileImagePreview"
+            src="/avatar.jpg"
+            alt="Аватар"
+            style="
+              width: 100px;
+              height: 100px;
+              border-radius: 50%;
+              object-fit: cover;
+              box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            "
+          />
+        </label>
+        <input
+          type="file"
+          id="profileImageInput"
+          accept="image/*"
+          style="display: none"
+        />
+        <p style="font-size: 14px; color: #777">
+          Нажмите на фото, чтобы изменить
+        </p>
+      </div>
+      <form id="settingsForm" style="max-width: 500px; margin: 0 auto">
+        <div class="input-group">
+          <label for="email">Email (нельзя изменить)</label>
+          <input type="email" id="email" disabled value="student@example.com" />
+        </div>
+
+        <div class="input-group">
+          <label for="username">Имя пользователя</label>
+          <input type="text" id="username" value="Султан" />
+        </div>
+
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee" />
+
+        <h3 style="color: #6c5ce7; margin-bottom: 10px">Смена пароля</h3>
+        <div class="input-group">
+          <label for="oldPassword">Старый пароль</label>
+          <input type="password" id="oldPassword" />
+        </div>
+
+        <div class="input-group">
+          <label for="newPassword">Новый пароль</label>
+          <input type="password" id="newPassword" />
+        </div>
+
+        <div class="input-group">
+          <label for="confirmPassword">Подтвердите пароль</label>
+          <input type="password" id="confirmPassword" />
+        </div>
+
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee" />
+
+        <div class="input-group">
+          <label style="display: flex; align-items: center; gap: 10px">
+            Получать email-уведомления
+            <input
+              type="checkbox"
+              id="notificationsEnabled"
+              checked
+              style="width: 15px; height: 15px; cursor: pointer"
+            />
+          </label>
+        </div>
+
+        <button
+          type="submit"
+          class="auth-button"
+          style="width: 100%; margin-top: 20px"
+        >
+          Сохранить изменения
+        </button>
+      </form>
+    </div>
+    }
+    <!-- Сертификаты -->
+    @if (currentPage=="certificates") {
+    <div class="profile-section" id="certificates">
+      <h2 style="color: #6c5ce7; margin-bottom: 20px">Сертификаты</h2>
+      <div class="certificate-grid">
+        <div class="certificate-card">
+          <img src=" /certificate.webp" alt="Сертификат 1" />
+          <div class="certificate-info">
+            <h3>Эффективный рекрутинг</h3>
+            <p>Дата завершения: 25 мая 2025</p>
+            <a href=" /certificate.webp" target="_blank" class="cert-button"
+              >Посмотреть</a
+            >
+            <a
+              href=" /certificate.webp"
+              download
+              class="cert-button"
+              style="background-color: #00b894"
+              >Скачать</a
+            >
+          </div>
+        </div>
+
+        <div class="certificate-card">
+          <img src=" /certificate.webp" alt="Сертификат 2" />
+          <div class="certificate-info">
+            <h3>HR-менеджер с нуля</h3>
+            <p>Дата завершения: 10 июня 2025</p>
+            <a href=" /certificate.webp" target="_blank" class="cert-button"
+              >Посмотреть</a
+            >
+            <a
+              href=" /certificate.webp"
+              download
+              class="cert-button"
+              style="background-color: #00b894"
+              >Скачать</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+  </main>
+</div>
