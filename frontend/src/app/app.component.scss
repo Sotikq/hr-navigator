@@ -1,0 +1,64 @@
+/* Сброс стилей */
+* {
+  margin: 0;
+  padding: 0;
+ 
+  font-family: Arial, sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 40px;
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  .logo {
+    display: flex;
+    align-items: center;
+    .logo-img {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+    }
+    .logo-text {
+      font-size: 24px;
+      font-weight: bold;
+      color: #6c5ce7;
+    }
+  }
+
+  .nav ul {
+    display: flex;
+    list-style: none;
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+  }
+  .nav a {
+    text-decoration: none;
+    color: gray;
+    font-size: 16px;
+    transition: color 0.3s;
+    cursor: pointer;
+  }
+  .nav a:hover {
+    color: #6c5ce7;
+  }
+  .auth-button {
+    padding: 10px 20px;
+    background-color: #6C5CE7;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.auth-button:hover {
+    background-color: #4834D4;
+}
+}

@@ -1,0 +1,32 @@
+<section class="register-page">
+    <h2>Регистрация</h2>
+  
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="phone">Номер телефона</label>
+        <input type="tel" id="phone" formControlName="phone" placeholder="+77752345678" />
+        <div class="error" *ngIf="registerForm.get('phone')?.touched && registerForm.get('phone')?.invalid">
+          Введите корректный номер (+7XXXXXXXXXX)
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="password">Пароль</label>
+        <input type="password" id="password" formControlName="password" />
+        <div class="error" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid">
+          Минимум 6 символов
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label for="confirmPassword">Подтвердите пароль</label>
+        <input type="password" id="confirmPassword" formControlName="confirmPassword" />
+        <div class="error" *ngIf="registerForm.errors?.['mismatch'] && registerForm.get('confirmPassword')?.touched">
+          Пароли не совпадают
+        </div>
+      </div>
+  
+      <button type="submit">Зарегистрироваться</button>
+    </form>
+  </section>
+  

@@ -1,0 +1,71 @@
+<h1 [routerLink]="['/student']" class="back-button" style="cursor: pointer;">← Назад</h1>
+    <div class="course-container">
+      <div class="course-header">
+        <h1>HR-менеджер с нуля</h1>
+        <p class="instructor">Преподаватель: Алия Ахметова</p>
+        <p>
+          Описание курса: Изучите основы профессии HR-менеджера — от подбора
+          персонала до адаптации и развития сотрудников. Практические кейсы,
+          реальные задачи и опыт экспертов.
+        </p>
+      </div>
+      
+      <div class="lesson-section">
+        <h2>Введние</h2>
+        <div class="lesson-item">
+          <div class="lesson-info">
+            <span>Урок 1: Кто такой HR-менеджер?</span>
+            <small>Продолжительность: 7 мин</small>
+          </div>
+          <div class="lesson-buttons">
+            <button
+              class="lesson-button"
+              onclick="playVideo('https://www.youtube.com/watch?v=Kcg_QZbN2rw')"
+            >
+              Смотреть
+            </button>
+            <input type="checkbox" />
+          </div>
+        </div>
+      </div>
+
+      <div class="lesson-section">
+        <h2>Рекрутинг</h2>
+        <div class="lesson-item">
+          <div class="lesson-info">
+            <span>Урок 2: Этапы подбора персонала</span>
+            <small>Продолжительность: 12 мин</small>
+          </div>
+          <div class="lesson-buttons">
+            <button
+              class="lesson-button"
+              onclick="playVideo('https://www.youtube.com/watch?v=qz1vXzB7Bso')"
+            >
+              Смотреть
+            </button>
+            <input type="checkbox" />
+          </div>
+        </div>
+
+        <div class="lesson-item">
+          <div class="lesson-info">
+            <span>Урок 3: Интервьюирование кандидатов</span>
+            <small>Продолжительность: 10 мин</small>
+          </div>
+          <div class="lesson-buttons">
+            <button
+              class="lesson-button"
+              onclick="playVideo('https://www.youtube.com/watch?v=y8Kvn6oEX7Q')"
+            >
+              Смотреть
+            </button>
+            <input type="checkbox" />
+          </div>
+        </div>
+      </div>
+
+      <div id="video-player" style="display: none">
+        <h3>Просмотр урока</h3>
+        <iframe id="video-frame" allowfullscreen></iframe>
+      </div>
+    </div>

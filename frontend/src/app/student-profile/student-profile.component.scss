@@ -1,0 +1,172 @@
+.profile-page {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #fff;
+  border-right: 1px solid #eee;
+  padding: 40px 20px;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar h2 {
+  color: #6c5ce7;
+  font-size: 24px;
+  margin-bottom: 30px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.sidebar-link {
+  padding: 12px 20px;
+  border-radius: 13px;
+  background-color: #f1f1f1;
+  color: #333;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.sidebar-link:hover,
+.sidebar-link.active {
+  background-color: #6c5ce7;
+  color: #fff;
+}
+
+.profile-content {
+  flex: 1;
+  padding: 40px;
+  background-color: #f9f9f9;
+}
+
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.student-course-card {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s;
+}
+
+.student-course-card:hover {
+  transform: translateY(-5px);
+}
+
+.student-course-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.student-course-info {
+  padding: 20px;
+}
+
+.student-course-info h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.course-date {
+  font-size: 14px;
+  color: #999;
+  margin-bottom: 10px;
+}
+
+.progress-container {
+  background-color: #f1f1f1;
+  border-radius: 20px;
+  overflow: hidden;
+  height: 12px;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: #6c5ce7;
+  width: 65%; /* динамика позже */
+}
+
+@media (max-width: 768px) {
+  .profile-page {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #eee;
+  }
+
+  .profile-content {
+    padding: 20px;
+  }
+}
+/* certificate */
+.certificate-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.certificate-card {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s;
+}
+
+.certificate-card:hover {
+  transform: translateY(-5px);
+}
+
+.certificate-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-bottom: 1px solid #eee;
+}
+
+.certificate-info {
+  padding: 15px;
+  text-align: center;
+}
+
+.certificate-info h3 {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.certificate-info p {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 15px;
+}
+
+.cert-button {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #6c5ce7;
+  color: white;
+  border-radius: 20px;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.cert-button:hover {
+  background-color: #4834d4;
+}

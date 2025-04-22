@@ -1,0 +1,94 @@
+<main class="courses-container">
+  <h1 style="text-align: center; margin-bottom: 30px">Все курсы</h1>
+
+  <div
+    style="
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: flex-start;
+      gap: 15px;
+    "
+  >
+    <input
+      type="text"
+      id="courseSearch"
+      placeholder="Поиск по названию курса"
+      [(ngModel)]="searchQuery"
+      style="
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        min-width: 250px;
+      "
+    />
+    <select
+      id="categoryFilter"
+      [(ngModel)]="selectedCategory"
+      style="
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        min-width: 200px;
+      "
+    >
+      <option value="all">Все категории</option>
+      <option value="Рекрутинг и подбор">Рекрутинг и подбор</option>
+      <option value="Управление персоналом">Управление персоналом</option>
+      <option value="Soft Skills">Soft Skills</option>
+      <option value="Развитие карьеры">Развитие карьеры</option>
+    </select>
+  </div>
+
+  <div id="courseList" class="course-list">
+    <!-- Рекрутинг -->
+    @for (course of getFilteredCourses(); track $index) {
+    <div class="course-card" (click)="openModal(course)">
+      <div class="course-category">{{ course.category }}</div>
+      <img src="{{ course.image }}" alt="Recruiting" />
+      <div class="course-info" (click)="openModal(course)">
+        <h3>{{ course.title }}</h3>
+        <p>{{ course.description }}</p>
+        <p class="course-price"><strong>Цена:</strong> {{ course.price }}</p>
+      </div>
+    </div>
+    }
+  </div>
+
+  <div *ngIf="showModal" id="courseModal" class="modal" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <span class="close-btn">&times;</span>
+      <div class="modal-body">
+        <div class="modal-left">
+          <img
+            id="modalImage"
+            src="{{ selectedCourse.image }}"
+            alt="Course Image"
+          />
+          <h3 id="modalTitle">{{ selectedCourse.title }}</h3>
+          <p>
+            <strong>Цена:</strong>
+            <span id="modalPrice">{{ selectedCourse.price }}</span>
+          </p>
+          <p>
+            <strong>Сроки прохождения:</strong>
+            <span id="modalDuration">{{ selectedCourse.Duration }}</span>
+          </p>
+
+          <a id="modalLink" href="#" class="modal-button" target="_blank"
+            >Перейти к курсу</a
+          >
+        </div>
+        <div class="modal-right">
+          <p id="modalDescription">{{ selectedCourse.description }}</p>
+
+          <p>
+            <strong>Подробная информация:</strong><br /><span
+              id="modalBigDescription"
+              >{{ selectedCourse.bigDescription }}</span
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
