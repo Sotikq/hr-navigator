@@ -1,5 +1,5 @@
-const authMiddleware = require("./middleware/authMiddleware");
 require('dotenv').config();
+const authMiddleware = require("./middleware/authMiddleware");
 const express = require('express');
 const cors = require('cors');
 
@@ -17,8 +17,10 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Сервер запущен на http://localhost:${PORT}`));  
 
-const authRoutes = require('./routes/authRoutes');
+const authRoutes = require('./routes/authRoutes'); // путь может отличаться
 app.use('/api/auth', authRoutes);
 
+const userRoutes = require('./routes/userRoutes');
+app.use('/api/users', userRoutes);
 
 

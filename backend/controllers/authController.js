@@ -57,7 +57,33 @@ async function login(req, res) {
   }
 }
 
+// controllers/authController.js
+const { findUserById } = require('../models/User');
+
+async function getProfile(req, res) {
+  try {
+    const user = await findUserById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ error: 'Пользователь не найден' });
+    }
+
+    res.json({
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      is_active: user.is_active,
+      created_at: user.created_at
+    });
+  } catch (err) {
+    console.error('Ошибка получения профиля:', err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+}
+
 module.exports = {
   register,
-  login
+  login,
+  getProfile
 };
+
