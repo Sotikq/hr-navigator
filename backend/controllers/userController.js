@@ -1,4 +1,10 @@
 const pool = require('../config/db');
+const bcrypt = require('bcrypt');
+const {
+  updateUserName,
+  updateUserPassword,
+  findUserById
+} = require('../models/User');
 
 async function getProfile(req, res) {
   try {
@@ -23,6 +29,55 @@ async function getProfile(req, res) {
   }
 }
 
+async function updateName(req, res) {
+  try {
+    const userId = req.user.id;
+    const { name } = req.body;
+
+    if (!name) {
+      return res.status(400).json({ error: 'Имя не может быть пустым' });
+    }
+
+    const updatedUser = await updateUserName(userId, name);
+    res.json({ message: 'Имя обновлено', user: updatedUser });
+  } catch (err) {
+    console.error('Ошибка обновления имени:', err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+}
+
+async function updatePassword(req, res) {
+  try {
+    const userId = req.user.id;
+    const { oldPassword, newPassword, confirmPassword } = req.body;
+
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      return res.status(400).json({ error: 'Все поля обязательны' });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ error: 'Пароли не совпадают' });
+    }
+
+    const user = await findUserById(userId);
+    const isValid = await bcrypt.compare(oldPassword, user.password_hash);
+
+    if (!isValid) {
+      return res.status(401).json({ error: 'Старый пароль неверный' });
+    }
+
+    const newPasswordHash = await bcrypt.hash(newPassword, 10);
+    await updateUserPassword(userId, newPasswordHash);
+
+    res.json({ message: 'Пароль успешно изменён' });
+  } catch (err) {
+    console.error('Ошибка смены пароля:', err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+}
+
 module.exports = {
   getProfile,
+  updateName,
+  updatePassword
 };

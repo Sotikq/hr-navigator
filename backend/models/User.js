@@ -1,7 +1,6 @@
 const pool = require('../config/db');
 
 async function createUser({ email, passwordHash, name, role }) {
-  // Если явно указана роль teacher — сохраняем её, иначе назначаем user
   const userRole = role === 'teacher' ? 'teacher' : 'user';
 
   const query = `
@@ -25,8 +24,26 @@ async function findUserById(id) {
   return rows[0];
 }
 
+async function updateUserName(userId, newName) {
+  const { rows } = await pool.query(
+    'UPDATE users SET name = $1, updated_at = NOW() WHERE id = $2 RETURNING id, email, name, role, is_active, created_at',
+    [newName, userId]
+  );
+  return rows[0];
+}
+
+async function updateUserPassword(userId, newPasswordHash) {
+  const { rows } = await pool.query(
+    'UPDATE users SET password_hash = $1, updated_at = NOW() WHERE id = $2 RETURNING id',
+    [newPasswordHash, userId]
+  );
+  return rows[0];
+}
+
 module.exports = {
   createUser,
   findUserByEmail,
-  findUserById
+  findUserById,
+  updateUserName,
+  updateUserPassword
 };

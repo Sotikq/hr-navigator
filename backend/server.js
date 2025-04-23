@@ -21,6 +21,5 @@ const authRoutes = require('./routes/authRoutes'); // путь может отл
 app.use('/api/auth', authRoutes);
 
 const userRoutes = require('./routes/userRoutes');
-app.use('/api/users', userRoutes);
-
+app.use('/api/auth', userRoutes);
 
