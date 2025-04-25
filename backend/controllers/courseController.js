@@ -11,7 +11,7 @@ async function createCourse(req, res) {
       duration,
       cover_url,
       category,
-      is_published = false // значение по умолчанию
+      is_published = false
     } = req.body;
 
     const authorId = req.user.id;
@@ -41,7 +41,7 @@ async function createCourse(req, res) {
   }
 }
 
-// ✅ Получение всех опубликованных курсов (для главной страницы)
+// ✅ Получение всех опубликованных курсов
 async function getAllPublishedCourses(req, res) {
   try {
     const query = `SELECT * FROM courses WHERE is_published = true ORDER BY created_at DESC`;
@@ -53,7 +53,7 @@ async function getAllPublishedCourses(req, res) {
   }
 }
 
-// ✅ Получение курса по ID (например, для страницы-превью)
+// ✅ Получение курса по ID с модулями и уроками
 async function getCourseById(req, res) {
   try {
     const courseId = req.params.id;
@@ -84,7 +84,7 @@ async function getCourseById(req, res) {
   }
 }
 
-// ✅ Получение всех курсов, созданных авторизованным преподавателем
+// ✅ Получение курсов преподавателя
 async function getMyCourses(req, res) {
   try {
     const authorId = req.user.id;
@@ -97,9 +97,51 @@ async function getMyCourses(req, res) {
   }
 }
 
+// 🔹 Добавление модуля к курсу
+async function addModuleToCourse(req, res) {
+  try {
+    const { courseId } = req.params;
+    const { title, description, position } = req.body;
+
+    const query = `
+      INSERT INTO modules (course_id, title, description, position)
+      VALUES ($1, $2, $3, $4)
+      RETURNING *
+    `;
+    const values = [courseId, title, description, position];
+    const { rows } = await pool.query(query, values);
+    res.status(201).json(rows[0]);
+  } catch (err) {
+    console.error('Ошибка добавления модуля:', err);
+    res.status(500).json({ error: 'Ошибка сервера при добавлении модуля' });
+  }
+}
+
+// 🔹 Добавление урока к модулю
+async function addLessonToModule(req, res) {
+  try {
+    const { moduleId } = req.params;
+    const { title, description, type, content_url, position } = req.body;
+
+    const query = `
+      INSERT INTO lessons (module_id, title, description, type, content_url, position)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING *
+    `;
+    const values = [moduleId, title, description, type, content_url, position];
+    const { rows } = await pool.query(query, values);
+    res.status(201).json(rows[0]);
+  } catch (err) {
+    console.error('Ошибка добавления урока:', err);
+    res.status(500).json({ error: 'Ошибка сервера при добавлении урока' });
+  }
+}
+
 module.exports = {
   createCourse,
   getAllPublishedCourses,
   getCourseById,
   getMyCourses,
+  addModuleToCourse,
+  addLessonToModule
 };

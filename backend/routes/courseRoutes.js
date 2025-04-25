@@ -4,7 +4,9 @@ const {
   createCourse,
   getAllPublishedCourses,
   getCourseById,
-  getMyCourses
+  getMyCourses,
+  addModuleToCourse,
+  addLessonToModule
 } = require('../controllers/courseController');
 const authMiddleware = require('../middleware/authMiddleware');
 
@@ -19,5 +21,11 @@ router.get('/:id', getCourseById);
 
 // 🔒 Получение всех курсов преподавателя (личный кабинет)
 router.get('/my/all', authMiddleware, getMyCourses);
+
+// 🔒 Добавление модуля к курсу
+router.post('/:courseId/modules', authMiddleware, addModuleToCourse);
+
+// 🔒 Добавление урока к модулю
+router.post('/modules/:moduleId/lessons', authMiddleware, addLessonToModule);
 
 module.exports = router;

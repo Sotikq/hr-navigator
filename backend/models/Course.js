@@ -12,31 +12,49 @@ async function createCourse({ title, description, details, price, duration, cove
   return rows[0];
 }
 
-// 🔹 Получение всех опубликованных курсов (для главной страницы)
+// 🔹 Получение всех опубликованных курсов
 async function getPublishedCourses() {
-  const query = `
-    SELECT * FROM courses WHERE is_published = true ORDER BY created_at DESC
-  `;
+  const query = `SELECT * FROM courses WHERE is_published = true ORDER BY created_at DESC`;
   const { rows } = await pool.query(query);
   return rows;
 }
 
 // 🔹 Получение курса по ID
 async function getCourseById(courseId) {
-  const query = `
-    SELECT * FROM courses WHERE id = $1
-  `;
+  const query = `SELECT * FROM courses WHERE id = $1`;
   const { rows } = await pool.query(query, [courseId]);
   return rows[0];
 }
 
-// 🔹 Получение всех курсов определённого преподавателя (в его личном кабинете)
+// 🔹 Получение всех курсов преподавателя
 async function getCoursesByAuthor(authorId) {
-  const query = `
-    SELECT * FROM courses WHERE author_id = $1 ORDER BY created_at DESC
-  `;
+  const query = `SELECT * FROM courses WHERE author_id = $1 ORDER BY created_at DESC`;
   const { rows } = await pool.query(query, [authorId]);
   return rows;
+}
+
+// 🔹 Добавление модуля к курсу
+async function addModule({ courseId, title, description, position }) {
+  const query = `
+    INSERT INTO modules (course_id, title, description, position)
+    VALUES ($1, $2, $3, $4)
+    RETURNING *
+  `;
+  const values = [courseId, title, description, position];
+  const { rows } = await pool.query(query, values);
+  return rows[0];
+}
+
+// 🔹 Добавление урока к модулю
+async function addLesson({ moduleId, title, description, type, contentUrl, position }) {
+  const query = `
+    INSERT INTO lessons (module_id, title, description, type, content_url, position)
+    VALUES ($1, $2, $3, $4, $5, $6)
+    RETURNING *
+  `;
+  const values = [moduleId, title, description, type, contentUrl, position];
+  const { rows } = await pool.query(query, values);
+  return rows[0];
 }
 
 module.exports = {
@@ -44,4 +62,6 @@ module.exports = {
   getPublishedCourses,
   getCourseById,
   getCoursesByAuthor,
+  addModule,
+  addLesson
 };
