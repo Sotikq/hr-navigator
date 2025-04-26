@@ -1,0 +1,258 @@
+<div class="dashboard-wrapper">
+  <!-- Сайдбар -->
+  <aside class="sidebar">
+    <div style="text-align: center; margin-bottom: 30px">
+      <img
+        id="sidebarAvatar"
+        src="/avatar.jpg"
+        alt="Avatar"
+        style="
+          width: 100px;
+          height: 100px;
+          border-radius: 50%;
+          object-fit: cover;
+          margin-bottom: 10px;
+        "
+      />
+      <h3 id="sidebarUsername" style="color: #333; font-size: 18px">
+        {{ user.name }}
+      </h3>
+    </div>
+    <nav class="sidebar-nav">
+      @for (tab of tabs; track $index) {
+      <a
+        class="sidebar-link"
+        (click)="currentPageSwitch(tab)"
+        [class.active]="currentPage == tab"
+        >{{ tab }}
+      </a>
+
+      }
+      <a class="sidebar-link" id="log_out" (click)="logout()"> log out</a>
+    </nav>
+  </aside>
+
+  <!-- Контент -->
+  <main class="teacher-main">
+    <!-- ОБЗОР -->
+    <section
+      *ngIf="currentPage == 'Review'"
+      id="Review"
+      class="teacher-section"
+    >
+      <h2>Общая статистика</h2>
+      <div class="stats-grid">
+        <div class="stat-tile"><span>5</span>Курсов</div>
+        <div class="stat-tile"><span>124</span>Студентов</div>
+        <div class="stat-tile"><span>76%</span>Средний прогресс</div>
+        <div class="stat-tile"><span>21</span>Активны сегодня</div>
+      </div>
+    </section>
+
+    <!-- КУРСЫ -->
+    @if (currentPage=="Courses") {
+    <section id="Courses" class="teacher-section">
+      <h2>Управление курсами</h2>
+      <button class="add-btn" (click)="goToCreateCourse()">
+        + Добавить курс
+      </button>
+      <div class="course-grid">
+        <div id="courseList" class="course-list">
+          <!-- Рекрутинг -->
+          <div *ngFor="let course of courses" class="course-card">
+            <div class="course-category">{{ course.category }}</div>
+            <img src="{{ course.cover_url }}" alt="Recruiting" />
+            <div class="course-info">
+              <h3>{{ course.title }}</h3>
+              <p>{{ course.description }}</p>
+              <p class="course-price">
+                <strong>Цена:</strong> {{ course.price }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Тут появляются курсы из localStorage -->
+        </div>
+      </div>
+
+     <!-- <div>
+        <h1>Unpublished</h1>
+        <div class="course-grid">
+          <div id="courseList" class="course-list">
+            
+            <div *ngFor="let course of courses" class="course-card">
+              <div class="course-category">{{ course.category }}</div>
+              <img src="{{ course.cover_url }}" alt="Recruiting" />
+              <div class="course-info">
+                <h3>{{ course.title }}</h3>
+                <p>{{ course.description }}</p>
+                <p class="course-price">
+                  <strong>Цена:</strong> {{ course.price }}
+                </p>
+              </div>
+            </div>
+  
+            
+          </div>
+        </div>
+      </div>  -->
+    </section>
+    }
+
+    <!-- МОДАЛКА ДОБАВЛЕНИЯ / РЕДАКТИРОВАНИЯ КУРСА -->
+    <div
+      id="editCourseModal"
+      class="modal-overlay"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        justify-content: center;
+        align-items: center;
+      "
+    >
+      <div
+        class="modal-content"
+        style="
+          background: #fff;
+          padding: 30px;
+          border-radius: 20px;
+          width: 500px;
+          max-height: 90vh;
+          overflow: auto;
+        "
+      >
+        <h3>Добавить / Редактировать курс</h3>
+        <input
+          type="text"
+          id="courseTitle"
+          placeholder="Название курса"
+          style="width: 100%; margin-bottom: 10px"
+        />
+        <textarea
+          id="courseDesc"
+          placeholder="Описание курса"
+          style="width: 100%; margin-bottom: 10px"
+        ></textarea>
+        <label>Дата окончания:</label>
+        <input
+          type="date"
+          id="courseDeadline"
+          style="width: 100%; margin-bottom: 10px"
+        />
+
+        <label>Обложка курса:</label>
+        <input
+          type="file"
+          id="courseImage"
+          accept="image/*"
+          style="margin-bottom: 10px"
+        />
+
+        <h4 style="margin-top: 15px">Модули</h4>
+        <div id="modulesList"></div>
+        <button
+          type="button"
+          onclick="addModule()"
+          style="margin-top: 10px; margin-bottom: 20px"
+        >
+          + Добавить модуль
+        </button>
+
+        <div style="text-align: right">
+          <button onclick="closeEditModal()" style="margin-right: 10px">
+            Отмена
+          </button>
+          <button onclick="saveCourse()" class="edit-btn">Сохранить</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- АНАЛИТИКА -->
+    @if (currentPage=='analytics') {
+
+    <section id="analytics" class="teacher-section">
+      <h2>Аналитика</h2>
+      <app-analytics-chart></app-analytics-chart>
+    </section>
+    }
+
+    <!-- СООБЩЕНИЯ -->
+    @if (currentPage == 'messages') {
+
+    <section id="messages" class="teacher-section">
+      <h2>Сообщения от студентов</h2>
+      <div class="message-box">
+        <strong>Иван:</strong> Не могу пройти тест в модуле 2.
+        <input type="text" placeholder="Ответить..." />
+      </div>
+    </section>
+
+    } @if (currentPage=='Settings') {
+    <div class="profile-section" id="settings">
+      <h2 style="color: #6c5ce7; margin-bottom: 20px">Настройки аккаунта</h2>
+
+      <!-- Фото профиля -->
+      <div style="text-align: center; margin-bottom: 30px">
+        <label for="profileImageInput" style="cursor: pointer">
+          <img
+            id="profileImagePreview"
+            src="/avatar.jpg"
+            alt="Аватар"
+            style="
+              width: 100px;
+              height: 100px;
+              border-radius: 50%;
+              object-fit: cover;
+              box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            "
+          />
+        </label>
+        <input
+          type="file"
+          id="profileImageInput"
+          accept="image/*"
+          style="display: none"
+        />
+        <p style="font-size: 14px; color: #777">
+          Нажмите на фото, чтобы изменить
+        </p>
+      </div>
+      <div class="profile-form">
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+          <label>Email</label>
+          <input formControlName="email" type="email" />
+
+          <label>Username</label>
+          <input formControlName="username" type="text" />
+
+          <button type="submit" [disabled]="profileForm.invalid">
+            Сохранить
+          </button>
+        </form>
+      </div>
+      <div class="profile-form">
+        <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
+          <label>Старый пароль</label>
+          <input formControlName="oldPassword" type="password" />
+
+          <label>Новый пароль</label>
+          <input formControlName="newPassword" type="password" />
+
+          <label>Подтвердите новый пароль</label>
+          <input formControlName="confirmPassword" type="password" />
+
+          <button type="submit" [disabled]="passwordForm.invalid">
+            Изменить пароль
+          </button>
+        </form>
+      </div>
+    </div>
+    }
+  </main>
+</div>

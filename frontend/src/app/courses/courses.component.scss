@@ -65,6 +65,10 @@
 
 .course-info {
   display: flex;
+<<<<<<< HEAD
+  cursor: pointer;
+=======
+>>>>>>> origin/main
   flex-direction: column;
   justify-content: space-between;
   flex-grow: 1; /* Заставляем блок с информацией занимать оставшееся пространство */
@@ -78,7 +82,11 @@
   line-height: 1.4; /* Обеспечивает адекватное расстояние между строками */
   overflow: hidden;
   text-overflow: ellipsis;
+<<<<<<< HEAD
+   /* Обеспечиваем, что текст не будет переноситься */
+=======
   white-space: nowrap; /* Обеспечиваем, что текст не будет переноситься */
+>>>>>>> origin/main
 }
 
 .course-info p {
@@ -87,7 +95,11 @@
   margin-bottom: 10px;
   overflow: hidden;
   text-overflow: ellipsis;
+<<<<<<< HEAD
+   /* Обрезаем длинные описания */
+=======
   white-space: nowrap; /* Обрезаем длинные описания */
+>>>>>>> origin/main
 }
 
 .course-price {

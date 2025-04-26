@@ -3,19 +3,34 @@
   <div class="auth-forms">
       <div class="auth-box">
           <h3><i class="fas fa-sign-in-alt"></i> Вход</h3>
+<<<<<<< HEAD
+          <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+              <div class="input-group">
+                  <label for="login-email">Email</label>
+                  <input id = "login-email" type="email" formControlName="email" placeholder="Введите email" required>
+=======
           <form [formGroup]="loginForm" (ngSubmit)="login()">
               <div class="input-group">
                   <label for="login-email">Email</label>
                   <input type="email" formControlName="email" placeholder="Введите email" required>
+>>>>>>> origin/main
               </div>
       
               <div class="input-group">
                   <label for="login-password">Пароль</label>
+<<<<<<< HEAD
+                  <input id ="login-password"  type="password" formControlName="password" placeholder="Введите пароль" required>
+              </div>
+      
+              <div class="remember-me">
+                  <input id ="remember-me" type="checkbox" formControlName="rememberMe">
+=======
                   <input type="password" formControlName="password" placeholder="Введите пароль" required>
               </div>
       
               <div class="remember-me">
                   <input type="checkbox" formControlName="rememberMe">
+>>>>>>> origin/main
                   <label for="rememberMe">Запомнить меня</label>
               </div>
       
@@ -30,7 +45,11 @@
       <div class="auth-box">
         <h3><i class="fas fa-user-plus"></i> Регистрация</h3>
       
+<<<<<<< HEAD
+        <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+=======
         <form [formGroup]="registerForm" (ngSubmit)="register()">
+>>>>>>> origin/main
           <div class="input-group">
             <label for="email">Email</label>
             <input id="email" type="email" formControlName="email" placeholder="Введите email" />
@@ -50,7 +69,11 @@
             <label for="confirmPassword">Подтвердите пароль</label>
             <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="Повторите пароль" />
           </div>
+<<<<<<< HEAD
+          
+=======
       
+>>>>>>> origin/main
           <button type="submit" class="auth-button">Зарегистрироваться</button>
         </form>
       

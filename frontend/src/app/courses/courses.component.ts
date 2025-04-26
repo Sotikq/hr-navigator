@@ -1,7 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+<<<<<<< HEAD
+import { Route, Router } from '@angular/router';
+import { COURSES , Course} from '../courses';
+import { CourseService } from '../course.service';
+=======
 
+>>>>>>> origin/main
 @Component({
   selector: 'app-courses',
   imports: [CommonModule,FormsModule],
@@ -9,6 +15,29 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './courses.component.scss',
 })
 export class CoursesComponent {
+<<<<<<< HEAD
+
+
+  courses: Course[] = []; // Массив курсов
+
+  constructor(private router: Router, private crs: CourseService) {
+    crs.getCourses().subscribe((data) => {
+      this.courses = data; // Получаем курсы из сервиса и сохраняем в массив
+      console.log(this.courses); // Логируем курсы в консоль
+    });
+  }
+  selectedCourse: any = null; // Переменная для хранения выбранного курса
+  showModal: boolean = false; // Переменная для управления видимостью модального окна
+
+
+  goToCourse(courseId: any) {
+    this.router.navigate(['/course', courseId]); // Переход на страницу курса
+  }
+
+
+
+
+=======
   courses = [
     {
       title: 'Эффективный рекрутинг',
@@ -146,6 +175,7 @@ export class CoursesComponent {
   ];
   selectedCourse: any = null; // Переменная для хранения выбранного курса
   showModal: boolean = false; // Переменная для управления видимостью модального окна
+>>>>>>> origin/main
   openModal(course: any) {
     this.selectedCourse = course; // Устанавливаем выбранный курс
     this.showModal = true; // Показываем модальное окно

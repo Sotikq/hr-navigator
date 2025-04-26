@@ -1,3 +1,91 @@
+<<<<<<< HEAD
+import { Component, OnInit } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { AuthService } from '../auth.service.service';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+@Component({
+  selector: 'app-student-profile',
+  imports: [RouterModule, ReactiveFormsModule, CommonModule],
+  templateUrl: './student-profile.component.html',
+  styleUrl: './student-profile.component.scss'
+})
+export class StudentProfileComponent implements OnInit {
+  
+  profileForm!: FormGroup;;
+  passwordForm!: FormGroup;
+  tabs = ['profile', 'certificates', 'settings'];
+
+  currentPage: string = 'profile'; // Default page is 'profile'
+  user: any = null;
+  constructor(private route : Router, private auth: AuthService, private fb: FormBuilder) { 
+  }
+  
+  userFill(){
+    const userFromStorage = localStorage.getItem('currentUser');
+    this.user = userFromStorage ? JSON.parse(userFromStorage) : null;
+  }
+  
+  ngOnInit(): void {
+    this.userFill();
+    console.log(this.user);
+        this.profileForm = this.fb.group({
+          email: [this.user.email ],
+          username: [this.user.name, Validators.required],         
+        });
+      
+    this.auth.user$.subscribe((user) => {
+    this.passwordForm = this.fb.group({
+      oldPassword: ['', Validators.required],
+      newPassword: ['', Validators.required],
+      confirmPassword: ['', Validators.required],
+    });
+  });
+    this.profileForm.controls['email'].disable();
+  }
+  onSubmit(): void {
+
+    const usernametoupdate = this.profileForm.get('username')?.value;
+    if (this.profileForm.valid) {
+      const updatedUser : string = this.profileForm.value;
+      //console.log('Сохраняем изменения:', updatedUser);
+
+      this.auth.updateName({name : usernametoupdate}).subscribe({
+        next: (response) => {
+          console.log('Профиль обновлён:', response);
+          this.user.name = usernametoupdate; // Обновляем имя пользователя в локальном состоянии
+          localStorage.setItem('currentUser', JSON.stringify(this.user)); // Сохраняем обновлённые данные в локальном хранилище
+          this.auth.setUser(this.user); // Обновляем пользователя в AuthService
+        },
+        error: (error) => {
+          console.error('Ошибка при обновлении профиля:', error);
+        },
+      });
+      // Здесь можно отправить PATCH/PUT на сервер
+
+      // После успешного ответа обнови BehaviorSubject:
+      this.auth.setUser(updatedUser);
+
+      alert('Профиль обновлён!');
+    }
+  }
+  onChangePassword(): void {
+    const oldPassword = this.passwordForm.get('oldPassword')?.value;
+    const newPassword = this.passwordForm.get('newPassword')?.value;
+    const confirmPassword = this.passwordForm.get('confirmPassword')?.value;
+    this.auth.updatePassword({ oldPassword, newPassword, confirmPassword }).subscribe({
+      next: (response) => {
+        console.log('Пароль обновлён:', response);
+        alert('Пароль обновлён!');
+      },
+      error: (error) => {
+        console.error('Ошибка при обновлении пароля:', error);
+        alert('Ошибка при обновлении пароля!');
+      },
+    });
+  }
+  
+=======
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
@@ -13,8 +101,27 @@ export class StudentProfileComponent {
 
   currentPage: string = 'profile'; // Default page is 'profile'
   constructor() { }
+>>>>>>> origin/main
   currentPageSwitch(page: string) {
     this.currentPage = page;  
     console.log(this.currentPage);
   }
+<<<<<<< HEAD
+
+
+  
+  
+  
+  
+  
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userType');
+    localStorage.removeItem('currentUser');
+    this.auth.setUser(null);
+    this.route.navigate(['']);
+  }
+=======
+>>>>>>> origin/main
 }
