@@ -44,8 +44,13 @@
     @for (course of getFilteredCourses(); track $index) {
     <div class="course-card" (click)="openModal(course)">
       <div class="course-category">{{ course.category }}</div>
+<<<<<<< HEAD
+      <img src="{{ course.cover_url }}" alt="Recruiting" />
+      <div class="course-info" (click)="goToCourse(course.id)">
+=======
       <img src="{{ course.image }}" alt="Recruiting" />
       <div class="course-info" (click)="openModal(course)">
+>>>>>>> origin/main
         <h3>{{ course.title }}</h3>
         <p>{{ course.description }}</p>
         <p class="course-price"><strong>Цена:</strong> {{ course.price }}</p>
@@ -53,7 +58,11 @@
     </div>
     }
   </div>
+<<<<<<< HEAD
+<!-- 
+=======
 
+>>>>>>> origin/main
   <div *ngIf="showModal" id="courseModal" class="modal" (click)="closeModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">
       <span class="close-btn">&times;</span>
@@ -74,7 +83,11 @@
             <span id="modalDuration">{{ selectedCourse.Duration }}</span>
           </p>
 
+<<<<<<< HEAD
+          <a id="modalLink" class="modal-button" target="_blank" 
+=======
           <a id="modalLink" href="#" class="modal-button" target="_blank"
+>>>>>>> origin/main
             >Перейти к курсу</a
           >
         </div>
@@ -90,5 +103,9 @@
         </div>
       </div>
     </div>
+<<<<<<< HEAD
+  </div> -->
+=======
   </div>
+>>>>>>> origin/main
 </main>

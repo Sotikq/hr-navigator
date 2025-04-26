@@ -1,0 +1,101 @@
+import { Component } from '@angular/core';
+import { Course, Module, LessonRequest, CourseRequest, ModuleRequest } from '../models/course.models';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { CourseService } from '../course.service';
+@Component({
+  selector: 'app-creating-course',
+  imports: [FormsModule, CommonModule],
+  templateUrl: './creating-course.component.html',
+  styleUrl: './creating-course.component.scss',
+})
+export class CreatingCourseComponent {
+  currentCourse: CourseRequest;
+  
+  modules: ModuleRequest[] = []
+  constructor(private crs: CourseService) {
+    this.currentCourse = this.createEmptyCourse();
+  }
+
+  createEmptyCourse(): CourseRequest {
+    return {
+      title: '',
+      description: '',
+      details: 'string',
+      price: 123,
+      duration: 'string',
+      cover_url: null,
+      category: 'HR',
+      is_published: true,
+    };
+  }
+
+  addModule(): void {
+    this.modules.push({
+      CourseId: 'string',
+      title: '',
+      description: '',
+      position: this.modules.length + 1,
+      lessons: [] as LessonRequest[],
+    });
+  }
+  addLesson(module: Module): void {
+    module.lessons.push({
+      ModuleId: '',
+      title: '',
+      description: '',
+      type: '',
+      content_url: '',
+      position: module.lessons.length + 1,
+    });
+  }
+  
+
+  onImageUpload(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files?.length) {
+      //this.currentCourse.imageFile = input.files[0];
+      //this.currentCourse.imageUrl = URL.createObjectURL(input.files[0]);
+    }
+  }
+
+  onLessonVideoUpload(lesson: LessonRequest, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files?.length) {
+      lesson.content_url = URL.createObjectURL(input.files[0]);
+    }
+  }
+
+  onSubmit(): void {
+    var CourseId = "";
+    console.log(this.currentCourse);
+    this.crs.createCourse(this.currentCourse).subscribe((data) => {
+      console.log('Курс успешно создан:', data); // Логируем ответ сервера
+      CourseId = data.id; // Сохраняем ID курса
+ 
+    for (const module of this.modules) {
+      module.CourseId = CourseId; // Устанавливаем ID курса для каждого модуля
+      this.crs.createModule(module,module.CourseId).subscribe((data) => {
+        console.log('Модуль успешно создан:', data); // Логируем ответ сервера
+        var ModuleId = data.id; // Сохраняем ID модуля
+        if (module.lessons && module.lessons.length > 0) {
+        for (const lesson of module.lessons) {
+          lesson.ModuleId = ModuleId || ''; // Устанавливаем ID модуля для каждого урока
+          this.crs.createLesson(lesson, lesson.ModuleId).subscribe((data) => {
+            console.log('Урок успешно создан:', data); // Логируем ответ сервера
+          });
+        }
+      }
+      
+      });
+    }
+  });
+
+    // Здесь вы можете отправить данные на сервер или выполнить другие действия
+  }
+  save(): void {}
+
+  goBack(): void {
+    window.history.back();
+  }
+}
