@@ -1,5 +1,16 @@
 const pool = require('../config/db');
-const { createCourse, getPublishedCourses, getUnpublishedCourses, getCourseById, getCoursesByAuthor, addModule, addLesson } = require('../models/Course');
+const {
+  createCourse,
+  updateCourse,
+  getPublishedCourses,
+  getUnpublishedCourses,
+  getCourseById,
+  getCoursesByAuthor,
+  addModule,
+  updateModule,
+  addLesson,
+  updateLesson
+} = require('../models/Course');
 
 // ✅ Создание нового курса
 async function createCourseHandler(req, res) {
@@ -26,6 +37,60 @@ async function createCourseHandler(req, res) {
   } catch (err) {
     console.error('Ошибка при создании курса:', err);
     res.status(500).json({ error: 'Ошибка сервера при создании курса' });
+  }
+}
+
+// ✅ Обновление курса
+async function updateCourseHandler(req, res) {
+  try {
+    const courseId = req.params.id;
+    const fieldsToUpdate = req.body;
+
+    const updatedCourse = await updateCourse(courseId, fieldsToUpdate);
+    if (!updatedCourse) {
+      return res.status(404).json({ error: 'Курс не найден или нет данных для обновления' });
+    }
+
+    res.json(updatedCourse);
+  } catch (err) {
+    console.error('Ошибка при обновлении курса:', err);
+    res.status(500).json({ error: 'Ошибка сервера при обновлении курса' });
+  }
+}
+
+// ✅ Обновление модуля
+async function updateModuleHandler(req, res) {
+  try {
+    const moduleId = req.params.id;
+    const fieldsToUpdate = req.body;
+
+    const updatedModule = await updateModule(moduleId, fieldsToUpdate);
+    if (!updatedModule) {
+      return res.status(404).json({ error: 'Модуль не найден или нет данных для обновления' });
+    }
+
+    res.json(updatedModule);
+  } catch (err) {
+    console.error('Ошибка при обновлении модуля:', err);
+    res.status(500).json({ error: 'Ошибка сервера при обновлении модуля' });
+  }
+}
+
+// ✅ Обновление урока
+async function updateLessonHandler(req, res) {
+  try {
+    const lessonId = req.params.id;
+    const fieldsToUpdate = req.body;
+
+    const updatedLesson = await updateLesson(lessonId, fieldsToUpdate);
+    if (!updatedLesson) {
+      return res.status(404).json({ error: 'Урок не найден или нет данных для обновления' });
+    }
+
+    res.json(updatedLesson);
+  } catch (err) {
+    console.error('Ошибка при обновлении урока:', err);
+    res.status(500).json({ error: 'Ошибка сервера при обновлении урока' });
   }
 }
 
@@ -172,6 +237,9 @@ async function addLessonToModule(req, res) {
 
 module.exports = {
   createCourse: createCourseHandler,
+  updateCourse: updateCourseHandler,
+  updateModule: updateModuleHandler,
+  updateLesson: updateLessonHandler,
   getAllPublishedCourses,
   getAllUnpublishedCourses,
   getCourseById: getCourseByIdHandler,

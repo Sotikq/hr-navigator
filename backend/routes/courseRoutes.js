@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const {
   createCourse,
+  updateCourse,
+  updateModule,
+  updateLesson,
   getAllPublishedCourses,
   getAllUnpublishedCourses,
   getCourseById,
@@ -14,13 +17,22 @@ const authMiddleware = require('../middleware/authMiddleware');
 // 🔒 Создание нового курса
 router.post('/', authMiddleware, createCourse);
 
+// 🔒 Обновление курса
+router.patch('/:id', authMiddleware, updateCourse);
+
+// 🔒 Обновление модуля
+router.patch('/modules/:id', authMiddleware, updateModule);
+
+// 🔒 Обновление урока
+router.patch('/lessons/:id', authMiddleware, updateLesson);
+
 // 🌐 Получение всех опубликованных курсов
 router.get('/', getAllPublishedCourses);
 
 // 🌐 Получение всех неопубликованных курсов
 router.get('/unpublished', authMiddleware, getAllUnpublishedCourses);
 
-// 🌐 Получение курса по ID (обязательно ниже /unpublished, чтобы не было конфликта)
+// 🌐 Получение курса по ID
 router.get('/:id', getCourseById);
 
 // 🔒 Получение всех курсов преподавателя

@@ -12,6 +12,24 @@ async function createCourse({ title, description, details, price, duration, cove
   return rows[0];
 }
 
+// 🔹 Обновление курса
+async function updateCourse(courseId, fieldsToUpdate) {
+  const keys = Object.keys(fieldsToUpdate);
+  if (keys.length === 0) return null;
+
+  const setClause = keys.map((key, index) => `${key} = $${index + 2}`).join(', ');
+  const values = [courseId, ...Object.values(fieldsToUpdate)];
+
+  const query = `
+    UPDATE courses
+    SET ${setClause}
+    WHERE id = $1
+    RETURNING *
+  `;
+  const { rows } = await pool.query(query, values);
+  return rows[0];
+}
+
 // 🔹 Получение всех опубликованных курсов
 async function getPublishedCourses() {
   const query = `SELECT * FROM courses WHERE is_published = true ORDER BY created_at DESC`;
@@ -52,6 +70,24 @@ async function addModule({ courseId, title, description, position }) {
   return rows[0];
 }
 
+// 🔹 Обновление модуля
+async function updateModule(moduleId, fieldsToUpdate) {
+  const keys = Object.keys(fieldsToUpdate);
+  if (keys.length === 0) return null;
+
+  const setClause = keys.map((key, index) => `${key} = $${index + 2}`).join(', ');
+  const values = [moduleId, ...Object.values(fieldsToUpdate)];
+
+  const query = `
+    UPDATE modules
+    SET ${setClause}
+    WHERE id = $1
+    RETURNING *
+  `;
+  const { rows } = await pool.query(query, values);
+  return rows[0];
+}
+
 // 🔹 Добавление урока к модулю
 async function addLesson({ moduleId, title, description, type, contentUrl, position }) {
   const query = `
@@ -64,12 +100,33 @@ async function addLesson({ moduleId, title, description, type, contentUrl, posit
   return rows[0];
 }
 
+// 🔹 Обновление урока
+async function updateLesson(lessonId, fieldsToUpdate) {
+  const keys = Object.keys(fieldsToUpdate);
+  if (keys.length === 0) return null;
+
+  const setClause = keys.map((key, index) => `${key} = $${index + 2}`).join(', ');
+  const values = [lessonId, ...Object.values(fieldsToUpdate)];
+
+  const query = `
+    UPDATE lessons
+    SET ${setClause}
+    WHERE id = $1
+    RETURNING *
+  `;
+  const { rows } = await pool.query(query, values);
+  return rows[0];
+}
+
 module.exports = {
   createCourse,
+  updateCourse,
   getPublishedCourses,
   getUnpublishedCourses,
   getCourseById,
   getCoursesByAuthor,
   addModule,
-  addLesson
+  updateModule,
+  addLesson,
+  updateLesson,
 };
