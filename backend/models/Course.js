@@ -19,6 +19,13 @@ async function getPublishedCourses() {
   return rows;
 }
 
+// 🔹 Получение всех неопубликованных курсов
+async function getUnpublishedCourses() {
+  const query = `SELECT * FROM courses WHERE is_published = false ORDER BY created_at DESC`;
+  const { rows } = await pool.query(query);
+  return rows;
+}
+
 // 🔹 Получение курса по ID
 async function getCourseById(courseId) {
   const query = `SELECT * FROM courses WHERE id = $1`;
@@ -26,7 +33,7 @@ async function getCourseById(courseId) {
   return rows[0];
 }
 
-// 🔹 Получение всех курсов преподавателя
+// 🔹 Получение курсов преподавателя
 async function getCoursesByAuthor(authorId) {
   const query = `SELECT * FROM courses WHERE author_id = $1 ORDER BY created_at DESC`;
   const { rows } = await pool.query(query, [authorId]);
@@ -60,6 +67,7 @@ async function addLesson({ moduleId, title, description, type, contentUrl, posit
 module.exports = {
   createCourse,
   getPublishedCourses,
+  getUnpublishedCourses,
   getCourseById,
   getCoursesByAuthor,
   addModule,

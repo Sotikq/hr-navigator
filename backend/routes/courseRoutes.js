@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   createCourse,
   getAllPublishedCourses,
+  getAllUnpublishedCourses,
   getCourseById,
   getMyCourses,
   addModuleToCourse,
@@ -10,16 +11,19 @@ const {
 } = require('../controllers/courseController');
 const authMiddleware = require('../middleware/authMiddleware');
 
-// 🔒 Создание курса (только для авторизованного преподавателя)
+// 🔒 Создание нового курса
 router.post('/', authMiddleware, createCourse);
 
-// 🌐 Получение всех опубликованных курсов (для главной страницы)
+// 🌐 Получение всех опубликованных курсов
 router.get('/', getAllPublishedCourses);
 
-// 🌐 Получение курса по ID (включает модули и уроки)
+// 🌐 Получение всех неопубликованных курсов
+router.get('/unpublished', authMiddleware, getAllUnpublishedCourses);
+
+// 🌐 Получение курса по ID (обязательно ниже /unpublished, чтобы не было конфликта)
 router.get('/:id', getCourseById);
 
-// 🔒 Получение всех курсов преподавателя (личный кабинет)
+// 🔒 Получение всех курсов преподавателя
 router.get('/my/all', authMiddleware, getMyCourses);
 
 // 🔒 Добавление модуля к курсу
