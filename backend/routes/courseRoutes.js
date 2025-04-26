@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const upload = require('../middleware/uploadMiddleware');
 const {
   createCourse,
   updateCourse,
@@ -14,8 +15,8 @@ const {
 } = require('../controllers/courseController');
 const authMiddleware = require('../middleware/authMiddleware');
 
-// 🔒 Создание нового курса
-router.post('/', authMiddleware, createCourse);
+// 🔒 Создание курса с загрузкой обложки
+router.post('/', authMiddleware, upload.single('cover'), createCourse);
 
 // 🔒 Обновление курса
 router.patch('/:id', authMiddleware, updateCourse);

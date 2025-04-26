@@ -12,14 +12,15 @@ const {
   updateLesson
 } = require('../models/Course');
 
-// ✅ Создание нового курса
+// ✅ Создание нового курса с загрузкой обложки
 async function createCourseHandler(req, res) {
   try {
     const {
-      title, description, details, price, duration, cover_url, category, is_published = false
+      title, description, details, price, duration, category, is_published = false
     } = req.body;
 
     const authorId = req.user.id;
+    const coverUrl = req.file ? `/uploads/${req.file.filename}` : null;
 
     const course = await createCourse({
       title,
@@ -27,7 +28,7 @@ async function createCourseHandler(req, res) {
       details,
       price,
       duration,
-      coverUrl: cover_url,
+      coverUrl,
       category,
       authorId,
       is_published
@@ -45,6 +46,10 @@ async function updateCourseHandler(req, res) {
   try {
     const courseId = req.params.id;
     const fieldsToUpdate = req.body;
+
+    if (req.file) {
+      fieldsToUpdate.cover_url = `/uploads/${req.file.filename}`; // если пришла новая обложка
+    }
 
     const updatedCourse = await updateCourse(courseId, fieldsToUpdate);
     if (!updatedCourse) {
@@ -108,39 +113,26 @@ async function getAllPublishedCourses(req, res) {
 // ✅ Получение всех НЕопубликованных курсов вместе с модулями и уроками
 async function getAllUnpublishedCourses(req, res) {
   try {
-    // 1. Сначала получаем все неопубликованные курсы
     const courseQuery = `SELECT * FROM courses WHERE is_published = false ORDER BY created_at DESC`;
     const { rows: courseRows } = await pool.query(courseQuery);
 
-    if (courseRows.length === 0) {
-      return res.json([]); // нет курсов — возвращаем пустой массив
-    }
+    if (courseRows.length === 0) return res.json([]);
 
     const courseIds = courseRows.map(course => course.id);
+    const { rows: moduleRows } = await pool.query(`
+      SELECT * FROM modules WHERE course_id = ANY($1::uuid[]) ORDER BY position
+    `, [courseIds]);
 
-    // 2. Получаем все модули, относящиеся к этим курсам
-    const moduleQuery = `
-      SELECT * FROM modules
-      WHERE course_id = ANY($1::uuid[])
-      ORDER BY position
-    `;
-    const { rows: moduleRows } = await pool.query(moduleQuery, [courseIds]);
-
-    const moduleIds = moduleRows.map(module => module.id);
-
-    // 3. Получаем все уроки для этих модулей
+    const moduleIds = moduleRows.map(m => m.id);
     let lessonRows = [];
+
     if (moduleIds.length > 0) {
-      const lessonQuery = `
-        SELECT * FROM lessons
-        WHERE module_id = ANY($1::uuid[])
-        ORDER BY position
-      `;
-      const { rows } = await pool.query(lessonQuery, [moduleIds]);
+      const { rows } = await pool.query(`
+        SELECT * FROM lessons WHERE module_id = ANY($1::uuid[]) ORDER BY position
+      `, [moduleIds]);
       lessonRows = rows;
     }
 
-    // 4. Структурируем ответ: курсы -> модули -> уроки
     const coursesWithModulesAndLessons = courseRows.map(course => {
       const modules = moduleRows
         .filter(m => m.course_id === course.id)
@@ -149,10 +141,7 @@ async function getAllUnpublishedCourses(req, res) {
           lessons: lessonRows.filter(lesson => lesson.module_id === module.id)
         }));
 
-      return {
-        ...course,
-        modules
-      };
+      return { ...course, modules };
     });
 
     res.json(coursesWithModulesAndLessons);
@@ -171,21 +160,23 @@ async function getCourseByIdHandler(req, res) {
     const course = await getCourseById(courseId);
     if (!course) return res.status(404).json({ error: 'Курс не найден' });
 
-    const moduleQuery = `SELECT * FROM modules WHERE course_id = $1 ORDER BY position`;
-    const { rows: moduleRows } = await pool.query(moduleQuery, [courseId]);
+    const { rows: moduleRows } = await pool.query(`
+      SELECT * FROM modules WHERE course_id = $1 ORDER BY position
+    `, [courseId]);
 
-    const moduleIds = moduleRows.map((m) => m.id);
-
+    const moduleIds = moduleRows.map(m => m.id);
     let lessonRows = [];
+
     if (moduleIds.length > 0) {
-      const lessonQuery = `SELECT * FROM lessons WHERE module_id = ANY($1::uuid[]) ORDER BY position`;
-      const result = await pool.query(lessonQuery, [moduleIds]);
+      const result = await pool.query(`
+        SELECT * FROM lessons WHERE module_id = ANY($1::uuid[]) ORDER BY position
+      `, [moduleIds]);
       lessonRows = result.rows;
     }
 
-    const modulesWithLessons = moduleRows.map((module) => ({
+    const modulesWithLessons = moduleRows.map(module => ({
       ...module,
-      lessons: lessonRows.filter((lesson) => lesson.module_id === module.id)
+      lessons: lessonRows.filter(lesson => lesson.module_id === module.id)
     }));
 
     res.json({ ...course, modules: modulesWithLessons });
