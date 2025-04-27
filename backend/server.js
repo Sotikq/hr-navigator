@@ -8,9 +8,16 @@ const authMiddleware = require("./middleware/authMiddleware");
 
 const app = express();
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerOptions = require('./swaggerOptions');
+
 // 🌐 Middleware
 app.use(cors());
 app.use(express.json());
+
+const specs = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 // 📂 Статическая папка для обложек и других загружаемых файлов
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
