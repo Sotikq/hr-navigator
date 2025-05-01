@@ -23,6 +23,28 @@
       p {
         color: white;
       }
+      &_duration {
+        align-items: center;
+        display: flex;
+        font-size: 16px;
+        color: #dfe6e9;
+        margin-top: 10px;
+        p{
+          margin: 0px;
+          margin-left: 5px;
+        }
+      }
+      &_certificate{
+        align-items: center;
+        display: flex;
+        font-size: 16px;
+        color: #dfe6e9;
+        margin-top: 10px;
+        p{
+          margin: 0px;
+          margin-left: 5px;
+        }
+      }
     }
     &_image {
       img {
@@ -30,8 +52,9 @@
         height: 300px;
         border-radius: 12px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
+      } 
     }
+
   }
 
   .course_body {

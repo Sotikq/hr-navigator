@@ -52,32 +52,34 @@
     <!-- КУРСЫ -->
     @if (currentPage=="Courses") {
     <section id="Courses" class="teacher-section">
-      <h2>Управление курсами</h2>
-      <button class="add-btn" (click)="goToCreateCourse()">
-        + Добавить курс
-      </button>
-      <div class="course-grid">
-        <div id="courseList" class="course-list">
-          <!-- Рекрутинг -->
-          <div *ngFor="let course of courses" class="course-card">
-            <div class="course-category">{{ course.category }}</div>
-            <img src="{{ course.cover_url }}" alt="Recruiting" />
-            <div class="course-info">
-              <h3>{{ course.title }}</h3>
-              <p>{{ course.description }}</p>
-              <p class="course-price">
-                <strong>Цена:</strong> {{ course.price }}
-              </p>
-            </div>
-          </div>
+      <div class = "course-header">
 
-          <!-- Тут появляются курсы из localStorage -->
+        <h2>Управление курсами</h2>
+        <button class="add-btn" (click)="goToCreateCourse()">
+          + Добавить курс
+        </button>
+        <div class="course-grid">
+          <div id="courseList" class="course-list">
+            <!-- Рекрутинг -->
+            <div *ngFor="let course of courses" class="course-card">
+              <div class="course-category">{{ course.category }}</div>
+              <img src="{{ course.cover_url }}" alt="Recruiting" />
+              <div class="course-info" (click)="goToEditCourse(course.id)">
+                <h3>{{ course.title }}</h3>
+                <p>{{ course.description }}</p>
+                <p class="course-price">
+                  <strong>Цена:</strong> {{ course.price }}
+                </p>
+              </div>
+            </div>
+            
+            <!-- Тут появляются курсы из localStorage -->
+          </div>
         </div>
       </div>
-
-     <!-- <div>
-        <h1>Unpublished</h1>
-        <div class="course-grid">
+        <!-- <div>
+          <h1>Unpublished</h1>
+          <div class="course-grid">
           <div id="courseList" class="course-list">
             
             <div *ngFor="let course of courses" class="course-card">

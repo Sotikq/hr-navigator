@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -85,28 +84,10 @@ export class StudentProfileComponent implements OnInit {
     });
   }
   
-=======
-import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
-
-@Component({
-  selector: 'app-student-profile',
-  imports: [RouterModule],
-  templateUrl: './student-profile.component.html',
-  styleUrl: './student-profile.component.scss'
-})
-export class StudentProfileComponent {
-
-  tabs = ['profile', 'certificates', 'settings'];
-
-  currentPage: string = 'profile'; // Default page is 'profile'
-  constructor() { }
->>>>>>> origin/main
   currentPageSwitch(page: string) {
     this.currentPage = page;  
     console.log(this.currentPage);
   }
-<<<<<<< HEAD
 
 
   
@@ -122,6 +103,4 @@ export class StudentProfileComponent {
     this.auth.setUser(null);
     this.route.navigate(['']);
   }
-=======
->>>>>>> origin/main
 }

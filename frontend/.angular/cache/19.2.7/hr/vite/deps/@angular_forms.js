@@ -1,11 +1,7 @@
 import {
   getDOM
-<<<<<<< HEAD
-} from "./chunk-HUVON4BP.js";
-import "./chunk-O6K2K6QH.js";
-=======
-} from "./chunk-MIALKUAS.js";
->>>>>>> origin/main
+} from "./chunk-OPOPGNX6.js";
+import "./chunk-SC3X6EXU.js";
 import {
   ChangeDetectorRef,
   Directive,
@@ -24,7 +20,6 @@ import {
   RuntimeError,
   Self,
   SkipSelf,
-<<<<<<< HEAD
   Version,
   booleanAttribute,
   computed,
@@ -32,21 +27,6 @@ import {
   inject,
   isPromise,
   isSubscribable,
-=======
-  Subject,
-  Version,
-  __spreadProps,
-  __spreadValues,
-  booleanAttribute,
-  computed,
-  forkJoin,
-  forwardRef,
-  from,
-  inject,
-  isPromise,
-  isSubscribable,
-  map,
->>>>>>> origin/main
   setClassMetadata,
   signal,
   untracked,
@@ -62,7 +42,6 @@ import {
   ɵɵdirectiveInject,
   ɵɵgetInheritedFactory,
   ɵɵlistener
-<<<<<<< HEAD
 } from "./chunk-YANXNYI5.js";
 import {
   Subject,
@@ -74,9 +53,6 @@ import {
   __spreadProps,
   __spreadValues
 } from "./chunk-WDMUDEB6.js";
-=======
-} from "./chunk-MHQIP2VU.js";
->>>>>>> origin/main
 
 // node_modules/@angular/forms/fesm2022/forms.mjs
 var BaseControlValueAccessor = class _BaseControlValueAccessor {

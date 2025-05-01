@@ -1,12 +1,13 @@
 /* Сброс стилей */
+@import './../styles/variables';
 * {
   margin: 0;
   padding: 0;
- 
   font-family: Arial, sans-serif;
 }
 
 .header {
+  
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -27,7 +28,7 @@
     .logo-text {
       font-size: 24px;
       font-weight: bold;
-      color: #6c5ce7;
+      color: $primary-color;
     }
   }
 
@@ -46,11 +47,11 @@
     cursor: pointer;
   }
   .nav a:hover {
-    color: #6c5ce7;
+    color: $primary-color-on-hover;
   }
   .auth-button {
     padding: 10px 20px;
-    background-color: #6C5CE7;
+    background-color: $primary-color;
     color: white;
     border: none;
     border-radius: 20px;
@@ -59,6 +60,6 @@
 }
 
 .auth-button:hover {
-    background-color: #4834D4;
+    background-color: $primary-color-on-hover;
 }
 }

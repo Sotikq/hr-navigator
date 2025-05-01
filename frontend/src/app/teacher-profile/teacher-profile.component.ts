@@ -59,6 +59,10 @@ export class TeacherProfileComponent {
     this.profileForm.controls['email'].disable();
   }
 
+  goToEditCourse(courseId: string) {
+    this.router.navigate(['/edit', courseId]); // Переход на страницу редактирования курса
+  }
+
   onSubmit(): void {
     const usernametoupdate = this.profileForm.get('username')?.value;
     if (this.profileForm.valid) {
@@ -103,7 +107,7 @@ export class TeacherProfileComponent {
   }
 
   goToCreateCourse() {
-    this.router.navigate(['/create-course']);
+    this.router.navigate(['/edit/0']);
   }
 
   userFill() {

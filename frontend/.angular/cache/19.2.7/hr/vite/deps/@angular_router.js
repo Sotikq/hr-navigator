@@ -1,56 +1,31 @@
 import {
   Title
-<<<<<<< HEAD
-} from "./chunk-JRWHEJ7T.js";
+} from "./chunk-J6SQV672.js";
+import "./chunk-6A6K7JQ2.js";
 import {
-=======
-} from "./chunk-Y5ODGZND.js";
-import {
-  DOCUMENT,
->>>>>>> origin/main
   HashLocationStrategy,
   LOCATION_INITIALIZED,
   Location,
   LocationStrategy,
   PathLocationStrategy,
   ViewportScroller
-<<<<<<< HEAD
-} from "./chunk-HUVON4BP.js";
-import "./chunk-MSWT7FR3.js";
+} from "./chunk-OPOPGNX6.js";
 import {
   DOCUMENT
-} from "./chunk-O6K2K6QH.js";
-=======
-} from "./chunk-MIALKUAS.js";
->>>>>>> origin/main
+} from "./chunk-SC3X6EXU.js";
 import {
   APP_BOOTSTRAP_LISTENER,
   ApplicationRef,
   Attribute,
-<<<<<<< HEAD
   ChangeDetectorRef,
   Compiler,
   Component,
-=======
-  BehaviorSubject,
-  ChangeDetectorRef,
-  Compiler,
-  Component,
-  ConnectableObservable,
->>>>>>> origin/main
   Console,
   ContentChildren,
   DestroyRef,
   Directive,
-<<<<<<< HEAD
   ENVIRONMENT_INITIALIZER,
   ElementRef,
-=======
-  EMPTY,
-  ENVIRONMENT_INITIALIZER,
-  ElementRef,
-  EmptyError,
->>>>>>> origin/main
   EnvironmentInjector,
   EventEmitter,
   HostBinding,
@@ -69,38 +44,15 @@ import {
   Renderer2,
   RuntimeError,
   SkipSelf,
-<<<<<<< HEAD
   Version,
   ViewContainerRef,
   afterNextRender,
   booleanAttribute,
   createEnvironmentInjector,
-=======
-  Subject,
-  Subscription,
-  Version,
-  ViewContainerRef,
-  __spreadProps,
-  __spreadValues,
-  afterNextRender,
-  booleanAttribute,
-  catchError,
-  combineLatest,
-  concat,
-  concatMap,
-  createEnvironmentInjector,
-  defaultIfEmpty,
-  defer,
-  filter,
-  finalize,
-  first,
-  from,
->>>>>>> origin/main
   inject,
   input,
   isInjectable,
   isNgModule,
-<<<<<<< HEAD
   isPromise,
   isStandalone,
   makeEnvironmentProviders,
@@ -109,32 +61,6 @@ import {
   reflectComponentType,
   runInInjectionContext,
   setClassMetadata,
-=======
-  isObservable,
-  isPromise,
-  isStandalone,
-  last,
-  makeEnvironmentProviders,
-  map,
-  mergeAll,
-  mergeMap,
-  of,
-  performanceMarkFeature,
-  pipe,
-  provideAppInitializer,
-  refCount,
-  reflectComponentType,
-  runInInjectionContext,
-  scan,
-  setClassMetadata,
-  startWith,
-  switchMap,
-  take,
-  takeLast,
-  takeUntil,
-  tap,
-  throwError,
->>>>>>> origin/main
   ɵɵNgOnChangesFeature,
   ɵɵattribute,
   ɵɵcontentQuery,
@@ -153,7 +79,6 @@ import {
   ɵɵloadQuery,
   ɵɵqueryRefresh,
   ɵɵsanitizeUrlOrResourceUrl
-<<<<<<< HEAD
 } from "./chunk-YANXNYI5.js";
 import {
   BehaviorSubject,
@@ -193,9 +118,6 @@ import {
   __spreadProps,
   __spreadValues
 } from "./chunk-WDMUDEB6.js";
-=======
-} from "./chunk-MHQIP2VU.js";
->>>>>>> origin/main
 
 // node_modules/@angular/router/fesm2022/router-B-Y85L0c.mjs
 var PRIMARY_OUTLET = "primary";
