@@ -19,8 +19,8 @@ async function createCourseHandler(req, res) {
       title, description, details, price, duration, category, is_published = false
     } = req.body;
 
-    const authorId = req.user.id;
-    const coverUrl = req.file ? `/uploads/${req.file.filename}` : null;
+    const host = `${req.protocol}://${req.get('host')}`;
+    const coverUrl = req.file ? `${host}/uploads/${req.file.filename}` : null;
 
     const course = await createCourse({
       title,
@@ -48,8 +48,9 @@ async function updateCourseHandler(req, res) {
     const fieldsToUpdate = req.body;
 
     if (req.file) {
-      fieldsToUpdate.cover_url = `/uploads/${req.file.filename}`; // если пришла новая обложка
-    }
+      const host = `${req.protocol}://${req.get('host')}`;
+      fieldsToUpdate.cover_url = `${host}/uploads/${req.file.filename}`;
+    }    
 
     const updatedCourse = await updateCourse(courseId, fieldsToUpdate);
     if (!updatedCourse) {
