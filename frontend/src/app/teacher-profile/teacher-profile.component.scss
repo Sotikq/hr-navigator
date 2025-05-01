@@ -61,7 +61,7 @@
  
   
   .teacher-section.active {
-    display: block;
+    display: flex;
   }
   
   .stats-grid {
@@ -71,7 +71,7 @@
   }
   
   .stat-tile {
-    flex: 1;
+    
     background: white;
     padding: 25px;
     border-radius: 15px;
@@ -261,22 +261,24 @@
 
 .course-list {
   display: flex;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  //grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
+  flex-wrap: wrap;
+
 }
 
 .course-card {
   background-color: white;
   border-radius: 15px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  overflow: hidden;
-  position: relative;
   transition: transform 0.3s;
   display: flex;
   flex-direction: column;
-  height: 100%; /* Устанавливаем гибкость для заполнения контейнера */
-  min-height: 400px; /* Минимальная высота карточки, чтобы она была одинаковой для всех */
   justify-content: space-between;
+  overflow: hidden;
+  position: relative;
+ // height: 100%; /* Устанавливаем гибкость для заполнения контейнера */
+ // min-height: 400px; /* Минимальная высота карточки, чтобы она была одинаковой для всех */
 }
 
 .course-card:hover {

@@ -7,12 +7,11 @@
         <ul>
             <li><a (click)="goToPage('')">Главная</a></li>
             <li><a (click)="goToPage('courses')">Курсы</a></li>
-            <li><a (click)="check()">О нас</a></li>
+            <li><a (click)="goToPage('aboutus')">О нас</a></li>
         </ul>
     </nav>
     <div  >
       
-<<<<<<< HEAD
       <ng-container *ngIf="user$ | async as user; else guest">
         <button class="auth-button" (click)="goToProfile()">{{ user.name }}</button>
       </ng-container>
@@ -20,14 +19,6 @@
       <ng-template #guest>
         <button class="auth-button" (click)="goToLogin()">Вход / Регистрация</button>
       </ng-template>
-=======
-      @if (currentUser){
-        <button class="auth-button" (click)="goToProfile()" >{{currentUser.username}}</button>
-      }
-      @else {
-        <button class="auth-button" (click)="goToLogin()" >Вход / Регистрация</button>
-      }
->>>>>>> origin/main
     </div>
   </header>
   <router-outlet></router-outlet>

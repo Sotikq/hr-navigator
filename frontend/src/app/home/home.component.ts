@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-
+import  Swiper from 'swiper'; 
 import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-home',
@@ -9,6 +9,48 @@ import { CommonModule } from '@angular/common';
 })
 export class HomeComponent {
   mainitem = '/assets/main.jpeg';
+
+
+  swiper!: Swiper;
+
+  ngOnInit(): void {
+    this.initSwiper();
+  }
+
+  initSwiper() {
+    this.swiper = new Swiper('.slide-content', {
+      slidesPerView: 3,
+      spaceBetween: 25,
+      loop: true,
+      centeredSlides: true,
+      effect: 'fade',
+      grabCursor: true,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+        dynamicBullets: true,
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      breakpoints: {
+        0: {
+          slidesPerView: 1,
+        },
+        520: {
+          slidesPerView: 2,
+        },
+        950: {
+          slidesPerView: 3,
+        },
+      }
+    });
+  }
+  
+  
+  
+  
   popularCourses = [
     { title: 'Курс 1', subtitle: 'Описание курса 1', badge: 'Топ 1' },
     { title: 'Курс 2', subtitle: 'Описание курса 2', badge: 'Новинка' },
@@ -37,4 +79,9 @@ export class HomeComponent {
     'Выберите курс',
     'Учитесь в удобное время'
   ];
+
+
+
+
+
 }

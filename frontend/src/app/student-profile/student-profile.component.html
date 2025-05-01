@@ -15,7 +15,6 @@
         "
       />
       <h3 id="sidebarUsername" style="color: #333; font-size: 18px">
-<<<<<<< HEAD
         {{ user.name }}
       </h3>
     </div>
@@ -31,26 +30,6 @@
 
       }
       <a class="sidebar-link" id="log_out" (click)="logout()"> log out</a>
-=======
-        Султан Фазылханов
-      </h3>
-    </div>
-    <nav class="sidebar-nav">
-      
-
-          @for (tab of tabs; track $index) {
-              
-                  <a
-                  class="sidebar-link"
-                  (click)="currentPageSwitch(tab)"
-                  [class.active]="currentPage == tab"
-                  >{{ tab }}
-                </a>
-            
-        }
-    
-      
->>>>>>> origin/main
     </nav>
   </aside>
 
@@ -114,14 +93,9 @@
           font-size: 20px;
           cursor: pointer;
         "
-<<<<<<< HEAD
       >
         Все доступные курсы
       </h1>
-=======
-        >Все доступные курсы
-    </h1>
->>>>>>> origin/main
     </div>
     }
     <!-- settings form -->
@@ -155,7 +129,6 @@
           Нажмите на фото, чтобы изменить
         </p>
       </div>
-<<<<<<< HEAD
       <div class="profile-form">
         <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
           <label>Email</label>
@@ -185,59 +158,6 @@
           </button>
         </form>
       </div>
-=======
-      <form id="settingsForm" style="max-width: 500px; margin: 0 auto">
-        <div class="input-group">
-          <label for="email">Email (нельзя изменить)</label>
-          <input type="email" id="email" disabled value="student@example.com" />
-        </div>
-
-        <div class="input-group">
-          <label for="username">Имя пользователя</label>
-          <input type="text" id="username" value="Султан" />
-        </div>
-
-        <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee" />
-
-        <h3 style="color: #6c5ce7; margin-bottom: 10px">Смена пароля</h3>
-        <div class="input-group">
-          <label for="oldPassword">Старый пароль</label>
-          <input type="password" id="oldPassword" />
-        </div>
-
-        <div class="input-group">
-          <label for="newPassword">Новый пароль</label>
-          <input type="password" id="newPassword" />
-        </div>
-
-        <div class="input-group">
-          <label for="confirmPassword">Подтвердите пароль</label>
-          <input type="password" id="confirmPassword" />
-        </div>
-
-        <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee" />
-
-        <div class="input-group">
-          <label style="display: flex; align-items: center; gap: 10px">
-            Получать email-уведомления
-            <input
-              type="checkbox"
-              id="notificationsEnabled"
-              checked
-              style="width: 15px; height: 15px; cursor: pointer"
-            />
-          </label>
-        </div>
-
-        <button
-          type="submit"
-          class="auth-button"
-          style="width: 100%; margin-top: 20px"
-        >
-          Сохранить изменения
-        </button>
-      </form>
->>>>>>> origin/main
     </div>
     }
     <!-- Сертификаты -->
