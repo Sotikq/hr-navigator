@@ -83,14 +83,32 @@ router.post('/', authMiddleware, upload.single('cover'), createCourse);
  *         description: ID курса
  *     requestBody:
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               details:
+ *                 type: string
+ *               price:
+ *                 type: number
+ *               duration:
+ *                 type: string
+ *               category:
+ *                 type: string
+ *               is_published:
+ *                 type: boolean
+ *               cover:
+ *                 type: string
+ *                 format: binary
  *     responses:
  *       200:
  *         description: Курс успешно обновлен
  */
-router.patch('/:id', authMiddleware, updateCourse);
+router.patch('/:id', authMiddleware, upload.single('cover'), updateCourse);
 
 /**
  * @swagger
