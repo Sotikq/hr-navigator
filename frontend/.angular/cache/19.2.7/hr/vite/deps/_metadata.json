@@ -1,61 +1,61 @@
 {
-  "hash": "5f2aaf10",
-  "configHash": "4d6dbb8f",
+  "hash": "855aa654",
+  "configHash": "29c4d9f3",
   "lockfileHash": "c4810f32",
-  "browserHash": "c19344cb",
+  "browserHash": "a11e82a9",
   "optimized": {
     "@angular/common": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/common.mjs",
       "file": "@angular_common.js",
-      "fileHash": "9503d8e6",
+      "fileHash": "7a203ef7",
       "needsInterop": false
     },
     "@angular/common/http": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/http.mjs",
       "file": "@angular_common_http.js",
-      "fileHash": "bfcde950",
+      "fileHash": "22d65bf7",
       "needsInterop": false
     },
     "@angular/core": {
       "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
       "file": "@angular_core.js",
-      "fileHash": "efaffc09",
+      "fileHash": "a214e109",
       "needsInterop": false
     },
     "@angular/forms": {
       "src": "../../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
       "file": "@angular_forms.js",
-      "fileHash": "a5dcd70b",
+      "fileHash": "d627576f",
       "needsInterop": false
     },
     "@angular/platform-browser": {
       "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
       "file": "@angular_platform-browser.js",
-      "fileHash": "2001c7c6",
+      "fileHash": "a039a258",
       "needsInterop": false
     },
     "@angular/router": {
       "src": "../../../../../../node_modules/@angular/router/fesm2022/router.mjs",
       "file": "@angular_router.js",
-      "fileHash": "9bf605b5",
+      "fileHash": "981ee575",
       "needsInterop": false
     },
     "chart.js": {
       "src": "../../../../../../node_modules/chart.js/dist/chart.js",
       "file": "chart__js.js",
-      "fileHash": "6972ab76",
+      "fileHash": "153ad4f4",
       "needsInterop": false
     },
     "rxjs": {
       "src": "../../../../../../node_modules/rxjs/dist/esm5/index.js",
       "file": "rxjs.js",
-      "fileHash": "c17c0b0b",
+      "fileHash": "bb7a39cf",
       "needsInterop": false
     },
     "swiper": {
       "src": "../../../../../../node_modules/swiper/swiper.mjs",
       "file": "swiper.js",
-      "fileHash": "c8fce866",
+      "fileHash": "4e3f73af",
       "needsInterop": false
     }
   },

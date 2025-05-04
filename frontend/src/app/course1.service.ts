@@ -52,9 +52,12 @@ export class CourseService1 {
   updateCourseWithCover(formData: FormData, courseId: string) {
     return this.http.patch<any>(`${this.apiUrl}courses/${courseId}`, formData);
   }
-  // getCourses() {
-  //   return this.http.get<Course[]>(`${this.apiUrl}courses`);
-  // }
+  
+  
+  
+  getCourses() {
+    return this.http.get<Course[]>(`${this.apiUrl}courses`);
+  }
   // getCourseByIdWithModules(id: string) {
   //   return this.http.get<CourseResponse>(`${this.apiUrl}courses/${id}`);
   // }

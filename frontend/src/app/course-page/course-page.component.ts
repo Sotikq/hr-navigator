@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { COURSES, Course } from '../courses';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { CourseService } from '../course.service';
+import { CourseService1 } from '../course1.service';
+
 
 @Component({
   selector: 'app-course-page',
@@ -13,7 +14,7 @@ import { CourseService } from '../course.service';
 export class CoursePageComponent {
   course: Course | undefined; // Определяем тип course как Course или undefined
 
-  constructor(private route: ActivatedRoute, private crs: CourseService) {
+  constructor(private route: ActivatedRoute, private crs: CourseService1) {
     const id = this.route.snapshot.paramMap.get('id');
     console.log(id, typeof id); // Логируем id в консоль
      if (id) {

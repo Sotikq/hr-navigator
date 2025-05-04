@@ -21,32 +21,25 @@ import { lastValueFrom } from 'rxjs';
   styleUrl: './create-course1.component.scss',
 })
 export class CreateCourse1Component {
-  currentCourse: any;
+  currentCourse: any ;
   courseLoaded = false;
-
+  
   selectedCoverFile: File | null = null;
 
   // Метод для выбора файла
   onImageUpload(event: any): void {
-    this.selectedCoverFile = event.target.files[0];
-
-    // Превью изображения
-    if (this.selectedCoverFile) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.currentCourse.cover_url = e.target.result;
-      };
-      reader.readAsDataURL(this.selectedCoverFile);
+    const input = event.target as HTMLInputElement;
+    if (input.files?.length) {
+      this.currentCourse.cover_url = input.files[0];
     }
   }
 
-
   onSaveCourse1(): void {
     if (!this.currentCourse) return;
-  
+
     // Создаем FormData
     const formData = new FormData();
-    
+
     // Добавляем текстовые данные
     formData.append('title', this.currentCourse.title.toString());
     formData.append('description', this.currentCourse.description.toString());
@@ -55,12 +48,15 @@ export class CreateCourse1Component {
     formData.append('duration', this.currentCourse.duration.toString());
     formData.append('category', this.currentCourse.category.toString());
     formData.append('is_published', this.currentCourse.is_published ? 'true' : 'false');
-    
+
     // Добавляем файл обложки, если он был выбран
-    if (this.selectedCoverFile) {
-      formData.append('cover', this.selectedCoverFile, this.selectedCoverFile.name);
+    if (this.currentCourse.cover_url) {
+      formData.append(
+        'cover',
+        this.currentCourse.cover_url,
+      );
     }
-  
+
     // Отправляем FormData на сервер
     this.crs.updateCourseWithCover(formData, this.currentCourse.id).subscribe({
       next: (course) => {
@@ -70,12 +66,9 @@ export class CreateCourse1Component {
       },
       error: (error) => {
         console.error('Error updating course', error);
-      }
+      },
     });
   }
-
-
-
 
   constructor(
     private crs: CourseService1,
@@ -143,9 +136,9 @@ export class CreateCourse1Component {
       for (const module of this.currentCourse.modules) {
         if (module.lessons) {
           for (const lesson of module.lessons) {
-
-           const answer = await lastValueFrom(this.crs.updateLesson(lesson, lesson.id) );
-          
+            const answer = await lastValueFrom(
+              this.crs.updateLesson(lesson, lesson.id)
+            );
           }
         }
         const updatedModule: updatedModuleRequest = {
@@ -154,7 +147,9 @@ export class CreateCourse1Component {
           description: module.description,
           // positon: module.position,
         };
-        const answermodule = await  lastValueFrom(this.crs.updateModule(updatedModule, module.id) )
+        const answermodule = await lastValueFrom(
+          this.crs.updateModule(updatedModule, module.id)
+        );
       }
     }
     if (this.currentCourse) {
@@ -169,8 +164,10 @@ export class CreateCourse1Component {
         category: this.currentCourse.category,
         is_published: this.currentCourse.is_published,
       };
-      const anwserCourse = await lastValueFrom(this.crs.updateCourse(UpdatedCourseRequest, this.currentCourse.id));
-  
+      const anwserCourse = await lastValueFrom(
+        this.crs.updateCourse(UpdatedCourseRequest, this.currentCourse.id)
+      );
+
       this.currentCourse = this.crs
         .getCourseById(this.currentCourse.id)
         .subscribe({
@@ -205,7 +202,7 @@ export class CreateCourse1Component {
       },
     });
   }
-  onLessonVideoUpload() {}
+  //  onLessonVideoUpload() {}
   addLesson(module: any) {
     const createdLesson: LessonRequest = {
       moduleId: module.id,

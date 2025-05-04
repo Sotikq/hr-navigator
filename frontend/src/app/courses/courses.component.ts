@@ -3,7 +3,8 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Route, Router } from '@angular/router';
 import { COURSES , Course} from '../courses';
-import { CourseService } from '../course.service';
+
+import { CourseService1 } from '../course1.service';
 @Component({
   selector: 'app-courses',
   imports: [CommonModule,FormsModule],
@@ -15,7 +16,7 @@ export class CoursesComponent {
 
   courses: Course[] = []; // Массив курсов
 
-  constructor(private router: Router, private crs: CourseService) {
+  constructor(private router: Router, private crs: CourseService1) {
     crs.getCourses().subscribe((data) => {
       this.courses = data; // Получаем курсы из сервиса и сохраняем в массив
       console.log(this.courses); // Логируем курсы в консоль

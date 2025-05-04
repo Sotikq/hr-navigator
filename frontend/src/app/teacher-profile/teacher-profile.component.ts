@@ -9,8 +9,9 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { CourseService } from '../course.service';
+
 import { Course } from '../courses';
+import { CourseService1 } from '../course1.service';
 @Component({
   selector: 'app-teacher-profile',
   imports: [
@@ -31,7 +32,7 @@ export class TeacherProfileComponent {
   courses: Course[] = []; // Массив курсов
   constructor(
     private router: Router,
-    private crs: CourseService,
+    private crs: CourseService1,
     private auth: AuthService,
     private fb: FormBuilder
   ) {

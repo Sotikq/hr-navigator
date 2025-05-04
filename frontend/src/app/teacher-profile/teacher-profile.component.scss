@@ -1,3 +1,5 @@
+@import './../../styles/_variables.scss' ;
+
 .profile-page {
     display: flex;
     min-height: 100vh;
@@ -12,7 +14,7 @@
   }
   
   .sidebar h2 {
-    color: #6c5ce7;
+    color: $primary-color;
     font-size: 24px;
     margin-bottom: 30px;
   }
@@ -35,7 +37,7 @@
   
   .sidebar-link:hover,
   .sidebar-link.active {
-    background-color: #6c5ce7;
+    background-color: $primary-color;
     color: #fff;
   }
   #log_out:hover{
@@ -110,7 +112,7 @@
   }
   
   .edit-btn {
-    background: #6C5CE7;
+    background: $primary-color;
     color: white;
     border: none;
     padding: 8px 12px;
@@ -128,7 +130,7 @@
   }
   
   .add-btn {
-    background: #6C5CE7;
+    background: $primary-color;
     color: white;
     padding: 10px 16px;
     border: none;
@@ -206,7 +208,7 @@
   button {
     align-self: flex-start;
     padding: 0.75rem 1.5rem;
-    background-color: #6c5ce7;;
+    background-color: $primary-color;;
     color: white;
     border: none;
     border-radius: 4px;
