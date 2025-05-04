@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const upload = require('../middleware/uploadMiddleware');
+const { uploadImage } = require('../middleware/uploadMiddleware');
 const {
   createCourse,
   updateCourse,
@@ -64,7 +64,7 @@ const authMiddleware = require('../middleware/authMiddleware');
  *       201:
  *         description: Курс успешно создан
  */
-router.post('/', authMiddleware, upload.single('cover'), createCourse);
+router.post('/', authMiddleware, uploadImage.single('cover'), createCourse);
 
 /**
  * @swagger
@@ -108,7 +108,7 @@ router.post('/', authMiddleware, upload.single('cover'), createCourse);
  *       200:
  *         description: Курс успешно обновлен
  */
-router.patch('/:id', authMiddleware, upload.single('cover'), updateCourse);
+router.patch('/:id', authMiddleware, uploadImage.single('cover'), updateCourse);
 
 /**
  * @swagger

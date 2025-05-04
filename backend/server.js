@@ -19,6 +19,9 @@ app.use(express.json());
 const specs = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
+// Добавь рядом с другими static:
+app.use('/uploads/reviews', express.static(path.join(__dirname, 'uploads/reviews')));
+
 // 📂 Статическая папка для обложек и других загружаемых файлов
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
@@ -35,6 +38,9 @@ app.use('/api/auth', userRoutes);
 
 // 📚 Роуты курсов
 app.use('/api/courses', courseRoutes);
+
+const reviewRoutes = require('./routes/reviewRoutes');
+app.use('/api/reviews', reviewRoutes);
 
 // 🌐 Главная страница для теста
 app.get('/', (req, res) => {
