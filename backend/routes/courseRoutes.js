@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const upload = require('../middleware/uploadMiddleware');
+const { uploadImage } = require('../middleware/uploadMiddleware');
 const {
   createCourse,
   updateCourse,
@@ -64,7 +64,7 @@ const authMiddleware = require('../middleware/authMiddleware');
  *       201:
  *         description: Курс успешно создан
  */
-router.post('/', authMiddleware, upload.single('cover'), createCourse);
+router.post('/', authMiddleware, uploadImage.single('cover'), createCourse);
 
 /**
  * @swagger
@@ -83,14 +83,32 @@ router.post('/', authMiddleware, upload.single('cover'), createCourse);
  *         description: ID курса
  *     requestBody:
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               details:
+ *                 type: string
+ *               price:
+ *                 type: number
+ *               duration:
+ *                 type: string
+ *               category:
+ *                 type: string
+ *               is_published:
+ *                 type: boolean
+ *               cover:
+ *                 type: string
+ *                 format: binary
  *     responses:
  *       200:
  *         description: Курс успешно обновлен
  */
-router.patch('/:id', authMiddleware, updateCourse);
+router.patch('/:id', authMiddleware, uploadImage.single('cover'), updateCourse);
 
 /**
  * @swagger
