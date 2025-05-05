@@ -7,10 +7,10 @@ async function getAllReviews() {
 }
 
 // Добавление нового видеоотзыва
-async function addReview(videoFilename) {
+async function addReview(videoUrl) {
   const { rows } = await pool.query(
     'INSERT INTO video_reviews (file_url) VALUES ($1) RETURNING *',
-    [`/uploads/reviews/${videoFilename}`]
+    [videoUrl]
   );
   return rows[0];
 }

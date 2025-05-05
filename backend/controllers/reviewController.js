@@ -15,7 +15,9 @@ async function addReviewHandler(req, res) {
     const file = req.file;
     if (!file) return res.status(400).json({ error: 'Файл обязателен' });
 
-    const review = await addReview(file.filename);
+    const host = `${req.protocol}://${req.get('host')}`;
+    const fullUrl = `${host}/uploads/reviews/${file.filename}`;
+    const review = await addReview(fullUrl);
     res.status(201).json(review);
   } catch (err) {
     console.error('Ошибка загрузки отзыва:', err);
