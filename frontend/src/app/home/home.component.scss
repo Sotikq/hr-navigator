@@ -2,6 +2,68 @@
 
 
 
+/* Основные стили для контейнера */
+.video-review {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  /* Стиль для каждого видео */
+  .video-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 800px; /* Оптимальный размер */
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    background: #f5f5f5; /* Фон на время загрузки */
+    
+  }
+  
+  /* Эффект при наведении */
+  .video-wrapper:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Стиль самого видео */
+  .video-wrapper video {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9; /* Сохраняет пропорции 16:9 */
+    border: none;
+  }
+  
+  /* Анимация загрузки */
+  .video-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: 12px;
+  }
+  
+  @keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+
+
+
+
+
+
+//////
 .hero {
     display: flex;
     align-items: center;
