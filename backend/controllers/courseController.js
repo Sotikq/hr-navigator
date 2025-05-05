@@ -20,7 +20,7 @@ async function createCourseHandler(req, res) {
     } = req.body;
 
     const host = `${req.protocol}://${req.get('host')}`;
-    const coverUrl = req.file ? `${host}/uploads/${req.file.filename}` : null;
+    const coverUrl = req.file ? `${host}/uploads/covers/${req.file.filename}` : null;
 
     const course = await createCourse({
       title,
@@ -49,7 +49,7 @@ async function updateCourseHandler(req, res) {
 
     if (req.file) {
       const host = `${req.protocol}://${req.get('host')}`;
-      fieldsToUpdate.cover_url = `${host}/uploads/${req.file.filename}`;
+      fieldsToUpdate.cover_url = `${host}/uploads/covers/${req.file.filename}`;
     }    
 
     const updatedCourse = await updateCourse(courseId, fieldsToUpdate);
