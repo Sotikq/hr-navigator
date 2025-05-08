@@ -1,43 +1,47 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { createUser, findUserByEmail } = require('../models/User');
+const { createUser, findUserByEmail, findUserById } = require('../models/User');
+const ApiError = require('../utils/ApiError');
+const logger = require('../utils/logger');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-async function register(req, res) {
+async function register(req, res, next) {
   try {
-    const { email, name, password, role } = req.body; // 🔥 добавили role
+    const { email, name, password, role } = req.body;
 
     if (!email || !name || !password) {
-      return res.status(400).json({ error: 'Заполните все поля' });
+      throw new ApiError(400, 'Fill in all fields');
     }
 
     const existing = await findUserByEmail(email);
-    if (existing) return res.status(409).json({ error: 'Email уже зарегистрирован' });
+    if (existing) {
+      throw new ApiError(409, 'Email already registered');
+    }
 
     const passwordHash = await bcrypt.hash(password, 10);
-    const user = await createUser({ email, passwordHash, name, role }); // 🔥 передаем role
+    const user = await createUser({ email, passwordHash, name, role });
 
-    res.status(201).json({ message: 'Регистрация успешна', user });
+    logger.info('New user registered', { userId: user.id, email: user.email });
+    res.status(201).json({ message: 'Registration successful', user });
   } catch (err) {
-    console.error('Ошибка регистрации:', err);
-    res.status(500).json({ error: 'Ошибка сервера' });
+    next(err);
   }
 }
 
-
-async function login(req, res) {
+async function login(req, res, next) {
   try {
     const { email, password } = req.body;
 
     const user = await findUserByEmail(email);
     if (!user) {
-      return res.status(404).json({ error: 'Пользователь не найден' });
+      throw new ApiError(404, 'User not found');
     }
 
     const isValid = await bcrypt.compare(password, user.password_hash);
     if (!isValid) {
-      return res.status(401).json({ error: 'Неверный пароль' });
+      logger.warn('Failed login attempt', { email });
+      throw new ApiError(401, 'Invalid password');
     }
 
     const token = jwt.sign(
@@ -50,21 +54,18 @@ async function login(req, res) {
       { expiresIn: '24h' }
     );
 
-    res.json({ message: 'Вход выполнен', token, user });
+    logger.info('User logged in', { userId: user.id, email: user.email });
+    res.json({ message: 'Login successful', token, user });
   } catch (err) {
-    console.error('Ошибка входа:', err);
-    res.status(500).json({ error: 'Ошибка сервера' });
+    next(err);
   }
 }
 
-// controllers/authController.js
-const { findUserById } = require('../models/User');
-
-async function getProfile(req, res) {
+async function getProfile(req, res, next) {
   try {
     const user = await findUserById(req.user.id);
     if (!user) {
-      return res.status(404).json({ error: 'Пользователь не найден' });
+      throw new ApiError(404, 'User not found');
     }
 
     res.json({
@@ -76,8 +77,7 @@ async function getProfile(req, res) {
       created_at: user.created_at
     });
   } catch (err) {
-    console.error('Ошибка получения профиля:', err);
-    res.status(500).json({ error: 'Ошибка сервера' });
+    next(err);
   }
 }
 
