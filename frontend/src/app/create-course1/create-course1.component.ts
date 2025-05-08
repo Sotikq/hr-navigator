@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -20,7 +20,7 @@ import { lastValueFrom } from 'rxjs';
   templateUrl: './create-course1.component.html',
   styleUrl: './create-course1.component.scss',
 })
-export class CreateCourse1Component {
+export class CreateCourse1Component implements OnInit {
   currentCourse: any;
   courseLoaded = false;
 
@@ -30,42 +30,35 @@ export class CreateCourse1Component {
     private crs: CourseService1,
     private route: ActivatedRoute,
     private router: Router
-  ) {
-    const id = route.snapshot.paramMap.get('id');
-    if (id !== '0' && id !== null) {
-      console.log('ID:', id);
-      this.crs.getCourseById(id).subscribe((course) => {
-        this.currentCourse = course;
-        console.log('Course fetched:', course);
-        this.courseLoaded = true;
-      });
-    } else {
-      //if (!this.currentCourse) return;
+  ) {}
 
-      // Создаем FormData
-      const formData = new FormData();
+  ngOnInit(): void {
+    this.route.paramMap.subscribe((params) => {
+      const id = params.get('id');
+      if (id !== '0' && id !== null) {
+        this.crs.getCourseById(id).subscribe((course) => {
+          this.currentCourse = course;
+          this.courseLoaded = true;
+        });
+      } else {
+        const formData = new FormData();
+        formData.append('title', 'qweqwe');
+        formData.append('description', '');
+        formData.append('details', '');
+        formData.append('duration', '');
+        formData.append('category', '');
 
-      // Добавляем текстовые данные
-      formData.append('title', 'qweqwe');
-      formData.append('description', '');
-      formData.append('details', '');
-      //formData.append('price', '');
-      formData.append('duration', '');
-      formData.append('category', '');
-
-
-      // Добавляем файл обложки, если он был выбран
-      for(const value of formData){
-        console.log(value);
+        this.createCourseFromStart(formData).then((answer) => {
+          this.router.navigate([`/edit/${answer}`]);
+        });
       }
-      const answer = this.createCourseFromStart(formData);
-      this.router.navigate([`/${answer}`]);
-    }
-  } // Inject the CourseService
+    });
+  }
 
+  
   async createCourseFromStart(data :any){
     const answer = await lastValueFrom(this.crs.createCourse(data));
-    console.log(answer)
+    //console.log(answer.id)
     return answer.id;
     
   }

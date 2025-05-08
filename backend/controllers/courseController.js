@@ -21,6 +21,7 @@ async function createCourseHandler(req, res) {
 
     const host = `${req.protocol}://${req.get('host')}`;
     const coverUrl = req.file ? `${host}/uploads/covers/${req.file.filename}` : null;
+    const authorId = req.user.id;
 
     const course = await createCourse({
       title,

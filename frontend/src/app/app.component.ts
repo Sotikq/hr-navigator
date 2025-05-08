@@ -15,11 +15,16 @@ export class AppComponent implements OnInit {
   user$: Observable<any>;
 
   currentUserJs = localStorage.getItem('currentUser');
-  currentUser = this.currentUserJs ? JSON.parse(this.currentUserJs) : null;
+  currentUser: any;
 
   constructor(private router: Router, private auth: AuthService) {
     this.user$ = this.auth.user$;
+
+    this.auth.user$.subscribe(user => {
+      this.currentUser = user;
+    });
   }
+
 
   ngOnInit(): void {
     const token = this.auth.getToken();
