@@ -18,7 +18,7 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.getVideo();
   }
-
+  
   getVideo() {
     const videoId = '09a35cf0-cb6b-49f2-91da-b507953ffe73';
     this.videoReviewService.getVideo(videoId).subscribe({
@@ -26,6 +26,7 @@ export class HomeComponent implements OnInit {
         this.videos = res;
         console.log(this.videos);
         this.videoLoaded = true;
+        console.log("vidLoad", this.videoLoaded);
       },
       error: (err) => {
         console.error('Ошибка загрузки видео:', err);

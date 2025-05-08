@@ -21,11 +21,54 @@ import { lastValueFrom } from 'rxjs';
   styleUrl: './create-course1.component.scss',
 })
 export class CreateCourse1Component {
-  currentCourse: any ;
+  currentCourse: any;
   courseLoaded = false;
-  
+
   selectedCoverFile: File | null = null;
 
+  constructor(
+    private crs: CourseService1,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
+    const id = route.snapshot.paramMap.get('id');
+    if (id !== '0' && id !== null) {
+      console.log('ID:', id);
+      this.crs.getCourseById(id).subscribe((course) => {
+        this.currentCourse = course;
+        console.log('Course fetched:', course);
+        this.courseLoaded = true;
+      });
+    } else {
+      //if (!this.currentCourse) return;
+
+      // Создаем FormData
+      const formData = new FormData();
+
+      // Добавляем текстовые данные
+      formData.append('title', 'qweqwe');
+      formData.append('description', '');
+      formData.append('details', '');
+      //formData.append('price', '');
+      formData.append('duration', '');
+      formData.append('category', '');
+
+
+      // Добавляем файл обложки, если он был выбран
+      for(const value of formData){
+        console.log(value);
+      }
+      const answer = this.createCourseFromStart(formData);
+      this.router.navigate([`/${answer}`]);
+    }
+  } // Inject the CourseService
+
+  async createCourseFromStart(data :any){
+    const answer = await lastValueFrom(this.crs.createCourse(data));
+    console.log(answer)
+    return answer.id;
+    
+  }
   // Метод для выбора файла
   onImageUpload(event: any): void {
     const input = event.target as HTMLInputElement;
@@ -47,14 +90,14 @@ export class CreateCourse1Component {
     formData.append('price', this.currentCourse.price);
     formData.append('duration', this.currentCourse.duration.toString());
     formData.append('category', this.currentCourse.category.toString());
-    formData.append('is_published', this.currentCourse.is_published ? 'true' : 'false');
+    formData.append(
+      'is_published',
+      this.currentCourse.is_published ? 'true' : 'false'
+    );
 
     // Добавляем файл обложки, если он был выбран
     if (this.currentCourse.cover_url) {
-      formData.append(
-        'cover',
-        this.currentCourse.cover_url,
-      );
+      formData.append('cover', this.currentCourse.cover_url);
     }
 
     // Отправляем FormData на сервер
@@ -69,40 +112,6 @@ export class CreateCourse1Component {
       },
     });
   }
-
-  constructor(
-    private crs: CourseService1,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {
-    const id = route.snapshot.paramMap.get('id');
-    if (id !== '0' && id !== null) {
-      console.log('ID:', id);
-      this.crs.getCourseById(id).subscribe((course) => {
-        this.currentCourse = course;
-        console.log('Course fetched:', course);
-        this.courseLoaded = true;
-      });
-    } else {
-      const createdCourse: createCourseRequest = {
-        title: '',
-        description: '',
-        details: '',
-        price: 0,
-        duration: '',
-        cover_url: null,
-        category: '',
-        is_published: true,
-      };
-      console.log('Creating new course...');
-      crs.createCourse(createdCourse).subscribe((course) => {
-        this.currentCourse = course;
-        console.log('Course created:', course);
-        this.router.navigate(['/edit', course.id]);
-      });
-      this.currentCourse = null; // Handle the case where no ID is provided
-    }
-  } // Inject the CourseService
 
   onSaveCourse() {
     console.log('Saving course:', this.currentCourse);
@@ -128,7 +137,9 @@ export class CreateCourse1Component {
     });
   }
 
-  save() {}
+  save() {} 
+
+
   async onSubmit() {
     console.log(this.currentCourse.modules);
     if (this.currentCourse.modules) {
