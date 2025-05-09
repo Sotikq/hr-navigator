@@ -13,7 +13,7 @@ const {
   addModuleToCourse,
   addLessonToModule
 } = require('../controllers/courseController');
-const authMiddleware = require('../middleware/authMiddleware');
+const { authMiddleware, validateApiKey } = require('../middleware');
 
 /**
  * @swagger
@@ -64,7 +64,12 @@ const authMiddleware = require('../middleware/authMiddleware');
  *       201:
  *         description: Курс успешно создан
  */
-router.post('/', authMiddleware, uploadImage.single('cover'), createCourse);
+router.post('/', 
+  authMiddleware, 
+  validateApiKey(), 
+  uploadImage.single('cover'), 
+  createCourse
+);
 
 /**
  * @swagger
@@ -108,7 +113,12 @@ router.post('/', authMiddleware, uploadImage.single('cover'), createCourse);
  *       200:
  *         description: Курс успешно обновлен
  */
-router.patch('/:id', authMiddleware, uploadImage.single('cover'), updateCourse);
+router.patch('/:id', 
+  authMiddleware, 
+  validateApiKey(), 
+  uploadImage.single('cover'), 
+  updateCourse
+);
 
 /**
  * @swagger
@@ -134,7 +144,11 @@ router.patch('/:id', authMiddleware, uploadImage.single('cover'), updateCourse);
  *       200:
  *         description: Модуль успешно обновлен
  */
-router.patch('/modules/:id', authMiddleware, updateModule);
+router.patch('/modules/:id', 
+  authMiddleware, 
+  validateApiKey(), 
+  updateModule
+);
 
 /**
  * @swagger
@@ -160,7 +174,11 @@ router.patch('/modules/:id', authMiddleware, updateModule);
  *       200:
  *         description: Урок успешно обновлен
  */
-router.patch('/lessons/:id', authMiddleware, updateLesson);
+router.patch('/lessons/:id', 
+  authMiddleware, 
+  validateApiKey(), 
+  updateLesson
+);
 
 /**
  * @swagger

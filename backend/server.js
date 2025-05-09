@@ -2,11 +2,12 @@
 require('dotenv').config();
 
 const express = require('express');
-const cors = require('cors');
 const path = require('path'); // для правильной работы статики
 const morgan = require('morgan');
-const { errorHandler, authMiddleware } = require('./middleware');
+const helmet = require('helmet');
+const { errorHandler, authMiddleware, defaultLimiter } = require('./middleware');
 const logger = require('./utils/logger');
+const corsMiddleware = require('./config/cors');
 
 const app = express();
 
@@ -15,8 +16,31 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerOptions = require('./swaggerOptions');
 
 // 🌐 Middleware
-app.use(cors());
+// Apply Helmet security headers
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"], // Required for Swagger UI
+      styleSrc: ["'self'", "'unsafe-inline'"], // Required for Swagger UI
+      imgSrc: ["'self'", "data:", "https:"], // Allow images from any HTTPS source
+      connectSrc: ["'self'"],
+    },
+  },
+  crossOriginEmbedderPolicy: false, // Required for Swagger UI
+  crossOriginResourcePolicy: { policy: "cross-origin" }, // Required for file uploads
+}));
+
+// Remove X-Powered-By header
+app.disable('x-powered-by');
+
+// Apply configured CORS middleware
+app.use(corsMiddleware);
+
 app.use(express.json());
+
+// Apply rate limiting to all requests
+app.use(defaultLimiter);
 
 // HTTP request logging
 app.use(morgan('combined', { stream: logger.stream }));
