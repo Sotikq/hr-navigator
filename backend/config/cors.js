@@ -4,6 +4,7 @@ const logger = require('../utils/logger');
 // Define allowed origins
 const allowedOrigins = [
   'http://localhost:4200', // Development frontend
+  'http://localhost:5000',
   process.env.FRONTEND_URL, // Production frontend (if set)
 ].filter(Boolean); // Remove any undefined values
 

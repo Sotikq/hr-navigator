@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { register, login, getProfile } = require('../controllers/authController');
 const authMiddleware = require('../middleware/authMiddleware');
+const { validateRegister, validateLogin } = require('../middleware/validation/authValidation');
+const validate = require('../middleware/validation/validate');
 
 /**
  * @swagger
@@ -37,7 +39,7 @@ const authMiddleware = require('../middleware/authMiddleware');
  *       201:
  *         description: Пользователь успешно зарегистрирован
  */
-router.post('/register', register);
+router.post('/register', validateRegister, validate, register);
 
 /**
  * @swagger
@@ -63,7 +65,7 @@ router.post('/register', register);
  *       200:
  *         description: Успешная авторизация
  */
-router.post('/login', login);
+router.post('/login', validateLogin, validate, login);
 
 /**
  * @swagger
