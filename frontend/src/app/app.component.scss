@@ -1,5 +1,5 @@
 /* Сброс стилей */
-@import './../styles/variables';
+@import "./../styles/variables";
 * {
   margin: 0;
   padding: 0;
@@ -7,7 +7,6 @@
 }
 
 .header {
-  
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -57,9 +56,9 @@
     border-radius: 20px;
     cursor: pointer;
     transition: background-color 0.3s;
-}
+  }
 
-.auth-button:hover {
+  .auth-button:hover {
     background-color: $primary-color-on-hover;
-}
+  }
 }

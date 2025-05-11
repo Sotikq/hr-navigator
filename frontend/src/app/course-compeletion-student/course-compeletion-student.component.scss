@@ -1,215 +1,239 @@
-.course-player {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1rem;
+@import "./../../styles/_variables";
+
+.course-header {
+  position: relative; // Для абсолютного позиционирования кнопки
+  padding: 3rem 2rem 2rem; // Больше отступа сверху для кнопки
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.goBack {
+  position: absolute;
+  left: 1.5rem;
+  top: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  background-color: $primary-color;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+
+  &:hover {
+    background-color: darken($primary_color, 10%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   }
-  
-  .goBack {
-    margin-top: 20px;
-    margin-left: 20px;
-    cursor: pointer;
-    background-color: #837df6;
-    border: solid 1px #4f46e5;
-    padding: 1rem 1.5rem;
-    border-radius: 20px;
-    color: white;
-    font-weight: 500;
-    transition: all 0.2s ease;
-  
-    &:hover {
-      background-color: #4f46e5;
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  &::before {
+    
+    font-size: 1.1rem;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: inherit;
+  }
+}
+
+.course-header-content {
+  h1 {
+    margin: 0;
+    color: #1f2937;
+    font-size: 1.8rem;
+  }
+
+  p {
+    margin: 0.5rem auto 0;
+    color: #6b7280;
+    font-size: 1rem;
+    max-width: 800px;
+  }
+}
+
+.course-content {
+  display: flex;
+  gap: 2rem;
+}
+
+.sidebar {
+  width: 300px;
+  padding: 1.5rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  height: fit-content;
+
+  .module {
+    margin-bottom: 1.5rem;
+
+    &:last-child {
+      margin-bottom: 0;
     }
-  }
-  
-  .course-header {
-    padding: 2rem;
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    margin-bottom: 2rem;
-  
-    h1 {
-      margin: 0;
+
+    h3 {
+      margin: 0 0 1rem 0;
+      font-size: 1.2rem;
       color: #1f2937;
-      font-size: 1.8rem;
-    }
-  
-    p {
-      margin: 0.5rem 0 0;
-      color: #6b7280;
-      font-size: 1rem;
-    }
-  }
-  
-  .course-content {
-    display: flex;
-    gap: 2rem;
-  }
-  
-  .sidebar {
-    width: 300px;
-    padding: 1.5rem;
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    height: fit-content;
-  
-    .module {
-      margin-bottom: 1.5rem;
-  
-      &:last-child {
-        margin-bottom: 0;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: #f9fafb;
       }
-  
-      h3 {
-        margin: 0 0 1rem 0;
-        font-size: 1.2rem;
-        color: #1f2937;
-        display: flex;
-        align-items: center;
+
+      &::before {
+        content: "";
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        background: $primary-color;
+        border-radius: 50%;
+        margin-right: 8px;
+      }
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 0 1rem;
+
+      li {
+        padding: 0.75rem 1rem;
         cursor: pointer;
-        padding: 0.5rem;
         border-radius: 8px;
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
         transition: all 0.2s ease;
-  
+        border: 1px solid transparent;
+
         &:hover {
           background: #f9fafb;
+          border-color: #e5e7eb;
         }
-  
-        &::before {
-          content: "";
-          display: inline-block;
-          width: 6px;
-          height: 6px;
-          background: #6366f1;
-          border-radius: 50%;
-          margin-right: 8px;
+
+        &.active {
+          background: $primary-color;
+          color: white;
+          border-color: $primary-color-on-hover;
         }
-      }
-  
-      ul {
-        list-style: none;
-        padding: 0;
-        margin: 0 0 0 1rem;
-  
-        li {
-          padding: 0.75rem 1rem;
-          cursor: pointer;
-          border-radius: 8px;
-          margin-bottom: 0.5rem;
-          font-size: 0.95rem;
-          transition: all 0.2s ease;
-          border: 1px solid transparent;
-  
-          &:hover {
-            background: #f9fafb;
-            border-color: #e5e7eb;
-          }
-  
-          &.active {
-            background: #6366f1;
-            color: white;
-            border-color: #4f46e5;
-          }
-  
-          &.completed {
-            color: #10b981;
-            position: relative;
-  
-            &::after {
-              content: "✓";
-              margin-left: 0.5rem;
-            }
+
+        &.completed {
+          color: #10b981;
+          position: relative;
+
+          &::after {
+            content: "✓";
+            margin-left: 0.5rem;
           }
         }
       }
     }
   }
-  
-  .lesson-view {
-    flex: 1;
-    padding: 2rem;
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  
-    h2 {
-      margin: 0 0 1.5rem 0;
-      color: #1f2937;
-      font-size: 1.5rem;
-    }
-  
-    p {
-      color: #6b7280;
-      line-height: 1.6;
-      margin-bottom: 2rem;
-    }
-  
-    .lesson-content {
-      margin-bottom: 2rem;
-  
-      video {
-        width: 100%;
-        border-radius: 8px;
-        margin-bottom: 1rem;
-      }
-  
-      iframe {
-        width: 100%;
-        height: 500px;
-        border: none;
-        border-radius: 8px;
-        margin-bottom: 1rem;
-      }
-    }
+}
+
+.lesson-view {
+  flex: 1;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+
+  h2 {
+    margin: 0 0 1.5rem 0;
+    color: #1f2937;
+    font-size: 1.5rem;
   }
-  
-  .navigation-buttons {
-    display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
-  
-    button {
-      padding: 0.75rem 1.5rem;
+
+  p {
+    color: #6b7280;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  .lesson-content {
+    margin-bottom: 2rem;
+
+    video {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    iframe {
+      width: 100%;
+      height: 500px;
       border: none;
       border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-  
-      &:first-child {
-        background: #6366f1;
-        color: white;
-  
-        &:hover {
-          background: #4f46e5;
-        }
-      }
-  
-      &:last-child {
-        background: #e5e7eb;
-        color: #374151;
-  
-        &:hover {
-          background: #d1d5db;
-        }
-      }
-  
-      &:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-      }
+      margin-bottom: 1rem;
     }
   }
-  
-  /* Адаптивность */
-  @media (max-width: 768px) {
-    .course-content {
-      flex-direction: column;
+}
+
+.navigation-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+
+  button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:first-child {
+      background: $primary-color;
+      color: white;
+
+      &:hover {
+        background: $primary-color-on-hover;
+      }
     }
-  
-    .sidebar {
-      width: 100%;
+
+    &:last-child {
+      background: #e5e7eb;
+      color: #374151;
+
+      &:hover {
+        background: #d1d5db;
+      }
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
     }
   }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .course-content {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+  }
+}

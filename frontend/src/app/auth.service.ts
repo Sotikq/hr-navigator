@@ -16,23 +16,25 @@ export class AuthService {
   private userSubject = new BehaviorSubject<any>(null);
   user$ = this.userSubject.asObservable(); // для подписки в компоненте
 
-
   constructor(private http: HttpClient) {}
-
 
   updateName(data: { name: string }) {
     return this.http.patch(`${this.apiUrl}/me/name`, data);
   }
-  updatePassword(data: { oldPassword: string; newPassword: string; confirmPassword: string }) {
+  updatePassword(data: {
+    oldPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+  }) {
     return this.http.patch(`${this.apiUrl}/me/password`, data);
   }
 
-
-
-
-
-
-  register(data: { email: string; name: string, password: string; role: string}) {
+  register(data: {
+    email: string;
+    name: string;
+    password: string;
+    role: string;
+  }) {
     return this.http.post(`${this.apiUrl}/register`, data);
   }
 
@@ -46,11 +48,11 @@ export class AuthService {
     // });
     return this.http.get(`${this.apiUrl}/me`);
   }
-  
+
   setUser(user: any) {
     this.userSubject.next(user);
   }
-  
+
   saveToken(token: string) {
     localStorage.setItem('token', token);
   }

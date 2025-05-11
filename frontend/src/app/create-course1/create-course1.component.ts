@@ -80,7 +80,7 @@ export class CreateCourse1Component implements OnInit {
     formData.append('title', this.currentCourse.title.toString());
     formData.append('description', this.currentCourse.description.toString());
     formData.append('details', this.currentCourse.details.toString());
-    formData.append('price', this.currentCourse.price);
+    formData.append('price', this.currentCourse.price.toString());
     formData.append('duration', this.currentCourse.duration.toString());
     formData.append('category', this.currentCourse.category.toString());
     formData.append(

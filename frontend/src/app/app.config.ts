@@ -3,14 +3,13 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import {  tokenInterceptorFn } from './token.interceptor';
-
+import { tokenInterceptorFn } from './token.interceptor';
+import { ApiInterceptor } from './api-key.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([tokenInterceptorFn])),
-    
+    provideHttpClient(withInterceptors([ApiInterceptor])),
   ],
 };

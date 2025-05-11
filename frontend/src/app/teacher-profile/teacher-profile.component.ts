@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../auth.service.service';
+import { AuthService } from '../auth.service';
 import { AnalyticsChartComponent } from '../analytics-chart/analytics-chart.component';
 import {
   FormBuilder,
@@ -32,7 +32,7 @@ export class TeacherProfileComponent {
   courses: Course[] = []; // Массив курсов
   constructor(
     private router: Router,
-    private crs: CourseService1,
+    private crs: CourseService1, // QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQEEEESTION
     private auth: AuthService,
     private fb: FormBuilder
   ) {

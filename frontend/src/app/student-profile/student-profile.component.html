@@ -38,12 +38,12 @@
     @if (currentPage=="profile"){
 
     <div class="profile-section" id="profile">
-      <h2 style="color:#2962FF; margin-bottom: 20px">Мои курсы</h2>
+      <h2 style="color: #2962ff; margin-bottom: 20px">Мои курсы</h2>
       <div class="course-grid">
-        <div class="student-course-card">
-          <img src=" /course1.png" alt="Курс 1" />
+        <div *ngFor="let course of courses" class="student-course-card" (click)="goToCourse(course.id)">
+          <img [src]="course.cover_url"  />
           <div class="student-course-info">
-            <h3>Эффективный рекрутинг</h3>
+            <h3>{{course.title}}</h3>
             <p class="course-date">Дата окончания: 25 мая 2025</p>
             <p style="font-size: 14px; color: #555; margin-bottom: 5px">
               Completed: 10/15
@@ -53,42 +53,12 @@
             </div>
           </div>
         </div>
-        <div
-          class="student-course-card"
-          [routerLink]="['/course-completion']"
-          style="cursor: pointer"
-        >
-          <img src=" /course2.png" alt="Курс 2" />
-          <div class="student-course-info">
-            <h3>HR-менеджер с нуля</h3>
-            <p class="course-date">Дата окончания: 10 июня 2025</p>
-            <p style="font-size: 14px; color: #555; margin-bottom: 5px">
-              Completed: 13/15
-            </p>
-            <div class="progress-container">
-              <div class="progress-bar" style="width: 80%"></div>
-            </div>
-          </div>
-        </div>
-        <div class="student-course-card">
-          <img src=" /course3.png" alt="Курс 3" />
-          <div class="student-course-info">
-            <h3>Развитие Soft Skills</h3>
-            <p class="course-date">Дата окончания: 1 июля 2025</p>
-            <p style="font-size: 14px; color: #555; margin-bottom: 5px">
-              Completed: 4/12
-            </p>
-            <div class="progress-container">
-              <div class="progress-bar" style="width: 40%"></div>
-            </div>
-          </div>
-        </div>
       </div>
       <h1
         [routerLink]="['/courses']"
         style="
           text-decoration: none;
-          color: #2962FF;
+          color: #2962ff;
           padding: 10px;
           font-size: 20px;
           cursor: pointer;
@@ -101,7 +71,7 @@
     <!-- settings form -->
     @if (currentPage=="settings") {
     <div class="profile-section" id="settings">
-      <h2 style="color: #2962FF; margin-bottom: 20px">Настройки аккаунта</h2>
+      <h2 style="color: #2962ff; margin-bottom: 20px">Настройки аккаунта</h2>
 
       <!-- Фото профиля -->
       <div style="text-align: center; margin-bottom: 30px">
@@ -163,7 +133,7 @@
     <!-- Сертификаты -->
     @if (currentPage=="certificates") {
     <div class="profile-section" id="certificates">
-      <h2 style="color: #2962FF; margin-bottom: 20px">Сертификаты</h2>
+      <h2 style="color: #2962ff; margin-bottom: 20px">Сертификаты</h2>
       <div class="certificate-grid">
         <div class="certificate-card">
           <img src=" /certificate.webp" alt="Сертификат 1" />

@@ -7,7 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
-import { AuthService } from '../auth.service.service';
+import { AuthService } from '../auth.service';
 
 interface User {
   email: string;
