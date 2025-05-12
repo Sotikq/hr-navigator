@@ -21,7 +21,7 @@ export class StudentProfileComponent implements OnInit {
   passwordForm!: FormGroup;
   tabs = ['Мои Курсы', 'Сертификаты', 'Настройки'];
 
-  currentPage: string = 'profile'; // Default page is 'profile'
+  currentPage: string = 'Мои Курсы'; // Default page is 'profile'
   user: any = null;
   courses: Course[] = [];
   constructor(
