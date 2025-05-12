@@ -257,8 +257,9 @@
     </div>
     }
     @if (currentPage == "teachers") {
-      <div>
-        
+      <div *ngFor="let teacher of allTeachers">
+        <h3> {{teacher.name}}</h3>
+        <h3>{{teacher.email}}</h3>
       </div>
     }
   </main>

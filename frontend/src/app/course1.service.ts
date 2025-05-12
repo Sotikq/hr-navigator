@@ -23,7 +23,10 @@ export class CourseService1 {
   createCourse(course: any) {
     return this.http.post<Course>(`${this.apiUrl}courses`, course);
   }
-
+  deleteCourse(id:Course["id"]){
+    return this.http.delete(`${this.apiUrl}courses/${id}`);
+  }
+  
   updateCourse(course: UpdatedCourseRequest, courseId: string) {
     return this.http.patch<any>(`${this.apiUrl}courses/${courseId}`, course);
   }

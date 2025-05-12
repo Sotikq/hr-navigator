@@ -102,3 +102,6 @@ export interface LessonUpdateRequest {
   content_url?: string;
   position?: number;
 }
+export interface Lesson{
+  id: string;
+}

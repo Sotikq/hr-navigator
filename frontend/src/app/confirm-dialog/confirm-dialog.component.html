@@ -1,0 +1,8 @@
+<h2 mat-dialog-title>Подтверждение</h2>
+<mat-dialog-content>
+  {{ data.message }}
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Отмена</button>
+  <button mat-button color="warn" (click)="onConfirm()">Удалить</button>
+</mat-dialog-actions>

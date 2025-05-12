@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -13,6 +13,9 @@ import {
 } from '../models/course.models11';
 import { CourseService1 } from '../course1.service';
 import { lastValueFrom } from 'rxjs';
+import { Course } from '../courses';
+import { Lesson, Module } from '../useless components/course.models';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-create-course1',
@@ -29,7 +32,8 @@ export class CreateCourse1Component implements OnInit {
   constructor(
     private crs: CourseService1,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog,
   ) {}
 
   ngOnInit(): void {
@@ -55,12 +59,10 @@ export class CreateCourse1Component implements OnInit {
     });
   }
 
-  
-  async createCourseFromStart(data :any){
+  async createCourseFromStart(data: any) {
     const answer = await lastValueFrom(this.crs.createCourse(data));
     //console.log(answer.id)
     return answer.id;
-    
   }
   // Метод для выбора файла
   onImageUpload(event: any): void {
@@ -130,8 +132,7 @@ export class CreateCourse1Component implements OnInit {
     });
   }
 
-  save() {} 
-
+  save() {}
 
   async onSubmit() {
     console.log(this.currentCourse.modules);
@@ -227,5 +228,44 @@ export class CreateCourse1Component implements OnInit {
         console.error(error);
       },
     });
+  }
+  onDeleteCourse(id: Course['id']) {
+    const dialogRef =this.dialog.open(ConfirmDialogComponent,{
+      data: {message : 'Вы уверены, то что хотите удалить курс?'}
+    });
+
+    dialogRef.afterClosed().subscribe(result =>{
+      if(result){
+        this.crs.deleteCourse(id).subscribe({
+          next: (next) => {
+            console.log(next);
+          },
+          error: (err) => {
+            console.error(err);
+          },
+        });
+      }
+    })
+
+  }
+  onDeleteModule(id: Module['id']) {
+    const dialogRef =this.dialog.open(ConfirmDialogComponent,{
+      data: {message : 'Вы уверены, то что хотите удалить модуль?'}
+    });
+        dialogRef.afterClosed().subscribe(result =>{
+      if(result){
+        
+      }
+    })
+  }
+  onDeleteLesson(id: Lesson['id']) {
+    const dialogRef =this.dialog.open(ConfirmDialogComponent,{
+      data: {message : 'Вы уверены, то что хотите удалить урок?'}
+    });
+        dialogRef.afterClosed().subscribe(result =>{
+      if(result){
+        
+      }
+    })
   }
 }

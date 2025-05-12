@@ -72,9 +72,13 @@
       </select>
     </div>
     <button (click)="onSaveCourse1()">Сохранить Обложку Курса</button>
+    <button class="deleteBtn" (click)="onDeleteCourse(currentCourse.id)">Удалить Курс</button>
 
     <div class="modules">
-      <div *ngFor="let module of currentCourse.modules; let i = index" class="module">
+      <div
+        *ngFor="let module of currentCourse.modules; let i = index"
+        class="module"
+      >
         <h3>Модуль</h3>
         <input
           type="text"
@@ -137,11 +141,17 @@
                 placeholder="Ссылка на PDF"
               />
             </div>
+            <button class="deleteBtn" (click)="onDeleteLesson(lesson.id)">
+              Удалить Урок
+            </button>
           </div>
           <button type="button" (click)="addLesson(module)">
             + Добавить урок
           </button>
         </div>
+        <button class="deleteBtn" (click)="onDeleteModule(module.id)">
+          Удалить Модуль
+        </button>
       </div>
       <button type="button" (click)="addModule()">+ Добавить модуль</button>
     </div>
