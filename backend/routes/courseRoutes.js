@@ -265,7 +265,7 @@ router.get('/my/all',
 
 /**
  * @swagger
- * /api/courses/{courseId}/modules:
+ * /courses/{courseId}/modules:
  *   post:
  *     tags: [Courses]
  *     summary: Add a new module to a course
@@ -304,7 +304,7 @@ router.post('/:courseId/modules', authMiddleware, checkRole(['admin', 'teacher']
 
 /**
  * @swagger
- * /api/courses/modules/{moduleId}/lessons:
+ * /courses/modules/{moduleId}/lessons:
  *   post:
  *     tags: [Courses]
  *     summary: Add a new lesson to a module
@@ -393,7 +393,7 @@ router.post('/:id/assign-teacher',
 
 /**
  * @swagger
- * /api/courses/{id}:
+ * /courses/{id}:
  *   delete:
  *     tags: [Courses]
  *     summary: Delete a course and all its modules and lessons (admin only)
@@ -422,7 +422,7 @@ router.delete('/:id',
 
 /**
  * @swagger
- * /api/courses/modules/{id}:
+ * /courses/modules/{id}:
  *   delete:
  *     tags: [Courses]
  *     summary: Delete a module and all its lessons (admin only)
@@ -451,7 +451,7 @@ router.delete('/modules/:id',
 
 /**
  * @swagger
- * /api/courses/lessons/{id}:
+ * /courses/lessons/{id}:
  *   delete:
  *     tags: [Courses]
  *     summary: Delete a lesson (admin only)
