@@ -8,6 +8,7 @@ const helmet = require('helmet');
 const { errorHandler, authMiddleware, defaultLimiter } = require('./middleware');
 const logger = require('./utils/logger');
 const corsMiddleware = require('./config/cors');
+const pool = require('./config/db');
 
 const app = express();
 
@@ -75,6 +76,15 @@ app.use('/api/reviews', reviewRoutes);
 // 🌐 Главная страница для теста
 app.get('/', (req, res) => {
   res.send('HR Navigator backend is running!');
+});
+
+app.get('/api/healthz', async (req, res) => {
+  try {
+    await pool.query('SELECT 1');
+    res.status(200).json({ status: 'ok' });
+  } catch (err) {
+    res.status(500).json({ status: 'error', error: err.message });
+  }
 });
 
 // Error handling middleware (must be last)

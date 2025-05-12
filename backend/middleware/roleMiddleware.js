@@ -8,27 +8,21 @@ const logger = require('../utils/logger');
  */
 const checkRole = (allowedRoles) => {
   return (req, res, next) => {
+    logger.info('checkRole: start', { path: req.path, method: req.method, allowedRoles });
     // Ensure authMiddleware was called first
     if (!req.user || !req.user.role) {
-      logger.warn('Role check failed: User not authenticated', {
-        path: req.path,
-        method: req.method
-      });
+      logger.info('checkRole: no user/role, calling next(ApiError.unauthorized)', { path: req.path });
       return next(ApiError.unauthorized('Authentication required'));
     }
 
     // Check if user's role is in the allowed roles array
     if (!allowedRoles.includes(req.user.role)) {
-      logger.warn('Role check failed: Insufficient permissions', {
-        path: req.path,
-        method: req.method,
-        userRole: req.user.role,
-        requiredRoles: allowedRoles
-      });
+      logger.info('checkRole: insufficient permissions, calling next(ApiError.forbidden)', { path: req.path, userRole: req.user.role });
       return next(ApiError.forbidden('Insufficient permissions to access this resource'));
     }
 
     // User has required role, proceed
+    logger.info('checkRole: role valid, calling next()', { path: req.path, userRole: req.user.role });
     next();
   };
 };

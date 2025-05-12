@@ -13,9 +13,9 @@ const {
   addModuleToCourse,
   addLessonToModule,
   assignTeacher,
-  deleteCourse,
-  deleteModule,
-  deleteLesson
+  deleteCourse: deleteCourseHandler,
+  deleteModule: deleteModuleHandler,
+  deleteLesson: deleteLessonHandler
 } = require('../controllers/courseController');
 const { authMiddleware, validateApiKey, checkRole } = require('../middleware');
 
@@ -34,6 +34,7 @@ const { authMiddleware, validateApiKey, checkRole } = require('../middleware');
  *     tags: [Courses]
  *     security:
  *       - bearerAuth: []
+ *       - ApiKeyAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -86,6 +87,7 @@ router.post('/',
  *     tags: [Courses]
  *     security:
  *       - bearerAuth: []
+ *       - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -140,6 +142,7 @@ router.patch('/:id',
  *     tags: [Courses]
  *     security:
  *       - bearerAuth: []
+ *       - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -170,6 +173,7 @@ router.patch('/modules/:id',
  *     tags: [Courses]
  *     security:
  *       - bearerAuth: []
+ *       - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -399,6 +403,7 @@ router.post('/:id/assign-teacher',
  *     summary: Delete a course and all its modules and lessons (admin only)
  *     security:
  *       - bearerAuth: []
+ *       - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -406,8 +411,12 @@ router.post('/:id/assign-teacher',
  *         schema:
  *           type: string
  *     responses:
- *       204:
+ *       200:
  *         description: Course deleted successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Deleted successfully
  *       403:
  *         description: Forbidden - Only administrators can delete courses
  *       404:
@@ -416,8 +425,8 @@ router.post('/:id/assign-teacher',
 router.delete('/:id',
   authMiddleware,
   checkRole(['admin']),
-  validateApiKey,
-  deleteCourse
+  validateApiKey(),
+  deleteCourseHandler
 );
 
 /**
@@ -428,6 +437,7 @@ router.delete('/:id',
  *     summary: Delete a module and all its lessons (admin only)
  *     security:
  *       - bearerAuth: []
+ *       - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -435,8 +445,12 @@ router.delete('/:id',
  *         schema:
  *           type: string
  *     responses:
- *       204:
+ *       200:
  *         description: Module deleted successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Deleted successfully
  *       403:
  *         description: Forbidden - Only administrators can delete modules
  *       404:
@@ -445,8 +459,8 @@ router.delete('/:id',
 router.delete('/modules/:id',
   authMiddleware,
   checkRole(['admin']),
-  validateApiKey,
-  deleteModule
+  validateApiKey(),
+  deleteModuleHandler
 );
 
 /**
@@ -457,6 +471,7 @@ router.delete('/modules/:id',
  *     summary: Delete a lesson (admin only)
  *     security:
  *       - bearerAuth: []
+ *       - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -464,8 +479,12 @@ router.delete('/modules/:id',
  *         schema:
  *           type: string
  *     responses:
- *       204:
+ *       200:
  *         description: Lesson deleted successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: Deleted successfully
  *       403:
  *         description: Forbidden - Only administrators can delete lessons
  *       404:
@@ -474,8 +493,8 @@ router.delete('/modules/:id',
 router.delete('/lessons/:id',
   authMiddleware,
   checkRole(['admin']),
-  validateApiKey,
-  deleteLesson
+  validateApiKey(),
+  deleteLessonHandler
 );
 
 module.exports = router;

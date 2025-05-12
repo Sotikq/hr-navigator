@@ -8,21 +8,19 @@ const logger = require('../utils/logger');
  */
 const validateApiKey = (options = { required: true }) => {
   return (req, res, next) => {
+    logger.info('validateApiKey: start', { path: req.path, method: req.method });
     const apiKey = req.headers['x-api-key'] || req.query.key;
     const expectedKey = process.env.API_KEY;
 
     // If API key is not required and not provided, allow the request
     if (!options.required && !apiKey) {
+      logger.info('validateApiKey: not required and not provided, calling next()', { path: req.path });
       return next();
     }
 
     // If API key is required but not provided
     if (!apiKey) {
-      logger.warn('API key missing from request', {
-        path: req.path,
-        method: req.method,
-        ip: req.ip
-      });
+      logger.info('validateApiKey: missing, sending 401', { path: req.path });
       return res.status(401).json({
         status: 'error',
         message: 'API key is required'
@@ -31,11 +29,7 @@ const validateApiKey = (options = { required: true }) => {
 
     // If API key is invalid
     if (apiKey !== expectedKey) {
-      logger.warn('Invalid API key provided', {
-        path: req.path,
-        method: req.method,
-        ip: req.ip
-      });
+      logger.info('validateApiKey: invalid, sending 401', { path: req.path });
       return res.status(401).json({
         status: 'error',
         message: 'Invalid API key'
@@ -43,6 +37,7 @@ const validateApiKey = (options = { required: true }) => {
     }
 
     // API key is valid
+    logger.info('validateApiKey: valid, calling next()', { path: req.path });
     next();
   };
 };
