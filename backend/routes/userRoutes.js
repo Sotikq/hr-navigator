@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { getProfile, updateName, updatePassword } = require('../controllers/userController');
+const { getProfile, updateName, updatePassword, getAllTeachersList } = require('../controllers/userController');
 const authMiddleware = require('../middleware/authMiddleware');
+const checkRole = require('../middleware/roleMiddleware');
 
 /**
  * @swagger
@@ -71,5 +72,34 @@ router.patch('/me/name', authMiddleware, updateName);
  *         description: Пароль обновлен
  */
 router.patch('/me/password', authMiddleware, updatePassword);
+
+/**
+ * @swagger
+ * /api/users/teachers:
+ *   get:
+ *     summary: Get all teachers (admin only)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of teachers
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   name:
+ *                     type: string
+ *                   email:
+ *                     type: string
+ *       403:
+ *         description: Forbidden - Only administrators can access this endpoint
+ */
+router.get('/teachers', authMiddleware, checkRole(['admin']), getAllTeachersList);
 
 module.exports = router;

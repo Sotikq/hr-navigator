@@ -40,10 +40,22 @@ async function updateUserPassword(userId, newPasswordHash) {
   return rows[0];
 }
 
+async function getAllTeachers() {
+  const query = `
+    SELECT id, name, email
+    FROM users
+    WHERE role = 'teacher'
+    ORDER BY name ASC
+  `;
+  const { rows } = await pool.query(query);
+  return rows;
+}
+
 module.exports = {
   createUser,
   findUserByEmail,
   findUserById,
   updateUserName,
-  updateUserPassword
+  updateUserPassword,
+  getAllTeachers
 };
