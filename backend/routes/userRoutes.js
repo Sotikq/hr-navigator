@@ -75,7 +75,7 @@ router.patch('/me/password', authMiddleware, updatePassword);
 
 /**
  * @swagger
- * /api/users/teachers:
+ * /auth/teachers:
  *   get:
  *     summary: Get all teachers (admin only)
  *     tags: [Users]
