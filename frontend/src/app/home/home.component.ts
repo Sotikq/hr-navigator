@@ -21,7 +21,7 @@ export class HomeComponent implements OnInit {
   
   getVideo() {
     const videoId = '09a35cf0-cb6b-49f2-91da-b507953ffe73';
-    this.videoReviewService.getVideo(videoId).subscribe({
+    this.videoReviewService.getVideo().subscribe({
       next: (res) => {
         this.videos = res;
         console.log(this.videos);

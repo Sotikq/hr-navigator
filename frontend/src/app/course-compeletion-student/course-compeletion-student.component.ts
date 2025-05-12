@@ -4,12 +4,13 @@ import { CourseService1 } from '../course1.service';
 import { lessonModel } from '../models/course.models11';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Course } from '../courses';
 
 @Component({
   selector: 'app-course-compeletion-student',
   imports: [CommonModule],
   templateUrl: './course-compeletion-student.component.html',
-  styleUrl: './course-compeletion-student.component.scss'
+  styleUrl: './course-compeletion-student.component.scss',
 })
 export class CourseCompeletionStudentComponent implements OnInit {
   courseId: string | null = null;
@@ -22,7 +23,7 @@ export class CourseCompeletionStudentComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private courseService: CourseService1,
-    private sanitizer: DomSanitizer,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
@@ -32,7 +33,6 @@ export class CourseCompeletionStudentComponent implements OnInit {
     } else {
       this.router.navigate(['/courses']);
     }
-  
   }
 
   getSafeYoutubeUrl(url: string) {
@@ -42,9 +42,10 @@ export class CourseCompeletionStudentComponent implements OnInit {
   }
   private extractYoutubeId(url: string): string | null {
     // Разбираем URL чтобы получить ID видео
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const regExp =
+      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
     const match = url.match(regExp);
-    return (match && match[2].length === 11) ? match[2] : null;
+    return match && match[2].length === 11 ? match[2] : null;
   }
   isYoutubeUrl(url: string): boolean {
     return url.includes('youtube.com') || url.includes('youtu.be');
@@ -58,14 +59,16 @@ export class CourseCompeletionStudentComponent implements OnInit {
       },
       error: (err) => {
         console.error('Ошибка загрузки курса:', err);
-      }
+      },
     });
   }
-  
+
   // Загрузка прогресса из localStorage
   loadProgress(): void {
     console.log(this.currentCourse);
-    const savedProgress = localStorage.getItem(`courseProgress_${this.courseId}`);
+    const savedProgress = localStorage.getItem(
+      `courseProgress_${this.courseId}`
+    );
     if (savedProgress) {
       this.progress = JSON.parse(savedProgress);
     }
@@ -99,7 +102,10 @@ export class CourseCompeletionStudentComponent implements OnInit {
     const currentModule = this.currentCourse.modules[this.currentModuleIndex];
     if (this.currentLessonIndex < currentModule.lessons.length - 1) {
       this.currentLessonIndex++;
-    } else if (this.currentModuleIndex < this.currentCourse.modules.length - 1) {
+    } else if (
+      this.currentModuleIndex <
+      this.currentCourse.modules.length - 1
+    ) {
       this.currentModuleIndex++;
       this.currentLessonIndex = 0;
     }
@@ -115,10 +121,14 @@ export class CourseCompeletionStudentComponent implements OnInit {
     if (
       !this.currentCourse?.modules ||
       this.currentModuleIndex >= this.currentCourse.modules.length ||
-      this.currentLessonIndex >= this.currentCourse.modules[this.currentModuleIndex].lessons.length
+      this.currentLessonIndex >=
+        this.currentCourse.modules[this.currentModuleIndex].lessons.length
     ) {
       return null;
     }
-    return this.currentCourse.modules[this.currentModuleIndex].lessons[this.currentLessonIndex];
+    return this.currentCourse.modules[this.currentModuleIndex].lessons[
+      this.currentLessonIndex
+    ];
   }
+  
 }

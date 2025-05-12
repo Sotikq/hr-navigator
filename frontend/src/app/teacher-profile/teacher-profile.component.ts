@@ -12,6 +12,7 @@ import {
 
 import { Course } from '../courses';
 import { CourseService1 } from '../course1.service';
+import { TeacherServiceService } from '../teacher-service.service';
 @Component({
   selector: 'app-teacher-profile',
   imports: [
@@ -24,17 +25,19 @@ import { CourseService1 } from '../course1.service';
   styleUrl: './teacher-profile.component.scss',
 })
 export class TeacherProfileComponent {
-  tabs = ['Review', 'Courses', 'analytics', 'messages', 'Settings'];
+  tabs = ['Review', 'Courses', 'analytics', 'messages','teachers', 'Settings'];
   user: any = null;
   currentPage: string = 'Review';
   profileForm!: FormGroup;
   passwordForm!: FormGroup;
+  allTeachers: any = [];
   courses: Course[] = []; // Массив курсов
   constructor(
     private router: Router,
     private crs: CourseService1, // QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQEEEESTION
     private auth: AuthService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private teacherService: TeacherServiceService
   ) {
     crs.getCourses().subscribe((data) => {
       this.courses = data; // Получаем курсы из сервиса и сохраняем в массив
@@ -44,6 +47,7 @@ export class TeacherProfileComponent {
 
   ngOnInit(): void {
     this.userFill();
+    this.getTeachers();
     console.log(this.user);
     this.profileForm = this.fb.group({
       email: [this.user.email],
@@ -106,7 +110,16 @@ export class TeacherProfileComponent {
         },
       });
   }
-  
+  getTeachers() {
+    this.teacherService.getTeachers().subscribe({
+      next: (data) => {
+        this.allTeachers = data;
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
+  }
 
   goToCreateCourse() {
     this.router.navigate(['/edit/0']);
