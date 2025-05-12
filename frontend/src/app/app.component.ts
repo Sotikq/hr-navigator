@@ -64,7 +64,7 @@ export class AppComponent implements OnInit {
     this.router.navigate(['/student']);
     console.log(this.currentUser.role);
     }
-    else if(this.currentUser.role === 'teacher') {
+    else if(this.currentUser.role === 'admin') {
       this.router.navigate(['/teacher']);
     }
   }

@@ -106,6 +106,7 @@ export class TeacherProfileComponent {
         },
       });
   }
+  
 
   goToCreateCourse() {
     this.router.navigate(['/edit/0']);
