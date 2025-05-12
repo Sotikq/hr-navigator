@@ -118,6 +118,87 @@ async function updateLesson(lessonId, fieldsToUpdate) {
   return rows[0];
 }
 
+async function deleteCourse(courseId) {
+  // Start a transaction
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    // Delete all lessons in the course's modules
+    const deleteLessonsQuery = `
+      DELETE FROM lessons 
+      WHERE module_id IN (
+        SELECT id FROM modules WHERE course_id = $1
+      )
+    `;
+    await client.query(deleteLessonsQuery, [courseId]);
+
+    // Delete all modules in the course
+    const deleteModulesQuery = `
+      DELETE FROM modules 
+      WHERE course_id = $1
+    `;
+    await client.query(deleteModulesQuery, [courseId]);
+
+    // Delete the course
+    const deleteCourseQuery = `
+      DELETE FROM courses 
+      WHERE id = $1
+      RETURNING id
+    `;
+    const { rows } = await client.query(deleteCourseQuery, [courseId]);
+
+    await client.query('COMMIT');
+    return rows[0];
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
+async function deleteModule(moduleId) {
+  // Start a transaction
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    // Delete all lessons in the module
+    const deleteLessonsQuery = `
+      DELETE FROM lessons 
+      WHERE module_id = $1
+    `;
+    await client.query(deleteLessonsQuery, [moduleId]);
+
+    // Delete the module
+    const deleteModuleQuery = `
+      DELETE FROM modules 
+      WHERE id = $1
+      RETURNING id
+    `;
+    const { rows } = await client.query(deleteModuleQuery, [moduleId]);
+
+    await client.query('COMMIT');
+    return rows[0];
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
+async function deleteLesson(lessonId) {
+  const query = `
+    DELETE FROM lessons 
+    WHERE id = $1
+    RETURNING id
+  `;
+  const { rows } = await pool.query(query, [lessonId]);
+  return rows[0];
+}
+
 module.exports = {
   createCourse,
   updateCourse,
@@ -129,4 +210,7 @@ module.exports = {
   updateModule,
   addLesson,
   updateLesson,
+  deleteCourse,
+  deleteModule,
+  deleteLesson
 };

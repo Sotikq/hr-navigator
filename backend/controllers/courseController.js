@@ -10,9 +10,13 @@ const {
   addModule,
   updateModule,
   addLesson,
-  updateLesson
+  updateLesson,
+  deleteCourse,
+  deleteModule,
+  deleteLesson
 } = require('../models/Course');
 const { assignTeacherToCourse, isTeacherAssignedToCourse } = require('../models/CourseTeacher');
+const logger = require('../utils/logger');
 
 // ✅ Создание нового курса с загрузкой обложки
 async function createCourseHandler(req, res, next) {
@@ -341,6 +345,77 @@ async function assignTeacherHandler(req, res, next) {
   }
 }
 
+async function deleteCourseHandler(req, res, next) {
+  try {
+    const courseId = req.params.id;
+
+    // Check if course exists
+    const course = await getCourseById(courseId);
+    if (!course) {
+      throw ApiError.notFound('Course not found');
+    }
+
+    // Delete course and all related data
+    await deleteCourse(courseId);
+    
+    logger.info('Course deleted successfully', { courseId });
+    res.status(204).send();
+  } catch (err) {
+    logger.error('Error deleting course:', err);
+    next(err);
+  }
+}
+
+async function deleteModuleHandler(req, res, next) {
+  try {
+    const moduleId = req.params.id;
+
+    // Check if module exists
+    const { rows: [module] } = await pool.query(
+      'SELECT id FROM modules WHERE id = $1',
+      [moduleId]
+    );
+
+    if (!module) {
+      throw ApiError.notFound('Module not found');
+    }
+
+    // Delete module and all related lessons
+    await deleteModule(moduleId);
+    
+    logger.info('Module deleted successfully', { moduleId });
+    res.status(204).send();
+  } catch (err) {
+    logger.error('Error deleting module:', err);
+    next(err);
+  }
+}
+
+async function deleteLessonHandler(req, res, next) {
+  try {
+    const lessonId = req.params.id;
+
+    // Check if lesson exists
+    const { rows: [lesson] } = await pool.query(
+      'SELECT id FROM lessons WHERE id = $1',
+      [lessonId]
+    );
+
+    if (!lesson) {
+      throw ApiError.notFound('Lesson not found');
+    }
+
+    // Delete lesson
+    await deleteLesson(lessonId);
+    
+    logger.info('Lesson deleted successfully', { lessonId });
+    res.status(204).send();
+  } catch (err) {
+    logger.error('Error deleting lesson:', err);
+    next(err);
+  }
+}
+
 module.exports = {
   createCourse: createCourseHandler,
   updateCourse: updateCourseHandler,
@@ -352,5 +427,8 @@ module.exports = {
   getMyCourses,
   addModuleToCourse,
   addLessonToModule,
-  assignTeacher: assignTeacherHandler
+  assignTeacher: assignTeacherHandler,
+  deleteCourse: deleteCourseHandler,
+  deleteModule: deleteModuleHandler,
+  deleteLesson: deleteLessonHandler
 };

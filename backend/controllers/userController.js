@@ -3,8 +3,11 @@ const bcrypt = require('bcrypt');
 const {
   updateUserName,
   updateUserPassword,
-  findUserById
+  findUserById,
+  getAllTeachers
 } = require('../models/User');
+const ApiError = require('../utils/ApiError');
+const logger = require('../utils/logger');
 
 async function getProfile(req, res) {
   try {
@@ -76,8 +79,19 @@ async function updatePassword(req, res) {
   }
 }
 
+async function getAllTeachersList(req, res, next) {
+  try {
+    const teachers = await getAllTeachers();
+    res.json(teachers);
+  } catch (err) {
+    logger.error('Error fetching teachers:', err);
+    next(new ApiError(500, 'Failed to fetch teachers'));
+  }
+}
+
 module.exports = {
   getProfile,
   updateName,
-  updatePassword
+  updatePassword,
+  getAllTeachersList
 };
