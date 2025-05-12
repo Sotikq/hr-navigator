@@ -351,22 +351,21 @@ async function deleteCourseHandler(req, res, next) {
     await client.query('BEGIN');
     
     const courseId = req.params.id;
-    logger.info('DELETE /courses/:id handler called', { courseId });
+    logger.info('Starting course deletion', { courseId });
     
     const course = await getCourseById(courseId);
     if (!course) {
       throw ApiError.notFound('Course not found');
     }
     
-    logger.info('Calling deleteCourse()', { courseId });
     await deleteCourse(courseId, client);
-    
     await client.query('COMMIT');
-    logger.info('deleteCourse() completed', { courseId });
+    
+    logger.info('Course deleted successfully', { courseId });
     res.status(200).json({ message: 'Deleted successfully' });
   } catch (err) {
     await client.query('ROLLBACK');
-    logger.error('Error deleting course:', err);
+    logger.error('Course deletion failed', { courseId: req.params.id, error: err });
     next(err);
   } finally {
     client.release();
@@ -379,22 +378,21 @@ async function deleteModuleHandler(req, res, next) {
     await client.query('BEGIN');
     
     const moduleId = req.params.id;
-    logger.info('DELETE /courses/modules/:id handler called', { moduleId });
+    logger.info('Starting module deletion', { moduleId });
     
     const { rows: [module] } = await client.query('SELECT id FROM modules WHERE id = $1', [moduleId]);
     if (!module) {
       throw ApiError.notFound('Module not found');
     }
     
-    logger.info('Calling deleteModule()', { moduleId });
     await deleteModule(moduleId, client);
-    
     await client.query('COMMIT');
-    logger.info('deleteModule() completed', { moduleId });
+    
+    logger.info('Module deleted successfully', { moduleId });
     res.status(200).json({ message: 'Deleted successfully' });
   } catch (err) {
     await client.query('ROLLBACK');
-    logger.error('Error deleting module:', err);
+    logger.error('Module deletion failed', { moduleId: req.params.id, error: err });
     next(err);
   } finally {
     client.release();
@@ -407,22 +405,21 @@ async function deleteLessonHandler(req, res, next) {
     await client.query('BEGIN');
     
     const lessonId = req.params.id;
-    logger.info('DELETE /courses/lessons/:id handler called', { lessonId });
+    logger.info('Starting lesson deletion', { lessonId });
     
     const { rows: [lesson] } = await client.query('SELECT id FROM lessons WHERE id = $1', [lessonId]);
     if (!lesson) {
       throw ApiError.notFound('Lesson not found');
     }
     
-    logger.info('Calling deleteLesson()', { lessonId });
     await deleteLesson(lessonId, client);
-    
     await client.query('COMMIT');
-    logger.info('deleteLesson() completed', { lessonId });
+    
+    logger.info('Lesson deleted successfully', { lessonId });
     res.status(200).json({ message: 'Deleted successfully' });
   } catch (err) {
     await client.query('ROLLBACK');
-    logger.error('Error deleting lesson:', err);
+    logger.error('Lesson deletion failed', { lessonId: req.params.id, error: err });
     next(err);
   } finally {
     client.release();

@@ -120,27 +120,17 @@ async function updateLesson(lessonId, fieldsToUpdate) {
   return rows[0];
 }
 
-function logPoolState(label) {
-  logger.info(label, {
-    totalCount: pool.totalCount,
-    idleCount: pool.idleCount,
-    waitingCount: pool.waitingCount
-  });
-}
-
 async function deleteCourse(courseId, client = pool) {
   logger.info('deleteCourse() called', { courseId });
   try {
-    logPoolState('deleteCourse() before query');
     const deleteCourseQuery = `
       DELETE FROM courses 
       WHERE id = $1
       RETURNING id
     `;
-    logger.info('deleteCourse() about to execute query', { courseId });
+    logger.info('deleteCourse() executing query', { courseId });
     const { rows } = await client.query(deleteCourseQuery, [courseId]);
-    logPoolState('deleteCourse() after query');
-    logger.info('deleteCourse() query executed', { courseId });
+    logger.info('deleteCourse() query completed', { courseId });
     return rows[0];
   } catch (err) {
     logger.error('deleteCourse() error', { courseId, error: err });
@@ -151,16 +141,14 @@ async function deleteCourse(courseId, client = pool) {
 async function deleteModule(moduleId, client = pool) {
   logger.info('deleteModule() called', { moduleId });
   try {
-    logPoolState('deleteModule() before query');
     const deleteModuleQuery = `
       DELETE FROM modules 
       WHERE id = $1
       RETURNING id
     `;
-    logger.info('deleteModule() about to execute query', { moduleId });
+    logger.info('deleteModule() executing query', { moduleId });
     const { rows } = await client.query(deleteModuleQuery, [moduleId]);
-    logPoolState('deleteModule() after query');
-    logger.info('deleteModule() query executed', { moduleId });
+    logger.info('deleteModule() query completed', { moduleId });
     return rows[0];
   } catch (err) {
     logger.error('deleteModule() error', { moduleId, error: err });
@@ -171,16 +159,14 @@ async function deleteModule(moduleId, client = pool) {
 async function deleteLesson(lessonId, client = pool) {
   logger.info('deleteLesson() called', { lessonId });
   try {
-    logPoolState('deleteLesson() before query');
     const query = `
       DELETE FROM lessons 
       WHERE id = $1
       RETURNING id
     `;
-    logger.info('deleteLesson() about to execute query', { lessonId });
+    logger.info('deleteLesson() executing query', { lessonId });
     const { rows } = await client.query(query, [lessonId]);
-    logPoolState('deleteLesson() after query');
-    logger.info('deleteLesson() query executed', { lessonId });
+    logger.info('deleteLesson() query completed', { lessonId });
     return rows[0];
   } catch (err) {
     logger.error('deleteLesson() error', { lessonId, error: err });
