@@ -85,5 +85,9 @@ Bilalyev (biman) Omur-Ulukman
 Ketebay (meytosty) Bakhtiyar
 Fazylkhanov (sotiqq) Sultan
 
-### 📄 License
-All rights reserved
+## 📄 License
+
+This project is a final-year thesis developed at Astana IT University.  
+All rights reserved.  
+Unauthorized use, copying, or distribution of any part of this code or its contents is strictly prohibited without prior permission from the authors.
+
