@@ -21,13 +21,15 @@ const options = {
           ApiKeyAuth: {
             type: 'apiKey',
             in: 'header',
-            name: 'x-api-key'
+            name: 'x-api-key',
+            description: 'API key for authentication'
           }
         }
       },
       security: [
         {
-          bearerAuth: []
+          bearerAuth: [],
+          ApiKeyAuth: []
         }
       ],
       tags: [

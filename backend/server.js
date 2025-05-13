@@ -10,6 +10,15 @@ const logger = require('./utils/logger');
 const corsMiddleware = require('./config/cors');
 const pool = require('./config/db');
 
+// Validate required environment variables
+const requiredEnvVars = ['API_KEY', 'JWT_SECRET'];
+const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+
+if (missingEnvVars.length > 0) {
+  logger.error('Missing required environment variables:', { missing: missingEnvVars });
+  process.exit(1);
+}
+
 const app = express();
 
 const swaggerUi = require('swagger-ui-express');

@@ -359,6 +359,7 @@ router.post('/modules/:moduleId/lessons', authMiddleware, checkRole(['admin', 't
  *     tags: [Courses]
  *     security:
  *       - bearerAuth: []
+ *       - ApiKeyAuth: []
  *     parameters:
  *       - in: path
  *         name: id
