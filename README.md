@@ -38,7 +38,9 @@
 ## 📁 Project Structure
 
 /frontend → Angular application
+
 /backend → Node.js Express backend
+
 /uploads → Uploaded images and videos
 
 
@@ -67,6 +69,7 @@ node server.js
 Make sure to configure Supabase credentials in config/db.js or via .env:
 
 SUPABASE_URL=your_supabase_url
+
 SUPABASE_KEY=your_supabase_anon_key
 
 ### 💻 Frontend Setup
@@ -78,14 +81,16 @@ ng serve
 Visit: http://localhost:4200
 
 ### 🔑 Environment Variables (Backend)
+
 SUPABASE_URL=
+
 SUPABASE_KEY=
 
 ### 👨‍💻 Team
 
-Bilalyev (biman) Omur-Ulukman
-Ketebay (meytosty) Bakhtiyar
-Fazylkhanov (sotiqq) Sultan
+Bilalyev (biman) Omur-Ulukman,
+Ketebay (meytosty) Bakhtiyar,
+Fazylkhanov (sotiqq) Sultan.
 
 ## 📄 License
 
