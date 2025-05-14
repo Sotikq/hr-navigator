@@ -54,6 +54,9 @@ export class AppComponent implements OnInit {
   goToLogin() {
     this.router.navigate(['/login']);
   }
+  goToRegister(){
+    this.router.navigate(['/register']);
+  }
 
   goToPage(page: string) {
     this.router.navigate([`/${page}`]);
@@ -65,6 +68,9 @@ export class AppComponent implements OnInit {
     console.log(this.currentUser.role);
     }
     else if(this.currentUser.role === 'admin') {
+      this.router.navigate(['/admin']);
+    }
+    else if(this.currentUser.role ==='teacher'){
       this.router.navigate(['/teacher']);
     }
   }

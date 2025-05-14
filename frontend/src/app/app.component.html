@@ -17,7 +17,10 @@
       </ng-container>
   
       <ng-template #guest>
-        <button class="auth-button" (click)="goToLogin()">Вход / Регистрация</button>
+        <div class="buttons">
+          <button class="register-button" (click)="goToRegister()"> Регистрация</button>
+          <button class="auth-button" (click)="goToLogin()">Вход </button>
+        </div>
       </ng-template>
     </div>
   </header>

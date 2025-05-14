@@ -1,62 +1,45 @@
 <section class="auth-container">
   <h2>Вход / Регистрация</h2>
   <div class="auth-forms">
-      <div class="auth-box">
-          <h3><i class="fas fa-sign-in-alt"></i> Вход</h3>
-          <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-              <div class="input-group">
-                  <label for="login-email">Email</label>
-                  <input id = "login-email" type="email" formControlName="email" placeholder="Введите email" required>
-              </div>
-      
-              <div class="input-group">
-                  <label for="login-password">Пароль</label>
-                  <input id ="login-password"  type="password" formControlName="password" placeholder="Введите пароль" required>
-              </div>
-      
-              <div class="remember-me">
-                  <input id ="remember-me" type="checkbox" formControlName="rememberMe">
-                  <label for="rememberMe">Запомнить меня</label>
-              </div>
-      
-              <button type="submit" class="auth-button full-width">Войти</button>
-              <a href="#" class="forgot-password">Забыли пароль?</a>
-          </form>
-          <p class="error" *ngIf="loginError">{{ loginError }}</p>
-        <p class="success" *ngIf="loginSuccess">{{ loginSuccess }}</p>
-      
-      </div>
-      
-      <div class="auth-box">
-        <h3><i class="fas fa-user-plus"></i> Регистрация</h3>
-      
-        <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
-          <div class="input-group">
-            <label for="email">Email</label>
-            <input id="email" type="email" formControlName="email" placeholder="Введите email" />
-          </div>
-      
-          <div class="input-group">
-            <label for="username">Имя пользователя</label>
-            <input id="username" type="text" formControlName="username" placeholder="Введите имя пользователя" />
-          </div>
-      
-          <div class="input-group">
-            <label for="password">Пароль</label>
-            <input id="password" type="password" formControlName="password" placeholder="Введите пароль" />
-          </div>
-      
-          <div class="input-group">
-            <label for="confirmPassword">Подтвердите пароль</label>
-            <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="Повторите пароль" />
-          </div>
-          
-          <button type="submit" class="auth-button">Зарегистрироваться</button>
-        </form>
-      
-        <p class="error" *ngIf="registerError">{{ registerError }}</p>
-        <p class="success" *ngIf="registerSuccess">{{ registerSuccess }}</p>
-      </div>
-                  
+    <div class="auth-box">
+      <h3><i class="fas fa-sign-in-alt"></i> Вход</h3>
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="forms">
+        <div class="input-group">
+          <label for="login-email">Email</label>
+          <input
+            id="login-email"
+            type="email"
+            formControlName="email"
+            placeholder="Введите email"
+            required
+          />
+        </div>
+
+        <div class="input-group">
+          <label for="login-password">Пароль</label>
+          <input
+            id="login-password"
+            type="password"
+            formControlName="password"
+            placeholder="Введите пароль"
+            required
+          />
+        </div>
+
+        <div class="remember-me">
+          <input
+            id="remember-me"
+            type="checkbox"
+            formControlName="rememberMe"
+          />
+          <label for="rememberMe">Запомнить меня</label>
+        </div>
+
+        <button type="submit" class="auth-button full-width">Войти</button>
+        <a href="#" class="forgot-password">Забыли пароль?</a>
+      </form>
+      <p class="error" *ngIf="loginError">{{ loginError }}</p>
+      <p class="success" *ngIf="loginSuccess">{{ loginSuccess }}</p>
+    </div>
   </div>
 </section>

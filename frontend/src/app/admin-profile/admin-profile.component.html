@@ -52,8 +52,7 @@
     <!-- КУРСЫ -->
     @if (currentPage=="Courses") {
     <section id="Courses" class="teacher-section">
-      <div class = "course-header">
-
+      <div class="course-header">
         <h2>Управление курсами</h2>
         <button class="add-btn" (click)="goToCreateCourse()">
           + Добавить курс
@@ -72,12 +71,12 @@
                 </p>
               </div>
             </div>
-            
+
             <!-- Тут появляются курсы из localStorage -->
           </div>
         </div>
       </div>
-        <!-- <div>
+      <!-- <div>
           <h1>Unpublished</h1>
           <div class="course-grid">
           <div id="courseList" class="course-list">
@@ -197,7 +196,7 @@
 
     } @if (currentPage=='Settings') {
     <div class="profile-section" id="settings">
-      <h2 style="color: #2962FF; margin-bottom: 20px">Настройки аккаунта</h2>
+      <h2 style="color: #2962ff; margin-bottom: 20px">Настройки аккаунта</h2>
 
       <!-- Фото профиля -->
       <div style="text-align: center; margin-bottom: 30px">
@@ -255,6 +254,19 @@
         </form>
       </div>
     </div>
+    } @if (currentPage == "teachers") {
+    <table>
+      <tr>
+        <th>Учитель</th>
+        <th>Почта</th>
+        <th>Курсы</th>
+      </tr>
+      <tr *ngFor="let teacher of allTeachers">
+        <td>{{teacher.name}}</td>
+        <td> {{teacher.email}}</td>
+        <td>ss </td>
+      </tr>
+    </table>
     }
   </main>
 </div>

@@ -9,6 +9,7 @@ import {
   updateLesson,
 } from './models/course.models11';
 import { Observable } from 'rxjs';
+import { Lesson, Module } from './useless components/course.models';
 @Injectable({
   providedIn: 'root',
 })
@@ -26,6 +27,12 @@ export class CourseService1 {
   deleteCourse(id:Course["id"]){
     return this.http.delete(`${this.apiUrl}courses/${id}`);
   }
+  deleteModule(id:Module["id"]){
+    return this.http.delete(`${this.apiUrl}courses/modules/${id}`)
+  }
+  deleteLesson(id:Lesson["id"]){
+    return this.http.delete(`${this.apiUrl}courses/lessons/${id}`)
+  }  
   
   updateCourse(course: UpdatedCourseRequest, courseId: string) {
     return this.http.patch<any>(`${this.apiUrl}courses/${courseId}`, course);

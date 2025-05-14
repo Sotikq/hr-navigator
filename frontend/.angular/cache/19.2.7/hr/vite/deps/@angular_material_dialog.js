@@ -6,16 +6,21 @@ import {
   InteractivityChecker,
   MatCommonModule,
   Platform,
+  RtlScrollAxisType,
   _CdkPrivateStyleLoader,
   _IdGenerator,
   _bindEventWithOptions,
   _getEventTarget,
   _getFocusedElementPierceShadowDom,
+  _isTestEnvironment,
   coerceArray,
+  coerceCssPixelValue,
   coerceElement,
   coerceNumberProperty,
-  hasModifierKey
-} from "./chunk-D5IXM5R5.js";
+  getRtlScrollAxisType,
+  hasModifierKey,
+  supportsScrollBehavior
+} from "./chunk-5OBM6TWJ.js";
 import {
   BidiModule,
   Directionality
@@ -676,82 +681,6 @@ var PortalModule = class _PortalModule {
     }]
   }], null, null);
 })();
-
-// node_modules/@angular/cdk/fesm2022/test-environment-75e095b5.mjs
-function _isTestEnvironment() {
-  return (
-    // @ts-ignore
-    typeof __karma__ !== "undefined" && !!__karma__ || // @ts-ignore
-    typeof jasmine !== "undefined" && !!jasmine || // @ts-ignore
-    typeof jest !== "undefined" && !!jest || // @ts-ignore
-    typeof Mocha !== "undefined" && !!Mocha
-  );
-}
-
-// node_modules/@angular/cdk/fesm2022/css-pixel-value-5ab12b77.mjs
-function coerceCssPixelValue(value) {
-  if (value == null) {
-    return "";
-  }
-  return typeof value === "string" ? value : `${value}px`;
-}
-
-// node_modules/@angular/cdk/fesm2022/scrolling-4b9e82b7.mjs
-var RtlScrollAxisType;
-(function(RtlScrollAxisType2) {
-  RtlScrollAxisType2[RtlScrollAxisType2["NORMAL"] = 0] = "NORMAL";
-  RtlScrollAxisType2[RtlScrollAxisType2["NEGATED"] = 1] = "NEGATED";
-  RtlScrollAxisType2[RtlScrollAxisType2["INVERTED"] = 2] = "INVERTED";
-})(RtlScrollAxisType || (RtlScrollAxisType = {}));
-var rtlScrollAxisType;
-var scrollBehaviorSupported;
-function supportsScrollBehavior() {
-  if (scrollBehaviorSupported == null) {
-    if (typeof document !== "object" || !document || typeof Element !== "function" || !Element) {
-      scrollBehaviorSupported = false;
-      return scrollBehaviorSupported;
-    }
-    if ("scrollBehavior" in document.documentElement.style) {
-      scrollBehaviorSupported = true;
-    } else {
-      const scrollToFunction = Element.prototype.scrollTo;
-      if (scrollToFunction) {
-        scrollBehaviorSupported = !/\{\s*\[native code\]\s*\}/.test(scrollToFunction.toString());
-      } else {
-        scrollBehaviorSupported = false;
-      }
-    }
-  }
-  return scrollBehaviorSupported;
-}
-function getRtlScrollAxisType() {
-  if (typeof document !== "object" || !document) {
-    return RtlScrollAxisType.NORMAL;
-  }
-  if (rtlScrollAxisType == null) {
-    const scrollContainer = document.createElement("div");
-    const containerStyle = scrollContainer.style;
-    scrollContainer.dir = "rtl";
-    containerStyle.width = "1px";
-    containerStyle.overflow = "auto";
-    containerStyle.visibility = "hidden";
-    containerStyle.pointerEvents = "none";
-    containerStyle.position = "absolute";
-    const content = document.createElement("div");
-    const contentStyle = content.style;
-    contentStyle.width = "2px";
-    contentStyle.height = "1px";
-    scrollContainer.appendChild(content);
-    document.body.appendChild(scrollContainer);
-    rtlScrollAxisType = RtlScrollAxisType.NORMAL;
-    if (scrollContainer.scrollLeft === 0) {
-      scrollContainer.scrollLeft = 1;
-      rtlScrollAxisType = scrollContainer.scrollLeft === 0 ? RtlScrollAxisType.NEGATED : RtlScrollAxisType.INVERTED;
-    }
-    scrollContainer.remove();
-  }
-  return rtlScrollAxisType;
-}
 
 // node_modules/@angular/cdk/fesm2022/data-source-a3a3a257.mjs
 var DataSource = class {
@@ -1418,12 +1347,12 @@ var ViewportRuler = class _ViewportRuler {
         left: 0
       };
     }
-    const document2 = this._document;
+    const document = this._document;
     const window2 = this._getWindow();
-    const documentElement = document2.documentElement;
+    const documentElement = document.documentElement;
     const documentRect = documentElement.getBoundingClientRect();
-    const top = -documentRect.top || document2.body.scrollTop || window2.scrollY || documentElement.scrollTop || 0;
-    const left = -documentRect.left || document2.body.scrollLeft || window2.scrollX || documentElement.scrollLeft || 0;
+    const top = -documentRect.top || document.body.scrollTop || window2.scrollY || documentElement.scrollTop || 0;
+    const left = -documentRect.left || document.body.scrollLeft || window2.scrollX || documentElement.scrollLeft || 0;
     return {
       top,
       left
@@ -2261,9 +2190,9 @@ var CdkVirtualScrollableElement = class _CdkVirtualScrollableElement extends Cdk
 var CdkVirtualScrollableWindow = class _CdkVirtualScrollableWindow extends CdkVirtualScrollable {
   constructor() {
     super();
-    const document2 = inject(DOCUMENT);
-    this.elementRef = new ElementRef(document2.documentElement);
-    this._scrollElement = document2;
+    const document = inject(DOCUMENT);
+    this.elementRef = new ElementRef(document.documentElement);
+    this._scrollElement = document;
   }
   measureBoundingClientRectWithScrollOffset(from) {
     return this.getElementRef().nativeElement.getBoundingClientRect()[from];
@@ -2336,7 +2265,7 @@ var ScrollingModule = class _ScrollingModule {
 })();
 
 // node_modules/@angular/cdk/fesm2022/overlay-module-d3a6e2de.mjs
-var scrollBehaviorSupported2 = supportsScrollBehavior();
+var scrollBehaviorSupported = supportsScrollBehavior();
 var BlockScrollStrategy = class {
   _viewportRuler;
   _previousHTMLStyles = {
@@ -2346,9 +2275,9 @@ var BlockScrollStrategy = class {
   _previousScrollPosition;
   _isEnabled = false;
   _document;
-  constructor(_viewportRuler, document2) {
+  constructor(_viewportRuler, document) {
     this._viewportRuler = _viewportRuler;
-    this._document = document2;
+    this._document = document;
   }
   /** Attaches this scroll strategy to an overlay. */
   attach() {
@@ -2379,11 +2308,11 @@ var BlockScrollStrategy = class {
       htmlStyle.left = this._previousHTMLStyles.left;
       htmlStyle.top = this._previousHTMLStyles.top;
       html.classList.remove("cdk-global-scrollblock");
-      if (scrollBehaviorSupported2) {
+      if (scrollBehaviorSupported) {
         htmlStyle.scrollBehavior = bodyStyle.scrollBehavior = "auto";
       }
       window.scroll(this._previousScrollPosition.left, this._previousScrollPosition.top);
-      if (scrollBehaviorSupported2) {
+      if (scrollBehaviorSupported) {
         htmlStyle.scrollBehavior = previousHtmlScrollBehavior;
         bodyStyle.scrollBehavior = previousBodyScrollBehavior;
       }
@@ -2946,10 +2875,10 @@ var BackdropRef = class {
   _cleanupClick;
   _cleanupTransitionEnd;
   _fallbackTimeout;
-  constructor(document2, _renderer, _ngZone, onClick) {
+  constructor(document, _renderer, _ngZone, onClick) {
     this._renderer = _renderer;
     this._ngZone = _ngZone;
-    this.element = document2.createElement("div");
+    this.element = document.createElement("div");
     this.element.classList.add("cdk-overlay-backdrop");
     this._cleanupClick = _renderer.listen(this.element, "click", onClick);
   }

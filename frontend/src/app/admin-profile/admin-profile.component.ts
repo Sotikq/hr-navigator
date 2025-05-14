@@ -1,47 +1,54 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../auth.service';
+import { AnalyticsChartComponent } from '../analytics-chart/analytics-chart.component';
 import {
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+
 import { Course } from '../courses';
-import { Router } from '@angular/router';
 import { CourseService1 } from '../course1.service';
-import { AuthService } from '../auth.service';
-
-import { AnalyticsChartComponent } from '../analytics-chart/analytics-chart.component';
-import { CommonModule } from '@angular/common';
-import { TeacherService } from '../teacher.service';
-
+import { adminService } from '../admin.service';
 @Component({
-  selector: 'app-teacher-profile',
-  imports: [AnalyticsChartComponent, ReactiveFormsModule, CommonModule],
-  templateUrl: './teacher-profile.component.html',
-  styleUrl: './teacher-profile.component.scss',
+  selector: 'app-admin-profile',
+  imports: [
+    RouterModule,
+    CommonModule,
+    AnalyticsChartComponent,
+    ReactiveFormsModule,
+  ],
+  templateUrl: './admin-profile.component.html',
+  styleUrl: './admin-profile.component.scss',
 })
-export class TeacherProfileComponent {
-  tabs = ['Review', 'Courses', 'analytics', 'messages', 'Settings'];
+export class AdminProfileComponent {
+  tabs = ['Review', 'Courses', 'analytics', 'messages','teachers', 'Settings'];
   user: any = null;
   currentPage: string = 'Review';
   profileForm!: FormGroup;
   passwordForm!: FormGroup;
+  allTeachers: any = [];
   courses: Course[] = []; // Массив курсов
+  
   constructor(
     private router: Router,
+    private crs: CourseService1, // QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQEEEESTION
     private auth: AuthService,
     private fb: FormBuilder,
-    private teacherService: TeacherService,
+    private adminService: adminService
   ) {
-  }
-  
-  ngOnInit(): void {
-    this.teacherService.getAllMyCourses().subscribe((data) => {
+    crs.getCourses().subscribe((data) => {
       this.courses = data; // Получаем курсы из сервиса и сохраняем в массив
       console.log(this.courses); // Логируем курсы в консоль
     });
+  }
+
+  ngOnInit(): void {
     this.userFill();
-    
+    this.getTeachers();
     console.log(this.user);
     this.profileForm = this.fb.group({
       email: [this.user.email],
@@ -103,6 +110,16 @@ export class TeacherProfileComponent {
           alert('Ошибка при обновлении пароля!');
         },
       });
+  }
+  getTeachers() {
+    this.adminService.getTeachers().subscribe({
+      next: (data) => {
+        this.allTeachers = data;
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
   }
 
   goToCreateCourse() {

@@ -33,7 +33,7 @@ export class CreateCourse1Component implements OnInit {
     private crs: CourseService1,
     private route: ActivatedRoute,
     private router: Router,
-    private dialog: MatDialog,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -230,12 +230,12 @@ export class CreateCourse1Component implements OnInit {
     });
   }
   onDeleteCourse(id: Course['id']) {
-    const dialogRef =this.dialog.open(ConfirmDialogComponent,{
-      data: {message : 'Вы уверены, то что хотите удалить курс?'}
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: { message: 'Вы уверены, то что хотите удалить курс?' },
     });
 
-    dialogRef.afterClosed().subscribe(result =>{
-      if(result){
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
         this.crs.deleteCourse(id).subscribe({
           next: (next) => {
             console.log(next);
@@ -245,27 +245,40 @@ export class CreateCourse1Component implements OnInit {
           },
         });
       }
-    })
-
+    });
   }
   onDeleteModule(id: Module['id']) {
-    const dialogRef =this.dialog.open(ConfirmDialogComponent,{
-      data: {message : 'Вы уверены, то что хотите удалить модуль?'}
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: { message: 'Вы уверены, то что хотите удалить модуль?' },
     });
-        dialogRef.afterClosed().subscribe(result =>{
-      if(result){
-        
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.crs.deleteModule(id).subscribe({
+          next: (next) => {
+            console.log(next);
+          },
+          error: (err) => {
+            console.error(err);
+          },
+        });
       }
-    })
+    });
   }
   onDeleteLesson(id: Lesson['id']) {
-    const dialogRef =this.dialog.open(ConfirmDialogComponent,{
-      data: {message : 'Вы уверены, то что хотите удалить урок?'}
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: { message: 'Вы уверены, то что хотите удалить урок?' },
     });
-        dialogRef.afterClosed().subscribe(result =>{
-      if(result){
-        
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.crs.deleteLesson(id).subscribe({
+          next: (next) => {
+            console.log(next);
+          },
+          error: (err) => {
+            console.error(err);
+          },
+        });
       }
-    })
+    });
   }
 }

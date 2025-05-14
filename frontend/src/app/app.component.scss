@@ -48,6 +48,10 @@
   .nav a:hover {
     color: $primary-color-on-hover;
   }
+  .buttons{
+    display: flex;
+    gap:10px;
+  }
   .auth-button {
     padding: 10px 20px;
     background-color: $primary-color;
@@ -57,6 +61,16 @@
     cursor: pointer;
     transition: background-color 0.3s;
   }
+  .register-button {
+    padding: 10px 20px;
+    background-color: rgb(34, 252, 56);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
 
   .auth-button:hover {
     background-color: $primary-color-on-hover;

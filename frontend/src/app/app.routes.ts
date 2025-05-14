@@ -5,11 +5,12 @@ import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { StudentProfileComponent } from './student-profile/student-profile.component';
-import { TeacherProfileComponent } from './teacher-profile/teacher-profile.component';
+import { AdminProfileComponent } from './admin-profile/admin-profile.component';
 import { CoursePageComponent } from './course-page/course-page.component';
 import { CreateCourse1Component } from './create-course1/create-course1.component';
 import { CourseCompeletionStudentComponent } from './course-compeletion-student/course-compeletion-student.component';
 import { AboutUsComponent } from './about-us/about-us.component';
+import { TeacherProfileComponent } from './teacher-profile/teacher-profile.component';
 
 export const routes: Routes = [
   {
@@ -33,8 +34,12 @@ export const routes: Routes = [
     component: StudentProfileComponent,
   }, 
   {
-    path: 'teacher',
-    component: TeacherProfileComponent,
+    path: 'admin',
+    component: AdminProfileComponent,
+  },
+  {
+    path:'teacher',
+    component: TeacherProfileComponent
   },
   {
     path: 'course/:id',
