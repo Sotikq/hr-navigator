@@ -55,7 +55,26 @@ async function isTeacherAssignedToCourse(courseId, teacherId) {
   return rows.length > 0;
 }
 
+/**
+ * Unassign a teacher from a course
+ * @param {string} courseId - Course ID
+ * @param {string} teacherId - Teacher ID
+ * @returns {Promise<void>} Throws 404 if not found
+ */
+async function unassignTeacherFromCourse(courseId, teacherId) {
+  // Check if assignment exists
+  const checkQuery = `SELECT id FROM course_teachers WHERE course_id = $1 AND teacher_id = $2`;
+  const { rows } = await pool.query(checkQuery, [courseId, teacherId]);
+  if (rows.length === 0) {
+    throw ApiError.notFound('Assignment not found');
+  }
+  // Delete the assignment
+  const deleteQuery = `DELETE FROM course_teachers WHERE course_id = $1 AND teacher_id = $2`;
+  await pool.query(deleteQuery, [courseId, teacherId]);
+}
+
 module.exports = {
   assignTeacherToCourse,
-  isTeacherAssignedToCourse
+  isTeacherAssignedToCourse,
+  unassignTeacherFromCourse
 }; 

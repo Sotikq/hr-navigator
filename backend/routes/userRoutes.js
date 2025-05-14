@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { getProfile, updateName, updatePassword, getAllTeachersList } = require('../controllers/userController');
+const { getProfile, updateName, updatePassword, getAllTeachersList, getTeachersWithCourses, unassignCourseFromTeacher } = require('../controllers/userController');
 const authMiddleware = require('../middleware/authMiddleware');
 const checkRole = require('../middleware/roleMiddleware');
+const validateApiKey = require('../middleware/apiKeyMiddleware');
 
 /**
  * @swagger
@@ -101,5 +102,111 @@ router.patch('/me/password', authMiddleware, updatePassword);
  *         description: Forbidden - Only administrators can access this endpoint
  */
 router.get('/teachers', authMiddleware, checkRole(['admin']), getAllTeachersList);
+
+/**
+ * @swagger
+ * /auth/admin/teachers-with-courses:
+ *   get:
+ *     summary: Get all teachers with their assigned courses (admin only)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *       - ApiKeyAuth: []
+ *     responses:
+ *       200:
+ *         description: List of teachers with their courses
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                     description: Teacher's user ID
+ *                   name:
+ *                     type: string
+ *                     description: Teacher's full name
+ *                   email:
+ *                     type: string
+ *                     description: Teacher's email address
+ *                   courses:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: string
+ *                           description: Course ID
+ *                         title:
+ *                           type: string
+ *                           description: Course title
+ *       403:
+ *         description: Forbidden - Only administrators can access this endpoint
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/admin/teachers-with-courses',
+  authMiddleware,
+  checkRole(['admin']),
+  validateApiKey(),
+  getTeachersWithCourses
+);
+
+/**
+ * @swagger
+ * /auth/admin/teachers/{teacherId}/courses/{courseId}:
+ *   delete:
+ *     summary: Unassign a course from a teacher (admin only)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *       - ApiKeyAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: teacherId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Teacher's user ID
+ *       - in: path
+ *         name: courseId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Course ID
+ *     responses:
+ *       200:
+ *         description: Course unassigned from teacher successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Course unassigned from teacher successfully
+ *       404:
+ *         description: Assignment not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: Assignment not found
+ *       403:
+ *         description: Forbidden - Only administrators can access this endpoint
+ *       500:
+ *         description: Internal server error
+ */
+router.delete('/admin/teachers/:teacherId/courses/:courseId',
+  authMiddleware,
+  checkRole(['admin']),
+  validateApiKey(),
+  unassignCourseFromTeacher
+);
 
 module.exports = router;

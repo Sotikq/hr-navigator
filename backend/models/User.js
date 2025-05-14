@@ -51,11 +51,39 @@ async function getAllTeachers() {
   return rows;
 }
 
+async function getAllTeachersWithCourses() {
+  const query = `
+    SELECT 
+      u.id,
+      u.name,
+      u.email,
+      COALESCE(
+        json_agg(
+          json_build_object(
+            'id', c.id,
+            'title', c.title
+          )
+        ) FILTER (WHERE c.id IS NOT NULL),
+        '[]'
+      ) as courses
+    FROM users u
+    LEFT JOIN course_teachers ct ON u.id = ct.teacher_id
+    LEFT JOIN courses c ON ct.course_id = c.id
+    WHERE u.role = 'teacher'
+    GROUP BY u.id, u.name, u.email
+    ORDER BY u.name ASC
+  `;
+  
+  const { rows } = await pool.query(query);
+  return rows;
+}
+
 module.exports = {
   createUser,
   findUserByEmail,
   findUserById,
   updateUserName,
   updateUserPassword,
-  getAllTeachers
+  getAllTeachers,
+  getAllTeachersWithCourses
 };

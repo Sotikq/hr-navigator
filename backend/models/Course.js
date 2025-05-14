@@ -174,6 +174,23 @@ async function deleteLesson(lessonId, client = pool) {
   }
 }
 
+/**
+ * Get all courses assigned to a specific teacher
+ * @param {string} teacherId
+ * @returns {Promise<Array>} List of courses
+ */
+async function getCoursesAssignedToTeacher(teacherId) {
+  const query = `
+    SELECT c.*
+    FROM courses c
+    INNER JOIN course_teachers ct ON c.id = ct.course_id
+    WHERE ct.teacher_id = $1
+    ORDER BY c.created_at DESC
+  `;
+  const { rows } = await pool.query(query, [teacherId]);
+  return rows;
+}
+
 module.exports = {
   createCourse,
   updateCourse,
@@ -187,5 +204,6 @@ module.exports = {
   updateLesson,
   deleteCourse,
   deleteModule,
-  deleteLesson
+  deleteLesson,
+  getCoursesAssignedToTeacher
 };

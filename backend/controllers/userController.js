@@ -4,10 +4,12 @@ const {
   updateUserName,
   updateUserPassword,
   findUserById,
-  getAllTeachers
+  getAllTeachers,
+  getAllTeachersWithCourses
 } = require('../models/User');
 const ApiError = require('../utils/ApiError');
 const logger = require('../utils/logger');
+const { unassignTeacherFromCourse } = require('../models/CourseTeacher');
 
 async function getProfile(req, res) {
   try {
@@ -89,9 +91,36 @@ async function getAllTeachersList(req, res, next) {
   }
 }
 
+async function getTeachersWithCourses(req, res, next) {
+  try {
+    logger.info('Fetching teachers with their courses');
+    const teachers = await getAllTeachersWithCourses();
+    logger.info(`Successfully fetched ${teachers.length} teachers with their courses`);
+    res.json(teachers);
+  } catch (err) {
+    logger.error('Error fetching teachers with courses:', err);
+    next(err);
+  }
+}
+
+async function unassignCourseFromTeacher(req, res, next) {
+  const { teacherId, courseId } = req.params;
+  try {
+    logger.info(`Admin ${req.user.id} requests to unassign course ${courseId} from teacher ${teacherId}`);
+    await unassignTeacherFromCourse(courseId, teacherId);
+    logger.info(`Course ${courseId} unassigned from teacher ${teacherId} by admin ${req.user.id}`);
+    res.json({ message: 'Course unassigned from teacher successfully' });
+  } catch (err) {
+    logger.error(`Failed to unassign course ${courseId} from teacher ${teacherId}:`, err);
+    next(err);
+  }
+}
+
 module.exports = {
   getProfile,
   updateName,
   updatePassword,
-  getAllTeachersList
+  getAllTeachersList,
+  getTeachersWithCourses,
+  unassignCourseFromTeacher
 };

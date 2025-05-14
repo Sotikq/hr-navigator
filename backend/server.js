@@ -69,6 +69,7 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
+const teacherRoutes = require('./routes/teacherRoutes');
 
 // 🔒 Роуты авторизации (регистрация, логин)
 app.use('/api/auth', authRoutes);
@@ -95,6 +96,9 @@ app.get('/api/healthz', async (req, res) => {
     res.status(500).json({ status: 'error', error: err.message });
   }
 });
+
+// 🔒 Роуты учителя
+app.use('/api', teacherRoutes);
 
 // Error handling middleware (must be last)
 app.use(errorHandler);
