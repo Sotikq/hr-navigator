@@ -15,9 +15,11 @@ const {
   assignTeacher,
   deleteCourse: deleteCourseHandler,
   deleteModule: deleteModuleHandler,
-  deleteLesson: deleteLessonHandler
+  deleteLesson: deleteLessonHandler,
+  checkCourseAccess: checkCourseAccessHandler
 } = require('../controllers/courseController');
 const { authMiddleware, validateApiKey, checkRole } = require('../middleware');
+const { checkCourseAccessHandler: paymentCheckCourseAccessHandler } = require('../controllers/paymentController');
 
 /**
  * @swagger
@@ -496,6 +498,43 @@ router.delete('/lessons/:id',
   checkRole(['admin']),
   validateApiKey(),
   deleteLessonHandler
+);
+
+/**
+ * @swagger
+ * /api/courses/{id}/access:
+ *   get:
+ *     tags: [Courses]
+ *     summary: Check if user has access to course
+ *     security:
+ *       - bearerAuth: []
+ *       - ApiKeyAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Course ID
+ *     responses:
+ *       200:
+ *         description: Course access status
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 hasAccess:
+ *                   type: boolean
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Course not found
+ */
+router.get('/:id/access',
+  authMiddleware,
+  validateApiKey(),
+  paymentCheckCourseAccessHandler
 );
 
 module.exports = router;

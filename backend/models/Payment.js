@@ -1,0 +1,212 @@
+const pool = require('../config/db');
+const logger = require('../utils/logger');
+const ApiError = require('../utils/ApiError');
+
+/**
+ * Create a new payment record
+ * @param {Object} paymentData - Payment data
+ * @param {string} paymentData.user_id - User ID
+ * @param {string} paymentData.course_id - Course ID
+ * @returns {Promise<Object>} Created payment record
+ */
+async function createPayment({ user_id, course_id }) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    // Check if course exists and get its price
+    const courseQuery = 'SELECT id, price, title FROM courses WHERE id = $1';
+    const courseResult = await client.query(courseQuery, [course_id]);
+    
+    if (courseResult.rows.length === 0) {
+      throw ApiError.notFound('Course not found');
+    }
+
+    const course = courseResult.rows[0];
+
+    // Check if user already has an active payment for this course
+    const existingPaymentQuery = `
+      SELECT id FROM payments 
+      WHERE user_id = $1 AND course_id = $2 AND status = 'confirmed'
+    `;
+    const existingPayment = await client.query(existingPaymentQuery, [user_id, course_id]);
+    
+    if (existingPayment.rows.length > 0) {
+      logger.info('User already has course access', { userId: user_id, courseId: course_id });
+      throw ApiError.badRequest('User already has access to this course');
+    }
+
+    // Create payment record
+    const paymentQuery = `
+      INSERT INTO payments (
+        user_id, 
+        course_id, 
+        amount, 
+        currency,
+        payment_method,
+        status,
+        qr_code_url,
+        payment_expires_at,
+        created_at,
+        updated_at
+      )
+      VALUES ($1, $2, $3, 'KZT', 'kaspi_qr', 'pending', $4, NOW() + INTERVAL '30 minutes', NOW(), NOW())
+      RETURNING *
+    `;
+
+    const qrCodeUrl = `https://kaspi.kz/qr/fake-payment-${Date.now()}`; // Placeholder QR URL
+    const { rows } = await client.query(paymentQuery, [user_id, course_id, course.price, qrCodeUrl]);
+
+    logger.info('Payment created successfully', { 
+      paymentId: rows[0].id,
+      userId: user_id,
+      courseId: course_id,
+      amount: course.price,
+      courseTitle: course.title
+    });
+
+    await client.query('COMMIT');
+    return rows[0];
+  } catch (error) {
+    await client.query('ROLLBACK');
+    logger.error('Error creating payment:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Get payment by ID
+ * @param {string} paymentId - Payment ID
+ * @param {string} userId - User ID (for access control)
+ * @returns {Promise<Object>} Payment record
+ */
+async function getPaymentById(paymentId, userId) {
+  const query = `
+    SELECT p.*, c.title as course_title 
+    FROM payments p
+    JOIN courses c ON p.course_id = c.id
+    WHERE p.id = $1 
+    AND (p.user_id = $2 OR EXISTS (
+      SELECT 1 FROM users WHERE id = $2 AND role = 'admin'
+    ))
+    AND (p.status = 'confirmed' OR p.payment_expires_at > NOW())
+  `;
+  const { rows } = await pool.query(query, [paymentId, userId]);
+  
+  if (rows.length === 0) {
+    logger.warn('Payment not found or access denied', { paymentId, userId });
+    throw ApiError.notFound('Payment not found or access denied');
+  }
+
+  // Check if payment has expired
+  if (rows[0].status === 'pending' && new Date(rows[0].payment_expires_at) < new Date()) {
+    logger.info('Payment has expired', { paymentId, userId });
+    throw ApiError.badRequest('Payment has expired');
+  }
+  
+  return rows[0];
+}
+
+/**
+ * Confirm payment (admin only)
+ * @param {string} paymentId - Payment ID
+ * @returns {Promise<Object>} Updated payment record
+ */
+async function confirmPayment(paymentId) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    // Check if payment exists and is pending
+    const checkQuery = `
+      SELECT p.id, p.status, p.user_id, p.course_id, p.payment_expires_at, c.title as course_title
+      FROM payments p
+      JOIN courses c ON p.course_id = c.id
+      WHERE p.id = $1 AND p.status = 'pending'
+    `;
+    const checkResult = await client.query(checkQuery, [paymentId]);
+    
+    if (checkResult.rows.length === 0) {
+      throw ApiError.badRequest('Payment not found or already confirmed');
+    }
+
+    const payment = checkResult.rows[0];
+
+    // Check if payment has expired
+    if (new Date(payment.payment_expires_at) < new Date()) {
+      logger.warn('Attempt to confirm expired payment', { paymentId });
+      throw ApiError.badRequest('Payment has expired');
+    }
+
+    // Update payment status
+    const updateQuery = `
+      UPDATE payments 
+      SET status = 'confirmed', 
+          confirmed_at = NOW(),
+          updated_at = NOW()
+      WHERE id = $1
+      RETURNING *
+    `;
+    const { rows } = await client.query(updateQuery, [paymentId]);
+
+    // Grant course access
+    const grantAccessQuery = `
+      INSERT INTO course_access (user_id, course_id, granted_at)
+      VALUES ($1, $2, NOW())
+      ON CONFLICT (user_id, course_id) DO NOTHING
+    `;
+    await client.query(grantAccessQuery, [payment.user_id, payment.course_id]);
+
+    logger.info('Payment confirmed successfully', { 
+      paymentId,
+      userId: payment.user_id,
+      courseId: payment.course_id,
+      courseTitle: payment.course_title
+    });
+
+    await client.query('COMMIT');
+    return rows[0];
+  } catch (error) {
+    await client.query('ROLLBACK');
+    logger.error('Error confirming payment:', error);
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+/**
+ * Check if user has access to a course
+ * @param {string} userId - User ID
+ * @param {string} courseId - Course ID
+ * @returns {Promise<boolean>} Whether user has access
+ */
+async function checkCourseAccess(userId, courseId) {
+  const query = `
+    SELECT 1 
+    FROM course_access ca
+    JOIN courses c ON ca.course_id = c.id
+    WHERE ca.user_id = $1 
+    AND ca.course_id = $2
+    AND c.is_active = true
+  `;
+  const { rows } = await pool.query(query, [userId, courseId]);
+  
+  const hasAccess = rows.length > 0;
+  logger.info('Course access check', { 
+    userId, 
+    courseId, 
+    hasAccess 
+  });
+  
+  return hasAccess;
+}
+
+module.exports = {
+  createPayment,
+  getPaymentById,
+  confirmPayment,
+  checkCourseAccess
+}; 

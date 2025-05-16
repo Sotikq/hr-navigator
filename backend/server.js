@@ -70,6 +70,7 @@ const userRoutes = require('./routes/userRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const teacherRoutes = require('./routes/teacherRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 
 // 🔒 Роуты авторизации (регистрация, логин)
 app.use('/api/auth', authRoutes);
@@ -82,6 +83,9 @@ app.use('/api/courses', courseRoutes);
 
 // 📝 Роуты отзывов
 app.use('/api/reviews', reviewRoutes);
+
+// 💰 Роуты платежей
+app.use('/api/payments', paymentRoutes);
 
 // 🌐 Главная страница для теста
 app.get('/', (req, res) => {
