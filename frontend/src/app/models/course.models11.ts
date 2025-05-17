@@ -61,3 +61,26 @@ export interface LessonRequest{
  // created_at: any;
 }
 
+
+
+
+export interface Course {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl?: string;
+  imageFile?: File | null;
+  deadline?: string;
+  modules: Module[];
+}
+
+export interface Module {
+  id?: string;
+  title: string;
+  description: string;
+  lessons: LessonRequest[];
+}
+
+export interface Lesson{
+  id: string;
+}

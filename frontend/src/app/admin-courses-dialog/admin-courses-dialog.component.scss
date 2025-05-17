@@ -1,0 +1,130 @@
+/* Основные стили диалога */
+.dialog-title {
+  color: #2c3e50;
+  font-weight: 600;
+  padding: 20px 24px 10px;
+  margin: 0;
+  font-size: 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.dialog-content {
+  padding: 20px 24px;
+  min-height: 200px;
+}
+
+/* Стили для поля выбора */
+.course-select-field {
+  width: 100%;
+  margin: 15px 0;
+
+  .select-label {
+    color: #5a6a7a;
+    font-weight: 500;
+  }
+
+  .mat-select-value {
+    color: #2c3e50;
+    font-weight: 500;
+  }
+
+  .mat-form-field-flex {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 0 12px;
+    border: 1px solid #e0e0e0;
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: #b0bec5;
+    }
+  }
+
+  .mat-form-field-underline {
+    display: none;
+  }
+}
+
+/* Стили для опций */
+.course-option {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f5f5f5;
+  transition: background-color 0.2s;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background-color: #f0f7ff;
+  .course-title {
+      color: #1976d2;
+    }
+  }
+
+  .course-title {
+    font-weight: 500;
+    color: #2c3e50;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .course-category {
+    font-size: 0.75rem;
+    color: #78909c;
+    display: block;
+  }
+}
+
+/* Стили для панели выбора */
+.mat-select-panel {
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  margin-top: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+/* Стили для кнопок */
+.dialog-actions {
+  padding: 16px 24px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+
+  .cancel-btn {
+    color: #78909c;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 0 20px;
+    height: 40px;
+    transition: all 0.3s;
+
+    &:hover {
+      background-color: #f5f5f5;
+      border-color: #b0bec5;
+    }
+  }
+
+  .add-btn {
+    background-color: #2962ff;
+    color: white;
+    border-radius: 6px;
+    padding: 0 24px;
+    height: 40px;
+    font-weight: 500;
+    transition: all 0.3s;
+    box-shadow: none;
+
+    &:hover {
+      background-color: #204fd8;
+      transform: translateY(-1px);
+    }
+
+    &:disabled {
+      background-color: #b0bec5;
+      color: #eceff1;
+      cursor: not-allowed;
+    }
+  }
+}

@@ -13,6 +13,11 @@ import {
 import { Course } from '../courses';
 import { CourseService1 } from '../course1.service';
 import { adminService } from '../admin.service';
+import { MatDialog } from '@angular/material/dialog';
+import { AdminCoursesDialogComponent } from '../admin-courses-dialog/admin-courses-dialog.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { Teacher } from '../models/teacher.models';
 @Component({
   selector: 'app-admin-profile',
   imports: [
@@ -25,28 +30,29 @@ import { adminService } from '../admin.service';
   styleUrl: './admin-profile.component.scss',
 })
 export class AdminProfileComponent {
-  tabs = ['Review', 'Courses', 'analytics', 'messages','teachers', 'Settings'];
+  tabs = ['Review', 'Courses', 'analytics', 'messages', 'teachers', 'Settings'];
   user: any = null;
   currentPage: string = 'Review';
   profileForm!: FormGroup;
   passwordForm!: FormGroup;
   allTeachers: any = [];
   courses: Course[] = []; // Массив курсов
-  
+
   constructor(
     private router: Router,
     private crs: CourseService1, // QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQEEEESTION
     private auth: AuthService,
     private fb: FormBuilder,
-    private adminService: adminService
-  ) {
-    crs.getCourses().subscribe((data) => {
+    private adminService: adminService,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar,
+  ) {}
+
+  ngOnInit(): void {
+    this.crs.getCourses().subscribe((data) => {
       this.courses = data; // Получаем курсы из сервиса и сохраняем в массив
       console.log(this.courses); // Логируем курсы в консоль
     });
-  }
-
-  ngOnInit(): void {
     this.userFill();
     this.getTeachers();
     console.log(this.user);
@@ -112,7 +118,7 @@ export class AdminProfileComponent {
       });
   }
   getTeachers() {
-    this.adminService.getTeachers().subscribe({
+    this.adminService.getTeachersWithCourses().subscribe({
       next: (data) => {
         this.allTeachers = data;
       },
@@ -120,6 +126,80 @@ export class AdminProfileComponent {
         console.error(err);
       },
     });
+  }
+  openTeacherCoursesDialog(teacher: any): void {
+    console.log(teacher.courses);
+    const dialogRef = this.dialog.open(AdminCoursesDialogComponent, {
+      width: '500px',
+      data: {
+        teacher: teacher,
+        allCourses: this.courses, // Ваш метод для получения всех курсов
+        teachesCourses: teacher.courses,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((selectedCourse: Course) => {
+      if (selectedCourse) {
+        this.addCourseToTeacher(teacher.id, selectedCourse);
+      }
+      console.log(
+        'qweqeqwe',
+        teacher.id,
+        typeof teacher.id,
+        'asdasdas',
+        selectedCourse
+      );
+    });
+  }
+
+  addCourseToTeacher(teacherId: string, selectedCourse: any) {
+    this.adminService.addCourseToTeacher(teacherId, selectedCourse).subscribe({
+      next: (data) => {
+        console.log(data, 'added');
+        const teacher = this.allTeachers.find(
+          (t: { id: string }) => t.id === teacherId
+        );
+        if (teacher) {
+          teacher.courses = data;
+        }
+        this.snackBar.open('Курс успешно добавлен', 'Закрыть', {
+          duration: 3000,
+        });
+        
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
+  }
+
+  removeCourseFromTeacher(teacher : Teacher , courseId: Course["id"]){
+     
+  
+  const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+    width: '350px',
+    data: {
+      title: 'Подтверждение удаления',
+      message: `Вы уверены, что хотите удалить курс у преподавателя ${teacher.name}?`
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+      this.adminService.removeCourseFromTeacher(teacher.id, courseId).subscribe({
+        next: (response) => {
+          // Удаляем курс локально без перезагрузки
+          teacher.Courses = teacher.Courses?.filter((c: any) => c.id !== courseId) || [];
+          this.snackBar.open('Курс удален', 'Закрыть', { duration: 3000 });
+          console.log(response);
+        },
+        error: (err) => {
+          this.snackBar.open('Ошибка при удалении', 'Закрыть', { duration: 3000 });
+          console.error(err);
+        }
+      });
+    }
+  });
   }
 
   goToCreateCourse() {

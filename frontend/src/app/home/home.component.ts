@@ -3,9 +3,10 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { VideoReviewService } from '../video-review.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { Router, RouterModule } from '@angular/router';
 @Component({
   selector: 'app-home',
-  imports: [CommonModule],
+  imports: [CommonModule,RouterModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })

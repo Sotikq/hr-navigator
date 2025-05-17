@@ -15,7 +15,7 @@
       </p>
       <button
         class="hero-button"
-        onclick="window.location.href='courses.html';"
+        [routerLink]="['/courses']"
       >
         Начать обучение
       </button>
@@ -96,7 +96,7 @@
           </div>
           <button
             class="course-button"
-            onclick="window.location.href='courses.html';"
+            [routerLink]="['/courses']"
           >
             Подробнее
           </button>
@@ -121,7 +121,7 @@
           </div>
           <button
             class="course-button"
-            onclick="window.location.href='courses.html';"
+            [routerLink]="['/courses']"
           >
             Подробнее
           </button>
@@ -146,7 +146,7 @@
           </div>
           <button
             class="course-button"
-            onclick="window.location.href='courses.html';"
+            [routerLink]="['/courses']"
           >
             Подробнее
           </button>
@@ -199,7 +199,7 @@
             <li><i class="fas fa-check-circle"></i>• лучшие преподаватели-практики</li>
           
           </ul>
-          <a href="courses.html" class="explore-button">Изучить курсы</a>
+          <a [routerLink]="['/courses']" class="explore-button">Изучить курсы</a>
         </div>
       </div>
     </div>
@@ -342,10 +342,8 @@
           высот с нашими курсами.
         </p>
         <div class="cta-buttons">
-          <a href="courses.html" class="cta-button student-btn">Я студент</a>
-          <a href="hr-program.html" class="cta-button hr-btn"
-            >Я HR-специалист</a
-          >
+          <a [routerLink]="['/courses']" class="cta-button student-btn">Начать Обучение</a>
+          
         </div>
       </div>
       <div class="cta-image">

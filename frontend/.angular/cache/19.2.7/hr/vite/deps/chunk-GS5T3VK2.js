@@ -1,9 +1,13 @@
 import {
-  BidiModule
-} from "./chunk-2HZ6CZCR.js";
+  Platform,
+  coerceElement,
+  coerceNumberProperty
+} from "./chunk-IZLWGWBC.js";
 import {
-  DOCUMENT,
-  isPlatformBrowser
+  BidiModule
+} from "./chunk-BBZY6V46.js";
+import {
+  DOCUMENT
 } from "./chunk-O6K2K6QH.js";
 import {
   APP_ID,
@@ -22,7 +26,6 @@ import {
   NgModule,
   NgZone,
   Output,
-  PLATFORM_ID,
   QueryList,
   RendererFactory2,
   VERSION,
@@ -30,8 +33,11 @@ import {
   afterNextRender,
   booleanAttribute,
   createComponent,
+  effect,
   inject,
+  isSignal,
   setClassMetadata,
+  signal,
   ɵɵNgOnChangesFeature,
   ɵɵdefineComponent,
   ɵɵdefineDirective,
@@ -62,52 +68,22 @@ import {
   __spreadValues
 } from "./chunk-WDMUDEB6.js";
 
-// node_modules/@angular/cdk/fesm2022/boolean-property-c20ad71c.mjs
-function coerceBooleanProperty(value) {
-  return value != null && `${value}` !== "false";
-}
-
-// node_modules/@angular/cdk/fesm2022/element-bed495ef.mjs
-function coerceNumberProperty(value, fallbackValue = 0) {
-  if (_isNumberValue(value)) {
-    return Number(value);
-  }
-  return arguments.length === 2 ? fallbackValue : 0;
-}
-function _isNumberValue(value) {
-  return !isNaN(parseFloat(value)) && !isNaN(Number(value));
-}
-function coerceElement(elementOrRef) {
-  return elementOrRef instanceof ElementRef ? elementOrRef.nativeElement : elementOrRef;
-}
-
-// node_modules/@angular/cdk/fesm2022/array-88204b72.mjs
-function coerceArray(value) {
-  return Array.isArray(value) ? value : [value];
-}
-
-// node_modules/@angular/cdk/fesm2022/css-pixel-value-5ab12b77.mjs
-function coerceCssPixelValue(value) {
-  if (value == null) {
-    return "";
-  }
-  return typeof value === "string" ? value : `${value}px`;
-}
-
-// node_modules/@angular/cdk/fesm2022/fake-event-detection-61bf2988.mjs
-function isFakeMousedownFromScreenReader(event) {
-  return event.buttons === 0 || event.detail === 0;
-}
-function isFakeTouchstartFromScreenReader(event) {
-  const touch = event.touches && event.touches[0] || event.changedTouches && event.changedTouches[0];
-  return !!touch && touch.identifier === -1 && (touch.radiusX == null || touch.radiusX === 1) && (touch.radiusY == null || touch.radiusY === 1);
-}
-
 // node_modules/@angular/cdk/fesm2022/keycodes-fbdb6e67.mjs
+var TAB = 9;
+var ENTER = 13;
 var SHIFT = 16;
 var CONTROL = 17;
 var ALT = 18;
 var ESCAPE = 27;
+var SPACE = 32;
+var PAGE_UP = 33;
+var PAGE_DOWN = 34;
+var END = 35;
+var HOME = 36;
+var LEFT_ARROW = 37;
+var UP_ARROW = 38;
+var RIGHT_ARROW = 39;
+var DOWN_ARROW = 40;
 var ZERO = 48;
 var NINE = 57;
 var A = 65;
@@ -149,6 +125,486 @@ function _getEventTarget(event) {
   return event.composedPath ? event.composedPath()[0] : event.target;
 }
 
+// node_modules/@angular/cdk/fesm2022/style-loader-9324bd22.mjs
+var appsWithLoaders = /* @__PURE__ */ new WeakMap();
+var _CdkPrivateStyleLoader = class __CdkPrivateStyleLoader {
+  _appRef;
+  _injector = inject(Injector);
+  _environmentInjector = inject(EnvironmentInjector);
+  /**
+   * Loads a set of styles.
+   * @param loader Component which will be instantiated to load the styles.
+   */
+  load(loader) {
+    const appRef = this._appRef = this._appRef || this._injector.get(ApplicationRef);
+    let data = appsWithLoaders.get(appRef);
+    if (!data) {
+      data = {
+        loaders: /* @__PURE__ */ new Set(),
+        refs: []
+      };
+      appsWithLoaders.set(appRef, data);
+      appRef.onDestroy(() => {
+        appsWithLoaders.get(appRef)?.refs.forEach((ref) => ref.destroy());
+        appsWithLoaders.delete(appRef);
+      });
+    }
+    if (!data.loaders.has(loader)) {
+      data.loaders.add(loader);
+      data.refs.push(createComponent(loader, {
+        environmentInjector: this._environmentInjector
+      }));
+    }
+  }
+  static ɵfac = function _CdkPrivateStyleLoader_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || __CdkPrivateStyleLoader)();
+  };
+  static ɵprov = ɵɵdefineInjectable({
+    token: __CdkPrivateStyleLoader,
+    factory: __CdkPrivateStyleLoader.ɵfac,
+    providedIn: "root"
+  });
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(_CdkPrivateStyleLoader, [{
+    type: Injectable,
+    args: [{
+      providedIn: "root"
+    }]
+  }], null, null);
+})();
+
+// node_modules/@angular/cdk/fesm2022/array-88204b72.mjs
+function coerceArray(value) {
+  return Array.isArray(value) ? value : [value];
+}
+
+// node_modules/@angular/cdk/fesm2022/breakpoints-observer-f26c2a25.mjs
+var mediaQueriesForWebkitCompatibility = /* @__PURE__ */ new Set();
+var mediaQueryStyleNode;
+var MediaMatcher = class _MediaMatcher {
+  _platform = inject(Platform);
+  _nonce = inject(CSP_NONCE, {
+    optional: true
+  });
+  /** The internal matchMedia method to return back a MediaQueryList like object. */
+  _matchMedia;
+  constructor() {
+    this._matchMedia = this._platform.isBrowser && window.matchMedia ? (
+      // matchMedia is bound to the window scope intentionally as it is an illegal invocation to
+      // call it from a different scope.
+      window.matchMedia.bind(window)
+    ) : noopMatchMedia;
+  }
+  /**
+   * Evaluates the given media query and returns the native MediaQueryList from which results
+   * can be retrieved.
+   * Confirms the layout engine will trigger for the selector query provided and returns the
+   * MediaQueryList for the query provided.
+   */
+  matchMedia(query) {
+    if (this._platform.WEBKIT || this._platform.BLINK) {
+      createEmptyStyleRule(query, this._nonce);
+    }
+    return this._matchMedia(query);
+  }
+  static ɵfac = function MediaMatcher_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _MediaMatcher)();
+  };
+  static ɵprov = ɵɵdefineInjectable({
+    token: _MediaMatcher,
+    factory: _MediaMatcher.ɵfac,
+    providedIn: "root"
+  });
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(MediaMatcher, [{
+    type: Injectable,
+    args: [{
+      providedIn: "root"
+    }]
+  }], () => [], null);
+})();
+function createEmptyStyleRule(query, nonce) {
+  if (mediaQueriesForWebkitCompatibility.has(query)) {
+    return;
+  }
+  try {
+    if (!mediaQueryStyleNode) {
+      mediaQueryStyleNode = document.createElement("style");
+      if (nonce) {
+        mediaQueryStyleNode.setAttribute("nonce", nonce);
+      }
+      mediaQueryStyleNode.setAttribute("type", "text/css");
+      document.head.appendChild(mediaQueryStyleNode);
+    }
+    if (mediaQueryStyleNode.sheet) {
+      mediaQueryStyleNode.sheet.insertRule(`@media ${query} {body{ }}`, 0);
+      mediaQueriesForWebkitCompatibility.add(query);
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+function noopMatchMedia(query) {
+  return {
+    matches: query === "all" || query === "",
+    media: query,
+    addListener: () => {
+    },
+    removeListener: () => {
+    }
+  };
+}
+var BreakpointObserver = class _BreakpointObserver {
+  _mediaMatcher = inject(MediaMatcher);
+  _zone = inject(NgZone);
+  /**  A map of all media queries currently being listened for. */
+  _queries = /* @__PURE__ */ new Map();
+  /** A subject for all other observables to takeUntil based on. */
+  _destroySubject = new Subject();
+  constructor() {
+  }
+  /** Completes the active subject, signalling to all other observables to complete. */
+  ngOnDestroy() {
+    this._destroySubject.next();
+    this._destroySubject.complete();
+  }
+  /**
+   * Whether one or more media queries match the current viewport size.
+   * @param value One or more media queries to check.
+   * @returns Whether any of the media queries match.
+   */
+  isMatched(value) {
+    const queries = splitQueries(coerceArray(value));
+    return queries.some((mediaQuery) => this._registerQuery(mediaQuery).mql.matches);
+  }
+  /**
+   * Gets an observable of results for the given queries that will emit new results for any changes
+   * in matching of the given queries.
+   * @param value One or more media queries to check.
+   * @returns A stream of matches for the given queries.
+   */
+  observe(value) {
+    const queries = splitQueries(coerceArray(value));
+    const observables = queries.map((query) => this._registerQuery(query).observable);
+    let stateObservable = combineLatest(observables);
+    stateObservable = concat(stateObservable.pipe(take(1)), stateObservable.pipe(skip(1), debounceTime(0)));
+    return stateObservable.pipe(map((breakpointStates) => {
+      const response = {
+        matches: false,
+        breakpoints: {}
+      };
+      breakpointStates.forEach(({
+        matches,
+        query
+      }) => {
+        response.matches = response.matches || matches;
+        response.breakpoints[query] = matches;
+      });
+      return response;
+    }));
+  }
+  /** Registers a specific query to be listened for. */
+  _registerQuery(query) {
+    if (this._queries.has(query)) {
+      return this._queries.get(query);
+    }
+    const mql = this._mediaMatcher.matchMedia(query);
+    const queryObservable = new Observable((observer) => {
+      const handler = (e) => this._zone.run(() => observer.next(e));
+      mql.addListener(handler);
+      return () => {
+        mql.removeListener(handler);
+      };
+    }).pipe(startWith(mql), map(({
+      matches
+    }) => ({
+      query,
+      matches
+    })), takeUntil(this._destroySubject));
+    const output = {
+      observable: queryObservable,
+      mql
+    };
+    this._queries.set(query, output);
+    return output;
+  }
+  static ɵfac = function BreakpointObserver_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _BreakpointObserver)();
+  };
+  static ɵprov = ɵɵdefineInjectable({
+    token: _BreakpointObserver,
+    factory: _BreakpointObserver.ɵfac,
+    providedIn: "root"
+  });
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(BreakpointObserver, [{
+    type: Injectable,
+    args: [{
+      providedIn: "root"
+    }]
+  }], () => [], null);
+})();
+function splitQueries(queries) {
+  return queries.map((query) => query.split(",")).reduce((a1, a2) => a1.concat(a2)).map((query) => query.trim());
+}
+
+// node_modules/@angular/cdk/fesm2022/observe-content-0b289083.mjs
+function shouldIgnoreRecord(record) {
+  if (record.type === "characterData" && record.target instanceof Comment) {
+    return true;
+  }
+  if (record.type === "childList") {
+    for (let i = 0; i < record.addedNodes.length; i++) {
+      if (!(record.addedNodes[i] instanceof Comment)) {
+        return false;
+      }
+    }
+    for (let i = 0; i < record.removedNodes.length; i++) {
+      if (!(record.removedNodes[i] instanceof Comment)) {
+        return false;
+      }
+    }
+    return true;
+  }
+  return false;
+}
+var MutationObserverFactory = class _MutationObserverFactory {
+  create(callback) {
+    return typeof MutationObserver === "undefined" ? null : new MutationObserver(callback);
+  }
+  static ɵfac = function MutationObserverFactory_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _MutationObserverFactory)();
+  };
+  static ɵprov = ɵɵdefineInjectable({
+    token: _MutationObserverFactory,
+    factory: _MutationObserverFactory.ɵfac,
+    providedIn: "root"
+  });
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(MutationObserverFactory, [{
+    type: Injectable,
+    args: [{
+      providedIn: "root"
+    }]
+  }], null, null);
+})();
+var ContentObserver = class _ContentObserver {
+  _mutationObserverFactory = inject(MutationObserverFactory);
+  /** Keeps track of the existing MutationObservers so they can be reused. */
+  _observedElements = /* @__PURE__ */ new Map();
+  _ngZone = inject(NgZone);
+  constructor() {
+  }
+  ngOnDestroy() {
+    this._observedElements.forEach((_, element) => this._cleanupObserver(element));
+  }
+  observe(elementOrRef) {
+    const element = coerceElement(elementOrRef);
+    return new Observable((observer) => {
+      const stream = this._observeElement(element);
+      const subscription = stream.pipe(map((records) => records.filter((record) => !shouldIgnoreRecord(record))), filter((records) => !!records.length)).subscribe((records) => {
+        this._ngZone.run(() => {
+          observer.next(records);
+        });
+      });
+      return () => {
+        subscription.unsubscribe();
+        this._unobserveElement(element);
+      };
+    });
+  }
+  /**
+   * Observes the given element by using the existing MutationObserver if available, or creating a
+   * new one if not.
+   */
+  _observeElement(element) {
+    return this._ngZone.runOutsideAngular(() => {
+      if (!this._observedElements.has(element)) {
+        const stream = new Subject();
+        const observer = this._mutationObserverFactory.create((mutations) => stream.next(mutations));
+        if (observer) {
+          observer.observe(element, {
+            characterData: true,
+            childList: true,
+            subtree: true
+          });
+        }
+        this._observedElements.set(element, {
+          observer,
+          stream,
+          count: 1
+        });
+      } else {
+        this._observedElements.get(element).count++;
+      }
+      return this._observedElements.get(element).stream;
+    });
+  }
+  /**
+   * Un-observes the given element and cleans up the underlying MutationObserver if nobody else is
+   * observing this element.
+   */
+  _unobserveElement(element) {
+    if (this._observedElements.has(element)) {
+      this._observedElements.get(element).count--;
+      if (!this._observedElements.get(element).count) {
+        this._cleanupObserver(element);
+      }
+    }
+  }
+  /** Clean up the underlying MutationObserver for the specified element. */
+  _cleanupObserver(element) {
+    if (this._observedElements.has(element)) {
+      const {
+        observer,
+        stream
+      } = this._observedElements.get(element);
+      if (observer) {
+        observer.disconnect();
+      }
+      stream.complete();
+      this._observedElements.delete(element);
+    }
+  }
+  static ɵfac = function ContentObserver_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _ContentObserver)();
+  };
+  static ɵprov = ɵɵdefineInjectable({
+    token: _ContentObserver,
+    factory: _ContentObserver.ɵfac,
+    providedIn: "root"
+  });
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ContentObserver, [{
+    type: Injectable,
+    args: [{
+      providedIn: "root"
+    }]
+  }], () => [], null);
+})();
+var CdkObserveContent = class _CdkObserveContent {
+  _contentObserver = inject(ContentObserver);
+  _elementRef = inject(ElementRef);
+  /** Event emitted for each change in the element's content. */
+  event = new EventEmitter();
+  /**
+   * Whether observing content is disabled. This option can be used
+   * to disconnect the underlying MutationObserver until it is needed.
+   */
+  get disabled() {
+    return this._disabled;
+  }
+  set disabled(value) {
+    this._disabled = value;
+    this._disabled ? this._unsubscribe() : this._subscribe();
+  }
+  _disabled = false;
+  /** Debounce interval for emitting the changes. */
+  get debounce() {
+    return this._debounce;
+  }
+  set debounce(value) {
+    this._debounce = coerceNumberProperty(value);
+    this._subscribe();
+  }
+  _debounce;
+  _currentSubscription = null;
+  constructor() {
+  }
+  ngAfterContentInit() {
+    if (!this._currentSubscription && !this.disabled) {
+      this._subscribe();
+    }
+  }
+  ngOnDestroy() {
+    this._unsubscribe();
+  }
+  _subscribe() {
+    this._unsubscribe();
+    const stream = this._contentObserver.observe(this._elementRef);
+    this._currentSubscription = (this.debounce ? stream.pipe(debounceTime(this.debounce)) : stream).subscribe(this.event);
+  }
+  _unsubscribe() {
+    this._currentSubscription?.unsubscribe();
+  }
+  static ɵfac = function CdkObserveContent_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _CdkObserveContent)();
+  };
+  static ɵdir = ɵɵdefineDirective({
+    type: _CdkObserveContent,
+    selectors: [["", "cdkObserveContent", ""]],
+    inputs: {
+      disabled: [2, "cdkObserveContentDisabled", "disabled", booleanAttribute],
+      debounce: "debounce"
+    },
+    outputs: {
+      event: "cdkObserveContent"
+    },
+    exportAs: ["cdkObserveContent"]
+  });
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(CdkObserveContent, [{
+    type: Directive,
+    args: [{
+      selector: "[cdkObserveContent]",
+      exportAs: "cdkObserveContent"
+    }]
+  }], () => [], {
+    event: [{
+      type: Output,
+      args: ["cdkObserveContent"]
+    }],
+    disabled: [{
+      type: Input,
+      args: [{
+        alias: "cdkObserveContentDisabled",
+        transform: booleanAttribute
+      }]
+    }],
+    debounce: [{
+      type: Input
+    }]
+  });
+})();
+var ObserversModule = class _ObserversModule {
+  static ɵfac = function ObserversModule_Factory(__ngFactoryType__) {
+    return new (__ngFactoryType__ || _ObserversModule)();
+  };
+  static ɵmod = ɵɵdefineNgModule({
+    type: _ObserversModule,
+    imports: [CdkObserveContent],
+    exports: [CdkObserveContent]
+  });
+  static ɵinj = ɵɵdefineInjector({
+    providers: [MutationObserverFactory]
+  });
+};
+(() => {
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ObserversModule, [{
+    type: NgModule,
+    args: [{
+      imports: [CdkObserveContent],
+      exports: [CdkObserveContent],
+      providers: [MutationObserverFactory]
+    }]
+  }], null, null);
+})();
+
+// node_modules/@angular/cdk/fesm2022/fake-event-detection-61bf2988.mjs
+function isFakeMousedownFromScreenReader(event) {
+  return event.buttons === 0 || event.detail === 0;
+}
+function isFakeTouchstartFromScreenReader(event) {
+  const touch = event.touches && event.touches[0] || event.changedTouches && event.changedTouches[0];
+  return !!touch && touch.identifier === -1 && (touch.radiusX == null || touch.radiusX === 1) && (touch.radiusY == null || touch.radiusY === 1);
+}
+
 // node_modules/@angular/cdk/fesm2022/backwards-compatibility-c898f923.mjs
 function _bindEventWithOptions(renderer, target, eventName, callback, options) {
   const major = parseInt(VERSION.major);
@@ -161,67 +617,6 @@ function _bindEventWithOptions(renderer, target, eventName, callback, options) {
     target.removeEventListener(eventName, callback, options);
   };
 }
-
-// node_modules/@angular/cdk/fesm2022/platform-666e117b.mjs
-var hasV8BreakIterator;
-try {
-  hasV8BreakIterator = typeof Intl !== "undefined" && Intl.v8BreakIterator;
-} catch {
-  hasV8BreakIterator = false;
-}
-var Platform = class _Platform {
-  _platformId = inject(PLATFORM_ID);
-  // We want to use the Angular platform check because if the Document is shimmed
-  // without the navigator, the following checks will fail. This is preferred because
-  // sometimes the Document may be shimmed without the user's knowledge or intention
-  /** Whether the Angular application is being rendered in the browser. */
-  isBrowser = this._platformId ? isPlatformBrowser(this._platformId) : typeof document === "object" && !!document;
-  /** Whether the current browser is Microsoft Edge. */
-  EDGE = this.isBrowser && /(edge)/i.test(navigator.userAgent);
-  /** Whether the current rendering engine is Microsoft Trident. */
-  TRIDENT = this.isBrowser && /(msie|trident)/i.test(navigator.userAgent);
-  // EdgeHTML and Trident mock Blink specific things and need to be excluded from this check.
-  /** Whether the current rendering engine is Blink. */
-  BLINK = this.isBrowser && !!(window.chrome || hasV8BreakIterator) && typeof CSS !== "undefined" && !this.EDGE && !this.TRIDENT;
-  // Webkit is part of the userAgent in EdgeHTML, Blink and Trident. Therefore we need to
-  // ensure that Webkit runs standalone and is not used as another engine's base.
-  /** Whether the current rendering engine is WebKit. */
-  WEBKIT = this.isBrowser && /AppleWebKit/i.test(navigator.userAgent) && !this.BLINK && !this.EDGE && !this.TRIDENT;
-  /** Whether the current platform is Apple iOS. */
-  IOS = this.isBrowser && /iPad|iPhone|iPod/.test(navigator.userAgent) && !("MSStream" in window);
-  // It's difficult to detect the plain Gecko engine, because most of the browsers identify
-  // them self as Gecko-like browsers and modify the userAgent's according to that.
-  // Since we only cover one explicit Firefox case, we can simply check for Firefox
-  // instead of having an unstable check for Gecko.
-  /** Whether the current browser is Firefox. */
-  FIREFOX = this.isBrowser && /(firefox|minefield)/i.test(navigator.userAgent);
-  /** Whether the current platform is Android. */
-  // Trident on mobile adds the android platform to the userAgent to trick detections.
-  ANDROID = this.isBrowser && /android/i.test(navigator.userAgent) && !this.TRIDENT;
-  // Safari browsers will include the Safari keyword in their userAgent. Some browsers may fake
-  // this and just place the Safari keyword in the userAgent. To be more safe about Safari every
-  // Safari browser should also use Webkit as its layout engine.
-  /** Whether the current browser is Safari. */
-  SAFARI = this.isBrowser && /safari/i.test(navigator.userAgent) && this.WEBKIT;
-  constructor() {
-  }
-  static ɵfac = function Platform_Factory(__ngFactoryType__) {
-    return new (__ngFactoryType__ || _Platform)();
-  };
-  static ɵprov = ɵɵdefineInjectable({
-    token: _Platform,
-    factory: _Platform.ɵfac,
-    providedIn: "root"
-  });
-};
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(Platform, [{
-    type: Injectable,
-    args: [{
-      providedIn: "root"
-    }]
-  }], () => [], null);
-})();
 
 // node_modules/@angular/cdk/fesm2022/passive-listeners-1189a3bc.mjs
 var supportsPassiveEvents;
@@ -728,55 +1123,6 @@ var CdkMonitorFocus = class _CdkMonitorFocus {
   });
 })();
 
-// node_modules/@angular/cdk/fesm2022/style-loader-9324bd22.mjs
-var appsWithLoaders = /* @__PURE__ */ new WeakMap();
-var _CdkPrivateStyleLoader = class __CdkPrivateStyleLoader {
-  _appRef;
-  _injector = inject(Injector);
-  _environmentInjector = inject(EnvironmentInjector);
-  /**
-   * Loads a set of styles.
-   * @param loader Component which will be instantiated to load the styles.
-   */
-  load(loader) {
-    const appRef = this._appRef = this._appRef || this._injector.get(ApplicationRef);
-    let data = appsWithLoaders.get(appRef);
-    if (!data) {
-      data = {
-        loaders: /* @__PURE__ */ new Set(),
-        refs: []
-      };
-      appsWithLoaders.set(appRef, data);
-      appRef.onDestroy(() => {
-        appsWithLoaders.get(appRef)?.refs.forEach((ref) => ref.destroy());
-        appsWithLoaders.delete(appRef);
-      });
-    }
-    if (!data.loaders.has(loader)) {
-      data.loaders.add(loader);
-      data.refs.push(createComponent(loader, {
-        environmentInjector: this._environmentInjector
-      }));
-    }
-  }
-  static ɵfac = function _CdkPrivateStyleLoader_Factory(__ngFactoryType__) {
-    return new (__ngFactoryType__ || __CdkPrivateStyleLoader)();
-  };
-  static ɵprov = ɵɵdefineInjectable({
-    token: __CdkPrivateStyleLoader,
-    factory: __CdkPrivateStyleLoader.ɵfac,
-    providedIn: "root"
-  });
-};
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(_CdkPrivateStyleLoader, [{
-    type: Injectable,
-    args: [{
-      providedIn: "root"
-    }]
-  }], null, null);
-})();
-
 // node_modules/@angular/cdk/fesm2022/visually-hidden-d55089fe.mjs
 var _VisuallyHiddenLoader = class __VisuallyHiddenLoader {
   static ɵfac = function _VisuallyHiddenLoader_Factory(__ngFactoryType__) {
@@ -804,423 +1150,6 @@ var _VisuallyHiddenLoader = class __VisuallyHiddenLoader {
       template: "",
       changeDetection: ChangeDetectionStrategy.OnPush,
       styles: [".cdk-visually-hidden{border:0;clip:rect(0 0 0 0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px;white-space:nowrap;outline:0;-webkit-appearance:none;-moz-appearance:none;left:0}[dir=rtl] .cdk-visually-hidden{left:auto;right:0}"]
-    }]
-  }], null, null);
-})();
-
-// node_modules/@angular/cdk/fesm2022/breakpoints-observer-f26c2a25.mjs
-var mediaQueriesForWebkitCompatibility = /* @__PURE__ */ new Set();
-var mediaQueryStyleNode;
-var MediaMatcher = class _MediaMatcher {
-  _platform = inject(Platform);
-  _nonce = inject(CSP_NONCE, {
-    optional: true
-  });
-  /** The internal matchMedia method to return back a MediaQueryList like object. */
-  _matchMedia;
-  constructor() {
-    this._matchMedia = this._platform.isBrowser && window.matchMedia ? (
-      // matchMedia is bound to the window scope intentionally as it is an illegal invocation to
-      // call it from a different scope.
-      window.matchMedia.bind(window)
-    ) : noopMatchMedia;
-  }
-  /**
-   * Evaluates the given media query and returns the native MediaQueryList from which results
-   * can be retrieved.
-   * Confirms the layout engine will trigger for the selector query provided and returns the
-   * MediaQueryList for the query provided.
-   */
-  matchMedia(query) {
-    if (this._platform.WEBKIT || this._platform.BLINK) {
-      createEmptyStyleRule(query, this._nonce);
-    }
-    return this._matchMedia(query);
-  }
-  static ɵfac = function MediaMatcher_Factory(__ngFactoryType__) {
-    return new (__ngFactoryType__ || _MediaMatcher)();
-  };
-  static ɵprov = ɵɵdefineInjectable({
-    token: _MediaMatcher,
-    factory: _MediaMatcher.ɵfac,
-    providedIn: "root"
-  });
-};
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(MediaMatcher, [{
-    type: Injectable,
-    args: [{
-      providedIn: "root"
-    }]
-  }], () => [], null);
-})();
-function createEmptyStyleRule(query, nonce) {
-  if (mediaQueriesForWebkitCompatibility.has(query)) {
-    return;
-  }
-  try {
-    if (!mediaQueryStyleNode) {
-      mediaQueryStyleNode = document.createElement("style");
-      if (nonce) {
-        mediaQueryStyleNode.setAttribute("nonce", nonce);
-      }
-      mediaQueryStyleNode.setAttribute("type", "text/css");
-      document.head.appendChild(mediaQueryStyleNode);
-    }
-    if (mediaQueryStyleNode.sheet) {
-      mediaQueryStyleNode.sheet.insertRule(`@media ${query} {body{ }}`, 0);
-      mediaQueriesForWebkitCompatibility.add(query);
-    }
-  } catch (e) {
-    console.error(e);
-  }
-}
-function noopMatchMedia(query) {
-  return {
-    matches: query === "all" || query === "",
-    media: query,
-    addListener: () => {
-    },
-    removeListener: () => {
-    }
-  };
-}
-var BreakpointObserver = class _BreakpointObserver {
-  _mediaMatcher = inject(MediaMatcher);
-  _zone = inject(NgZone);
-  /**  A map of all media queries currently being listened for. */
-  _queries = /* @__PURE__ */ new Map();
-  /** A subject for all other observables to takeUntil based on. */
-  _destroySubject = new Subject();
-  constructor() {
-  }
-  /** Completes the active subject, signalling to all other observables to complete. */
-  ngOnDestroy() {
-    this._destroySubject.next();
-    this._destroySubject.complete();
-  }
-  /**
-   * Whether one or more media queries match the current viewport size.
-   * @param value One or more media queries to check.
-   * @returns Whether any of the media queries match.
-   */
-  isMatched(value) {
-    const queries = splitQueries(coerceArray(value));
-    return queries.some((mediaQuery) => this._registerQuery(mediaQuery).mql.matches);
-  }
-  /**
-   * Gets an observable of results for the given queries that will emit new results for any changes
-   * in matching of the given queries.
-   * @param value One or more media queries to check.
-   * @returns A stream of matches for the given queries.
-   */
-  observe(value) {
-    const queries = splitQueries(coerceArray(value));
-    const observables = queries.map((query) => this._registerQuery(query).observable);
-    let stateObservable = combineLatest(observables);
-    stateObservable = concat(stateObservable.pipe(take(1)), stateObservable.pipe(skip(1), debounceTime(0)));
-    return stateObservable.pipe(map((breakpointStates) => {
-      const response = {
-        matches: false,
-        breakpoints: {}
-      };
-      breakpointStates.forEach(({
-        matches,
-        query
-      }) => {
-        response.matches = response.matches || matches;
-        response.breakpoints[query] = matches;
-      });
-      return response;
-    }));
-  }
-  /** Registers a specific query to be listened for. */
-  _registerQuery(query) {
-    if (this._queries.has(query)) {
-      return this._queries.get(query);
-    }
-    const mql = this._mediaMatcher.matchMedia(query);
-    const queryObservable = new Observable((observer) => {
-      const handler = (e) => this._zone.run(() => observer.next(e));
-      mql.addListener(handler);
-      return () => {
-        mql.removeListener(handler);
-      };
-    }).pipe(startWith(mql), map(({
-      matches
-    }) => ({
-      query,
-      matches
-    })), takeUntil(this._destroySubject));
-    const output = {
-      observable: queryObservable,
-      mql
-    };
-    this._queries.set(query, output);
-    return output;
-  }
-  static ɵfac = function BreakpointObserver_Factory(__ngFactoryType__) {
-    return new (__ngFactoryType__ || _BreakpointObserver)();
-  };
-  static ɵprov = ɵɵdefineInjectable({
-    token: _BreakpointObserver,
-    factory: _BreakpointObserver.ɵfac,
-    providedIn: "root"
-  });
-};
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(BreakpointObserver, [{
-    type: Injectable,
-    args: [{
-      providedIn: "root"
-    }]
-  }], () => [], null);
-})();
-function splitQueries(queries) {
-  return queries.map((query) => query.split(",")).reduce((a1, a2) => a1.concat(a2)).map((query) => query.trim());
-}
-
-// node_modules/@angular/cdk/fesm2022/observe-content-0b289083.mjs
-function shouldIgnoreRecord(record) {
-  if (record.type === "characterData" && record.target instanceof Comment) {
-    return true;
-  }
-  if (record.type === "childList") {
-    for (let i = 0; i < record.addedNodes.length; i++) {
-      if (!(record.addedNodes[i] instanceof Comment)) {
-        return false;
-      }
-    }
-    for (let i = 0; i < record.removedNodes.length; i++) {
-      if (!(record.removedNodes[i] instanceof Comment)) {
-        return false;
-      }
-    }
-    return true;
-  }
-  return false;
-}
-var MutationObserverFactory = class _MutationObserverFactory {
-  create(callback) {
-    return typeof MutationObserver === "undefined" ? null : new MutationObserver(callback);
-  }
-  static ɵfac = function MutationObserverFactory_Factory(__ngFactoryType__) {
-    return new (__ngFactoryType__ || _MutationObserverFactory)();
-  };
-  static ɵprov = ɵɵdefineInjectable({
-    token: _MutationObserverFactory,
-    factory: _MutationObserverFactory.ɵfac,
-    providedIn: "root"
-  });
-};
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(MutationObserverFactory, [{
-    type: Injectable,
-    args: [{
-      providedIn: "root"
-    }]
-  }], null, null);
-})();
-var ContentObserver = class _ContentObserver {
-  _mutationObserverFactory = inject(MutationObserverFactory);
-  /** Keeps track of the existing MutationObservers so they can be reused. */
-  _observedElements = /* @__PURE__ */ new Map();
-  _ngZone = inject(NgZone);
-  constructor() {
-  }
-  ngOnDestroy() {
-    this._observedElements.forEach((_, element) => this._cleanupObserver(element));
-  }
-  observe(elementOrRef) {
-    const element = coerceElement(elementOrRef);
-    return new Observable((observer) => {
-      const stream = this._observeElement(element);
-      const subscription = stream.pipe(map((records) => records.filter((record) => !shouldIgnoreRecord(record))), filter((records) => !!records.length)).subscribe((records) => {
-        this._ngZone.run(() => {
-          observer.next(records);
-        });
-      });
-      return () => {
-        subscription.unsubscribe();
-        this._unobserveElement(element);
-      };
-    });
-  }
-  /**
-   * Observes the given element by using the existing MutationObserver if available, or creating a
-   * new one if not.
-   */
-  _observeElement(element) {
-    return this._ngZone.runOutsideAngular(() => {
-      if (!this._observedElements.has(element)) {
-        const stream = new Subject();
-        const observer = this._mutationObserverFactory.create((mutations) => stream.next(mutations));
-        if (observer) {
-          observer.observe(element, {
-            characterData: true,
-            childList: true,
-            subtree: true
-          });
-        }
-        this._observedElements.set(element, {
-          observer,
-          stream,
-          count: 1
-        });
-      } else {
-        this._observedElements.get(element).count++;
-      }
-      return this._observedElements.get(element).stream;
-    });
-  }
-  /**
-   * Un-observes the given element and cleans up the underlying MutationObserver if nobody else is
-   * observing this element.
-   */
-  _unobserveElement(element) {
-    if (this._observedElements.has(element)) {
-      this._observedElements.get(element).count--;
-      if (!this._observedElements.get(element).count) {
-        this._cleanupObserver(element);
-      }
-    }
-  }
-  /** Clean up the underlying MutationObserver for the specified element. */
-  _cleanupObserver(element) {
-    if (this._observedElements.has(element)) {
-      const {
-        observer,
-        stream
-      } = this._observedElements.get(element);
-      if (observer) {
-        observer.disconnect();
-      }
-      stream.complete();
-      this._observedElements.delete(element);
-    }
-  }
-  static ɵfac = function ContentObserver_Factory(__ngFactoryType__) {
-    return new (__ngFactoryType__ || _ContentObserver)();
-  };
-  static ɵprov = ɵɵdefineInjectable({
-    token: _ContentObserver,
-    factory: _ContentObserver.ɵfac,
-    providedIn: "root"
-  });
-};
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ContentObserver, [{
-    type: Injectable,
-    args: [{
-      providedIn: "root"
-    }]
-  }], () => [], null);
-})();
-var CdkObserveContent = class _CdkObserveContent {
-  _contentObserver = inject(ContentObserver);
-  _elementRef = inject(ElementRef);
-  /** Event emitted for each change in the element's content. */
-  event = new EventEmitter();
-  /**
-   * Whether observing content is disabled. This option can be used
-   * to disconnect the underlying MutationObserver until it is needed.
-   */
-  get disabled() {
-    return this._disabled;
-  }
-  set disabled(value) {
-    this._disabled = value;
-    this._disabled ? this._unsubscribe() : this._subscribe();
-  }
-  _disabled = false;
-  /** Debounce interval for emitting the changes. */
-  get debounce() {
-    return this._debounce;
-  }
-  set debounce(value) {
-    this._debounce = coerceNumberProperty(value);
-    this._subscribe();
-  }
-  _debounce;
-  _currentSubscription = null;
-  constructor() {
-  }
-  ngAfterContentInit() {
-    if (!this._currentSubscription && !this.disabled) {
-      this._subscribe();
-    }
-  }
-  ngOnDestroy() {
-    this._unsubscribe();
-  }
-  _subscribe() {
-    this._unsubscribe();
-    const stream = this._contentObserver.observe(this._elementRef);
-    this._currentSubscription = (this.debounce ? stream.pipe(debounceTime(this.debounce)) : stream).subscribe(this.event);
-  }
-  _unsubscribe() {
-    this._currentSubscription?.unsubscribe();
-  }
-  static ɵfac = function CdkObserveContent_Factory(__ngFactoryType__) {
-    return new (__ngFactoryType__ || _CdkObserveContent)();
-  };
-  static ɵdir = ɵɵdefineDirective({
-    type: _CdkObserveContent,
-    selectors: [["", "cdkObserveContent", ""]],
-    inputs: {
-      disabled: [2, "cdkObserveContentDisabled", "disabled", booleanAttribute],
-      debounce: "debounce"
-    },
-    outputs: {
-      event: "cdkObserveContent"
-    },
-    exportAs: ["cdkObserveContent"]
-  });
-};
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(CdkObserveContent, [{
-    type: Directive,
-    args: [{
-      selector: "[cdkObserveContent]",
-      exportAs: "cdkObserveContent"
-    }]
-  }], () => [], {
-    event: [{
-      type: Output,
-      args: ["cdkObserveContent"]
-    }],
-    disabled: [{
-      type: Input,
-      args: [{
-        alias: "cdkObserveContentDisabled",
-        transform: booleanAttribute
-      }]
-    }],
-    debounce: [{
-      type: Input
-    }]
-  });
-})();
-var ObserversModule = class _ObserversModule {
-  static ɵfac = function ObserversModule_Factory(__ngFactoryType__) {
-    return new (__ngFactoryType__ || _ObserversModule)();
-  };
-  static ɵmod = ɵɵdefineNgModule({
-    type: _ObserversModule,
-    imports: [CdkObserveContent],
-    exports: [CdkObserveContent]
-  });
-  static ɵinj = ɵɵdefineInjector({
-    providers: [MutationObserverFactory]
-  });
-};
-(() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(ObserversModule, [{
-    type: NgModule,
-    args: [{
-      imports: [CdkObserveContent],
-      exports: [CdkObserveContent],
-      providers: [MutationObserverFactory]
     }]
   }], null, null);
 })();
@@ -2102,6 +2031,14 @@ var _IdGenerator = class __IdGenerator {
   }], null, null);
 })();
 
+// node_modules/@angular/cdk/fesm2022/modifiers-68a3bc3a.mjs
+function hasModifierKey(event, ...modifiers) {
+  if (modifiers.length) {
+    return modifiers.some((modifier) => event[modifier]);
+  }
+  return event.altKey || event.shiftKey || event.ctrlKey || event.metaKey;
+}
+
 // node_modules/@angular/cdk/fesm2022/typeahead-5b1c5e41.mjs
 var DEFAULT_TYPEAHEAD_DEBOUNCE_INTERVAL_MS = 200;
 var Typeahead = class {
@@ -2166,13 +2103,377 @@ var Typeahead = class {
   }
 };
 
-// node_modules/@angular/cdk/fesm2022/modifiers-68a3bc3a.mjs
-function hasModifierKey(event, ...modifiers) {
-  if (modifiers.length) {
-    return modifiers.some((modifier) => event[modifier]);
+// node_modules/@angular/cdk/fesm2022/list-key-manager-0ce9d5be.mjs
+var ListKeyManager = class {
+  _items;
+  _activeItemIndex = -1;
+  _activeItem = signal(null);
+  _wrap = false;
+  _typeaheadSubscription = Subscription.EMPTY;
+  _itemChangesSubscription;
+  _vertical = true;
+  _horizontal;
+  _allowedModifierKeys = [];
+  _homeAndEnd = false;
+  _pageUpAndDown = {
+    enabled: false,
+    delta: 10
+  };
+  _effectRef;
+  _typeahead;
+  /**
+   * Predicate function that can be used to check whether an item should be skipped
+   * by the key manager. By default, disabled items are skipped.
+   */
+  _skipPredicateFn = (item) => item.disabled;
+  constructor(_items, injector) {
+    this._items = _items;
+    if (_items instanceof QueryList) {
+      this._itemChangesSubscription = _items.changes.subscribe((newItems) => this._itemsChanged(newItems.toArray()));
+    } else if (isSignal(_items)) {
+      if (!injector && (typeof ngDevMode === "undefined" || ngDevMode)) {
+        throw new Error("ListKeyManager constructed with a signal must receive an injector");
+      }
+      this._effectRef = effect(() => this._itemsChanged(_items()), {
+        injector
+      });
+    }
   }
-  return event.altKey || event.shiftKey || event.ctrlKey || event.metaKey;
-}
+  /**
+   * Stream that emits any time the TAB key is pressed, so components can react
+   * when focus is shifted off of the list.
+   */
+  tabOut = new Subject();
+  /** Stream that emits whenever the active item of the list manager changes. */
+  change = new Subject();
+  /**
+   * Sets the predicate function that determines which items should be skipped by the
+   * list key manager.
+   * @param predicate Function that determines whether the given item should be skipped.
+   */
+  skipPredicate(predicate) {
+    this._skipPredicateFn = predicate;
+    return this;
+  }
+  /**
+   * Configures wrapping mode, which determines whether the active item will wrap to
+   * the other end of list when there are no more items in the given direction.
+   * @param shouldWrap Whether the list should wrap when reaching the end.
+   */
+  withWrap(shouldWrap = true) {
+    this._wrap = shouldWrap;
+    return this;
+  }
+  /**
+   * Configures whether the key manager should be able to move the selection vertically.
+   * @param enabled Whether vertical selection should be enabled.
+   */
+  withVerticalOrientation(enabled = true) {
+    this._vertical = enabled;
+    return this;
+  }
+  /**
+   * Configures the key manager to move the selection horizontally.
+   * Passing in `null` will disable horizontal movement.
+   * @param direction Direction in which the selection can be moved.
+   */
+  withHorizontalOrientation(direction) {
+    this._horizontal = direction;
+    return this;
+  }
+  /**
+   * Modifier keys which are allowed to be held down and whose default actions will be prevented
+   * as the user is pressing the arrow keys. Defaults to not allowing any modifier keys.
+   */
+  withAllowedModifierKeys(keys) {
+    this._allowedModifierKeys = keys;
+    return this;
+  }
+  /**
+   * Turns on typeahead mode which allows users to set the active item by typing.
+   * @param debounceInterval Time to wait after the last keystroke before setting the active item.
+   */
+  withTypeAhead(debounceInterval = 200) {
+    if (typeof ngDevMode === "undefined" || ngDevMode) {
+      const items2 = this._getItemsArray();
+      if (items2.length > 0 && items2.some((item) => typeof item.getLabel !== "function")) {
+        throw Error("ListKeyManager items in typeahead mode must implement the `getLabel` method.");
+      }
+    }
+    this._typeaheadSubscription.unsubscribe();
+    const items = this._getItemsArray();
+    this._typeahead = new Typeahead(items, {
+      debounceInterval: typeof debounceInterval === "number" ? debounceInterval : void 0,
+      skipPredicate: (item) => this._skipPredicateFn(item)
+    });
+    this._typeaheadSubscription = this._typeahead.selectedItem.subscribe((item) => {
+      this.setActiveItem(item);
+    });
+    return this;
+  }
+  /** Cancels the current typeahead sequence. */
+  cancelTypeahead() {
+    this._typeahead?.reset();
+    return this;
+  }
+  /**
+   * Configures the key manager to activate the first and last items
+   * respectively when the Home or End key is pressed.
+   * @param enabled Whether pressing the Home or End key activates the first/last item.
+   */
+  withHomeAndEnd(enabled = true) {
+    this._homeAndEnd = enabled;
+    return this;
+  }
+  /**
+   * Configures the key manager to activate every 10th, configured or first/last element in up/down direction
+   * respectively when the Page-Up or Page-Down key is pressed.
+   * @param enabled Whether pressing the Page-Up or Page-Down key activates the first/last item.
+   * @param delta Whether pressing the Home or End key activates the first/last item.
+   */
+  withPageUpDown(enabled = true, delta = 10) {
+    this._pageUpAndDown = {
+      enabled,
+      delta
+    };
+    return this;
+  }
+  setActiveItem(item) {
+    const previousActiveItem = this._activeItem();
+    this.updateActiveItem(item);
+    if (this._activeItem() !== previousActiveItem) {
+      this.change.next(this._activeItemIndex);
+    }
+  }
+  /**
+   * Sets the active item depending on the key event passed in.
+   * @param event Keyboard event to be used for determining which element should be active.
+   */
+  onKeydown(event) {
+    const keyCode = event.keyCode;
+    const modifiers = ["altKey", "ctrlKey", "metaKey", "shiftKey"];
+    const isModifierAllowed = modifiers.every((modifier) => {
+      return !event[modifier] || this._allowedModifierKeys.indexOf(modifier) > -1;
+    });
+    switch (keyCode) {
+      case TAB:
+        this.tabOut.next();
+        return;
+      case DOWN_ARROW:
+        if (this._vertical && isModifierAllowed) {
+          this.setNextItemActive();
+          break;
+        } else {
+          return;
+        }
+      case UP_ARROW:
+        if (this._vertical && isModifierAllowed) {
+          this.setPreviousItemActive();
+          break;
+        } else {
+          return;
+        }
+      case RIGHT_ARROW:
+        if (this._horizontal && isModifierAllowed) {
+          this._horizontal === "rtl" ? this.setPreviousItemActive() : this.setNextItemActive();
+          break;
+        } else {
+          return;
+        }
+      case LEFT_ARROW:
+        if (this._horizontal && isModifierAllowed) {
+          this._horizontal === "rtl" ? this.setNextItemActive() : this.setPreviousItemActive();
+          break;
+        } else {
+          return;
+        }
+      case HOME:
+        if (this._homeAndEnd && isModifierAllowed) {
+          this.setFirstItemActive();
+          break;
+        } else {
+          return;
+        }
+      case END:
+        if (this._homeAndEnd && isModifierAllowed) {
+          this.setLastItemActive();
+          break;
+        } else {
+          return;
+        }
+      case PAGE_UP:
+        if (this._pageUpAndDown.enabled && isModifierAllowed) {
+          const targetIndex = this._activeItemIndex - this._pageUpAndDown.delta;
+          this._setActiveItemByIndex(targetIndex > 0 ? targetIndex : 0, 1);
+          break;
+        } else {
+          return;
+        }
+      case PAGE_DOWN:
+        if (this._pageUpAndDown.enabled && isModifierAllowed) {
+          const targetIndex = this._activeItemIndex + this._pageUpAndDown.delta;
+          const itemsLength = this._getItemsArray().length;
+          this._setActiveItemByIndex(targetIndex < itemsLength ? targetIndex : itemsLength - 1, -1);
+          break;
+        } else {
+          return;
+        }
+      default:
+        if (isModifierAllowed || hasModifierKey(event, "shiftKey")) {
+          this._typeahead?.handleKey(event);
+        }
+        return;
+    }
+    this._typeahead?.reset();
+    event.preventDefault();
+  }
+  /** Index of the currently active item. */
+  get activeItemIndex() {
+    return this._activeItemIndex;
+  }
+  /** The active item. */
+  get activeItem() {
+    return this._activeItem();
+  }
+  /** Gets whether the user is currently typing into the manager using the typeahead feature. */
+  isTyping() {
+    return !!this._typeahead && this._typeahead.isTyping();
+  }
+  /** Sets the active item to the first enabled item in the list. */
+  setFirstItemActive() {
+    this._setActiveItemByIndex(0, 1);
+  }
+  /** Sets the active item to the last enabled item in the list. */
+  setLastItemActive() {
+    this._setActiveItemByIndex(this._getItemsArray().length - 1, -1);
+  }
+  /** Sets the active item to the next enabled item in the list. */
+  setNextItemActive() {
+    this._activeItemIndex < 0 ? this.setFirstItemActive() : this._setActiveItemByDelta(1);
+  }
+  /** Sets the active item to a previous enabled item in the list. */
+  setPreviousItemActive() {
+    this._activeItemIndex < 0 && this._wrap ? this.setLastItemActive() : this._setActiveItemByDelta(-1);
+  }
+  updateActiveItem(item) {
+    const itemArray = this._getItemsArray();
+    const index = typeof item === "number" ? item : itemArray.indexOf(item);
+    const activeItem = itemArray[index];
+    this._activeItem.set(activeItem == null ? null : activeItem);
+    this._activeItemIndex = index;
+    this._typeahead?.setCurrentSelectedItemIndex(index);
+  }
+  /** Cleans up the key manager. */
+  destroy() {
+    this._typeaheadSubscription.unsubscribe();
+    this._itemChangesSubscription?.unsubscribe();
+    this._effectRef?.destroy();
+    this._typeahead?.destroy();
+    this.tabOut.complete();
+    this.change.complete();
+  }
+  /**
+   * This method sets the active item, given a list of items and the delta between the
+   * currently active item and the new active item. It will calculate differently
+   * depending on whether wrap mode is turned on.
+   */
+  _setActiveItemByDelta(delta) {
+    this._wrap ? this._setActiveInWrapMode(delta) : this._setActiveInDefaultMode(delta);
+  }
+  /**
+   * Sets the active item properly given "wrap" mode. In other words, it will continue to move
+   * down the list until it finds an item that is not disabled, and it will wrap if it
+   * encounters either end of the list.
+   */
+  _setActiveInWrapMode(delta) {
+    const items = this._getItemsArray();
+    for (let i = 1; i <= items.length; i++) {
+      const index = (this._activeItemIndex + delta * i + items.length) % items.length;
+      const item = items[index];
+      if (!this._skipPredicateFn(item)) {
+        this.setActiveItem(index);
+        return;
+      }
+    }
+  }
+  /**
+   * Sets the active item properly given the default mode. In other words, it will
+   * continue to move down the list until it finds an item that is not disabled. If
+   * it encounters either end of the list, it will stop and not wrap.
+   */
+  _setActiveInDefaultMode(delta) {
+    this._setActiveItemByIndex(this._activeItemIndex + delta, delta);
+  }
+  /**
+   * Sets the active item to the first enabled item starting at the index specified. If the
+   * item is disabled, it will move in the fallbackDelta direction until it either
+   * finds an enabled item or encounters the end of the list.
+   */
+  _setActiveItemByIndex(index, fallbackDelta) {
+    const items = this._getItemsArray();
+    if (!items[index]) {
+      return;
+    }
+    while (this._skipPredicateFn(items[index])) {
+      index += fallbackDelta;
+      if (!items[index]) {
+        return;
+      }
+    }
+    this.setActiveItem(index);
+  }
+  /** Returns the items as an array. */
+  _getItemsArray() {
+    if (isSignal(this._items)) {
+      return this._items();
+    }
+    return this._items instanceof QueryList ? this._items.toArray() : this._items;
+  }
+  /** Callback for when the items have changed. */
+  _itemsChanged(newItems) {
+    this._typeahead?.setItems(newItems);
+    const activeItem = this._activeItem();
+    if (activeItem) {
+      const newIndex = newItems.indexOf(activeItem);
+      if (newIndex > -1 && newIndex !== this._activeItemIndex) {
+        this._activeItemIndex = newIndex;
+        this._typeahead?.setCurrentSelectedItemIndex(newIndex);
+      }
+    }
+  }
+};
+
+// node_modules/@angular/cdk/fesm2022/focus-key-manager-f4cf48e1.mjs
+var FocusKeyManager = class extends ListKeyManager {
+  _origin = "program";
+  /**
+   * Sets the focus origin that will be passed in to the items for any subsequent `focus` calls.
+   * @param origin Focus origin to be used when focusing items.
+   */
+  setFocusOrigin(origin) {
+    this._origin = origin;
+    return this;
+  }
+  setActiveItem(item) {
+    super.setActiveItem(item);
+    if (this.activeItem) {
+      this.activeItem.focus(this._origin);
+    }
+  }
+};
+
+// node_modules/@angular/cdk/fesm2022/activedescendant-key-manager-ca3e95bd.mjs
+var ActiveDescendantKeyManager = class extends ListKeyManager {
+  setActiveItem(index) {
+    if (this.activeItem) {
+      this.activeItem.setInactiveStyles();
+    }
+    super.setActiveItem(index);
+    if (this.activeItem) {
+      this.activeItem.setActiveStyles();
+    }
+  }
+};
 
 // node_modules/@angular/cdk/fesm2022/observable-36bb5527.mjs
 function coerceObservable(data) {
@@ -2862,6 +3163,19 @@ var ConfigurableFocusTrapFactory = class _ConfigurableFocusTrapFactory {
   }], () => [], null);
 })();
 
+// node_modules/@angular/cdk/fesm2022/boolean-property-c20ad71c.mjs
+function coerceBooleanProperty(value) {
+  return value != null && `${value}` !== "false";
+}
+
+// node_modules/@angular/cdk/fesm2022/css-pixel-value-5ab12b77.mjs
+function coerceCssPixelValue(value) {
+  if (value == null) {
+    return "";
+  }
+  return typeof value === "string" ? value : `${value}px`;
+}
+
 // node_modules/@angular/material/fesm2022/common-module-43c0ba57.mjs
 var MATERIAL_SANITY_CHECKS = new InjectionToken("mat-sanity-checks", {
   providedIn: "root",
@@ -2893,63 +3207,6 @@ var MatCommonModule = class _MatCommonModule {
   }], () => [], null);
 })();
 
-// node_modules/@angular/cdk/fesm2022/scrolling-4b9e82b7.mjs
-var RtlScrollAxisType;
-(function(RtlScrollAxisType2) {
-  RtlScrollAxisType2[RtlScrollAxisType2["NORMAL"] = 0] = "NORMAL";
-  RtlScrollAxisType2[RtlScrollAxisType2["NEGATED"] = 1] = "NEGATED";
-  RtlScrollAxisType2[RtlScrollAxisType2["INVERTED"] = 2] = "INVERTED";
-})(RtlScrollAxisType || (RtlScrollAxisType = {}));
-var rtlScrollAxisType;
-var scrollBehaviorSupported;
-function supportsScrollBehavior() {
-  if (scrollBehaviorSupported == null) {
-    if (typeof document !== "object" || !document || typeof Element !== "function" || !Element) {
-      scrollBehaviorSupported = false;
-      return scrollBehaviorSupported;
-    }
-    if ("scrollBehavior" in document.documentElement.style) {
-      scrollBehaviorSupported = true;
-    } else {
-      const scrollToFunction = Element.prototype.scrollTo;
-      if (scrollToFunction) {
-        scrollBehaviorSupported = !/\{\s*\[native code\]\s*\}/.test(scrollToFunction.toString());
-      } else {
-        scrollBehaviorSupported = false;
-      }
-    }
-  }
-  return scrollBehaviorSupported;
-}
-function getRtlScrollAxisType() {
-  if (typeof document !== "object" || !document) {
-    return RtlScrollAxisType.NORMAL;
-  }
-  if (rtlScrollAxisType == null) {
-    const scrollContainer = document.createElement("div");
-    const containerStyle = scrollContainer.style;
-    scrollContainer.dir = "rtl";
-    containerStyle.width = "1px";
-    containerStyle.overflow = "auto";
-    containerStyle.visibility = "hidden";
-    containerStyle.pointerEvents = "none";
-    containerStyle.position = "absolute";
-    const content = document.createElement("div");
-    const contentStyle = content.style;
-    contentStyle.width = "2px";
-    contentStyle.height = "1px";
-    scrollContainer.appendChild(content);
-    document.body.appendChild(scrollContainer);
-    rtlScrollAxisType = RtlScrollAxisType.NORMAL;
-    if (scrollContainer.scrollLeft === 0) {
-      scrollContainer.scrollLeft = 1;
-      rtlScrollAxisType = scrollContainer.scrollLeft === 0 ? RtlScrollAxisType.NEGATED : RtlScrollAxisType.INVERTED;
-    }
-    scrollContainer.remove();
-  }
-  return rtlScrollAxisType;
-}
-
 // node_modules/@angular/cdk/fesm2022/test-environment-75e095b5.mjs
 function _isTestEnvironment() {
   return (
@@ -2962,28 +3219,40 @@ function _isTestEnvironment() {
 }
 
 export {
-  coerceBooleanProperty,
-  coerceNumberProperty,
-  coerceElement,
-  coerceArray,
-  coerceCssPixelValue,
-  Platform,
-  RtlScrollAxisType,
-  supportsScrollBehavior,
-  getRtlScrollAxisType,
+  isFakeMousedownFromScreenReader,
+  isFakeTouchstartFromScreenReader,
+  ENTER,
+  ESCAPE,
+  SPACE,
+  LEFT_ARROW,
+  UP_ARROW,
+  RIGHT_ARROW,
+  DOWN_ARROW,
+  A,
   _getFocusedElementPierceShadowDom,
   _getEventTarget,
-  _isTestEnvironment,
   _bindEventWithOptions,
-  ESCAPE,
+  normalizePassiveListenerOptions,
   FocusMonitor,
   _CdkPrivateStyleLoader,
+  _VisuallyHiddenLoader,
+  coerceArray,
+  BreakpointObserver,
+  CdkObserveContent,
   ObserversModule,
   InteractivityChecker,
   FocusTrapFactory,
+  LiveAnnouncer,
   A11yModule,
   _IdGenerator,
   hasModifierKey,
+  ActiveDescendantKeyManager,
+  FocusKeyManager,
+  addAriaReferencedId,
+  removeAriaReferencedId,
+  _isTestEnvironment,
+  coerceBooleanProperty,
+  coerceCssPixelValue,
   MatCommonModule
 };
-//# sourceMappingURL=chunk-5OBM6TWJ.js.map
+//# sourceMappingURL=chunk-GS5T3VK2.js.map

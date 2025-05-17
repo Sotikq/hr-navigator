@@ -54,6 +54,7 @@ export class RegisterComponent implements OnInit {
           ],
         ],
         confirmPassword: ['', Validators.required],
+        acceptTerms: [false, Validators.requiredTrue],
       },
       {
         validators: [
@@ -69,6 +70,12 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void {
     this.initForms();
   }
+
+  onTermsCheck(event: Event) {
+    const isChecked = (event.target as HTMLInputElement).checked;
+    this.registerForm.get('acceptTerms')?.setValue(isChecked);
+  }
+
   private markFormGroupTouched(formGroup: FormGroup | AbstractControl) {
     if (formGroup instanceof FormGroup) {
       Object.values(formGroup.controls).forEach((control) => {

@@ -1,0 +1,19 @@
+<h2 mat-dialog-title class="dialog-title">Добавить курс для {{data.teacher.name}}</h2>
+
+<mat-dialog-content class="dialog-content">
+  <mat-form-field appearance="fill" class="course-select-field">
+    <mat-label class="select-label">Выберите курс для добавления</mat-label>
+    <mat-select [formControl]="selectedCourse" class="course-select">
+      <mat-option *ngFor="let course of filteredCourses" [value]="course" class="course-option">
+        <span class="course-title">{{course.title}}</span>
+        <span class="course-category">{{course.category}}</span>
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions class="dialog-actions">
+  <button mat-button class="cancel-btn" (click)="onCancel()">Отмена</button>
+  <button mat-raised-button class="add-btn" (click)="onSave()" 
+          [disabled]="!selectedCourse.value">Добавить курс</button>
+</mat-dialog-actions>

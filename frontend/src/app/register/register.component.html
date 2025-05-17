@@ -129,6 +129,28 @@
           </div>
         </div>
 
+        <div class="checkbox-group">
+          <label>
+            <input
+              type="checkbox"
+              formControlName="acceptTerms"
+              (change)="onTermsCheck($event)"
+            />
+            Я согласен с
+            <a href="/terms" target="_blank">условиями использования</a> и
+            <a href="/privacy" target="_blank">политикой конфиденциальности</a>
+          </label>
+          <div
+            class="error"
+            *ngIf="
+              registerForm.get('acceptTerms')?.invalid &&
+              registerForm.get('acceptTerms')?.touched
+            "
+          >
+            Необходимо принять условия
+          </div>
+        </div>
+
         <button type="submit" class="auth-button">Зарегистрироваться</button>
       </form>
 

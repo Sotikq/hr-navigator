@@ -255,18 +255,40 @@
       </div>
     </div>
     } @if (currentPage == "teachers") {
-    <table>
-      <tr>
-        <th>Учитель</th>
-        <th>Почта</th>
-        <th>Курсы</th>
-      </tr>
-      <tr *ngFor="let teacher of allTeachers">
-        <td>{{teacher.name}}</td>
-        <td> {{teacher.email}}</td>
-        <td>ss </td>
-      </tr>
-    </table>
+    <div class="table-container">
+      <table class="teachers-table">
+        <thead>
+          <tr>
+            <th>Учитель</th>
+            <th>Почта</th>
+            <th>Курсы</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let teacher of allTeachers"
+          >
+            <td class="teacher-name">{{ teacher.name }}</td>
+            <td class="teacher-email">{{ teacher.email }}</td>
+            <td class="teacher-courses">
+              @for (course of teacher.courses; track $index) {
+              <span class="course-badge">
+                {{ course.title }}
+                <span
+                  class="delete-icon"
+                  (click)="removeCourseFromTeacher(teacher, course.id)"
+                >
+                  ×
+                </span>
+              </span>
+              }
+              <button (click)="openTeacherCoursesDialog(teacher)" >Добавить Курс</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <button>Создать нового учителя</button>
     }
   </main>
 </div>

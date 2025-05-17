@@ -14,7 +14,7 @@ import {
 import { CourseService1 } from '../course1.service';
 import { lastValueFrom } from 'rxjs';
 import { Course } from '../courses';
-import { Lesson, Module } from '../useless components/course.models';
+import { Lesson, Module } from '../models/course.models11';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({

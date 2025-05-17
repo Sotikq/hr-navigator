@@ -9,7 +9,7 @@ import {
   updateLesson,
 } from './models/course.models11';
 import { Observable } from 'rxjs';
-import { Lesson, Module } from './useless components/course.models';
+import { Lesson, Module } from './models/course.models11';
 @Injectable({
   providedIn: 'root',
 })
