@@ -44,6 +44,10 @@ const options = {
         {
           name: 'Users',
           description: 'Управление данными профиля пользователей'
+        },
+        {
+          name: 'Certificates',
+          description: 'Certificate generation and management'
         }
       ],
       externalDocs: {
@@ -51,7 +55,7 @@ const options = {
         url: 'https://github.com/your-repo/hr-navigator'
       }  
     },
-    apis: ['./routes/*.js']
+    apis: ['./routes/*.js', './routes/certificateRoutes.js']
   };
   
   module.exports = options;
