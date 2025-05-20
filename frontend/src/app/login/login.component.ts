@@ -81,7 +81,6 @@ export class LoginComponent {
             console.error('Ошибка загрузки профиля', err);
           },
         });
-        alert('Вы успешно вошли в систему!');
       },
       error: (err) => {
         alert(err.error.error || 'Ошибка входа в систему');

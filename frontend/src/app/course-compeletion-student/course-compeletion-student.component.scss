@@ -139,11 +139,6 @@
         &.completed {
           color: #10b981;
           position: relative;
-
-          &::after {
-            content: "✓";
-            margin-left: 0.5rem;
-          }
         }
       }
     }
@@ -237,3 +232,40 @@
     width: 100%;
   }
 }
+
+
+
+.course-progress {
+  margin-top: 15px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 10px;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.progress-completed {
+  height: 100%;
+  background-color: #4CAF50;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  margin-top: 5px;
+  font-size: 14px;
+  color: #666;
+}
+
+.loading-indicator {
+  padding: 20px;
+  text-align: center;
+  font-size: 16px;
+}
+
+
+
+
+// Adaptive styles for smaller screens

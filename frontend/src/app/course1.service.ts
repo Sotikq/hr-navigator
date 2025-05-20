@@ -68,6 +68,16 @@ export class CourseService1 {
   getCourses() {
     return this.http.get<Course[]>(`${this.apiUrl}courses`);
   }
+
+
+
+  getCourseProgress(courseId: string): Observable<any> {
+  return this.http.get(`${this.apiUrl}progress/course/${courseId}`);
+}
+
+completeLesson(lessonId: string): Observable<any> {
+  return this.http.post(`${this.apiUrl}progress/lesson/${lessonId}`, {lessonId});
+}
   // getCourseByIdWithModules(id: string) {
   //   return this.http.get<CourseResponse>(`${this.apiUrl}courses/${id}`);
   // }

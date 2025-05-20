@@ -76,3 +76,134 @@
     background-color: $primary-color-on-hover;
   }
 }
+
+
+// Адаптация для мобильных устройств
+/* Базовые стили остаются без изменений */
+
+/* Адаптивность для планшетов (768px - 1024px) */
+@media (max-width: 1024px) {
+  .header {
+    padding: 10px 25px;
+    
+    .logo {
+      .logo-img {
+        width: 35px;
+        height: 35px;
+      }
+      .logo-text {
+        font-size: 21px;
+      }
+    }
+
+    .nav ul {
+      gap: 12px;
+    }
+    
+    .auth-button,
+    .register-button {
+      padding: 8px 15px;
+      font-size: 14px;
+    }
+  }
+}
+
+/* Адаптивность для телефонов (481px - 767px) */
+@media (max-width: 767px) {
+  .header {
+    padding: 8px 15px;
+    
+    .logo {
+      .logo-img {
+        width: 30px;
+        height: 30px;
+        margin-right: 8px;
+      }
+      .logo-text {
+        font-size: 18px;
+        white-space: nowrap;
+      }
+    }
+
+    .nav {
+      display: none; /* Скрываем навигацию на мобильных */
+    }
+    
+    .buttons {
+      gap: 8px;
+      
+      .auth-button,
+      .register-button {
+        padding: 7px 12px;
+        font-size: 13px;
+        white-space: nowrap;
+      }
+    }
+  }
+}
+
+/* Адаптивность для маленьких телефонов (до 480px) */
+@media (max-width: 480px) {
+  .header {
+    padding: 6px 10px;
+    
+    .logo {
+      .logo-img {
+        width: 25px;
+        height: 25px;
+      }
+      .logo-text {
+        font-size: 16px;
+      }
+    }
+    
+    .buttons {
+      gap: 6px;
+      
+      .auth-button,
+      .register-button {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+    }
+  }
+}
+
+/* Меню-гамбургер для мобильной навигации */
+.mobile-menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: $primary-color;
+  cursor: pointer;
+  margin-right: 15px;
+}
+
+@media (max-width: 767px) {
+  .mobile-menu-toggle {
+    display: block;
+  }
+  
+  /* Стили для открытого мобильного меню */
+  .nav.active {
+    display: block;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    padding: 15px 0;
+    
+    ul {
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    a {
+      font-size: 16px;
+    }
+  }
+}

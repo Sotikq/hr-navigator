@@ -36,7 +36,7 @@
   <main class="teacher-main">
     <!-- ОБЗОР -->
     <section
-      *ngIf="currentPage == 'Review'"
+      *ngIf="currentPage == 'Обзор'"
       id="Review"
       class="teacher-section"
     >
@@ -50,7 +50,7 @@
     </section>
 
     <!-- КУРСЫ -->
-    @if (currentPage=="Courses") {
+    @if (currentPage=="Курсы") {
     <section id="Courses" class="teacher-section">
       <div class="course-header">
         <h2>Управление курсами</h2>
@@ -175,7 +175,7 @@
     </div>
 
     <!-- АНАЛИТИКА -->
-    @if (currentPage=='analytics') {
+    @if (currentPage=='Аналитика') {
 
     <section id="analytics" class="teacher-section">
       <h2>Аналитика</h2>
@@ -184,7 +184,7 @@
     }
 
     <!-- СООБЩЕНИЯ -->
-    @if (currentPage == 'messages') {
+    @if (currentPage == 'Сообщения') {
 
     <section id="messages" class="teacher-section">
       <h2>Сообщения от студентов</h2>
@@ -194,7 +194,7 @@
       </div>
     </section>
 
-    } @if (currentPage=='Settings') {
+    } @if (currentPage=='Настройки') {
     <div class="profile-section" id="settings">
       <h2 style="color: #2962ff; margin-bottom: 20px">Настройки аккаунта</h2>
 
@@ -254,7 +254,7 @@
         </form>
       </div>
     </div>
-    } @if (currentPage == "teachers") {
+    } @if (currentPage == "Учителя") {
     <div class="table-container">
       <table class="teachers-table">
         <thead>
@@ -265,9 +265,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr
-            *ngFor="let teacher of allTeachers"
-          >
+          <tr *ngFor="let teacher of allTeachers">
             <td class="teacher-name">{{ teacher.name }}</td>
             <td class="teacher-email">{{ teacher.email }}</td>
             <td class="teacher-courses">
@@ -282,7 +280,9 @@
                 </span>
               </span>
               }
-              <button (click)="openTeacherCoursesDialog(teacher)" >Добавить Курс</button>
+              <button (click)="openTeacherCoursesDialog(teacher)">
+                Добавить Курс
+              </button>
             </td>
           </tr>
         </tbody>
