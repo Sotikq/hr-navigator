@@ -1,11 +1,21 @@
-<div class="course-player" *ngIf="currentCourse">
+<div class="course-player" *ngIf="currentCourse && !loading">
   <div class="course-header">
-    <div class="goBack">
+    <div class="goBack" (click)="goBack()">
       <h3>Назад</h3>
     </div>
     <div class="course-header-content">
       <h1>{{ currentCourse.title }}</h1>
       <p>{{ currentCourse.description }}</p>
+      
+      <!-- Прогресс курса -->
+      <div class="course-progress" *ngIf="courseProgress">
+        <div class="progress-bar">
+          <div class="progress-completed" [style.width.%]="progressPercentage"></div>
+        </div>
+        <div class="progress-text">
+          Пройдено: {{ courseProgress.completedLessons }} из {{ courseProgress.totalLessons }} уроков ({{ progressPercentage }}%)
+        </div>
+      </div>
     </div>
   </div>
 
@@ -28,7 +38,7 @@
             (click)="navigateToLesson(moduleIndex, lessonIndex)"
           >
             {{ lesson.title }}
-            <span *ngIf="isLessonCompleted(module.id, lesson.id)">✓</span>
+            
           </li>
         </ul>
       </div>
@@ -75,12 +85,8 @@
         <!-- Кнопки навигации -->
         <div class="navigation-buttons">
           <button
-            (click)="
-              completeLesson(
-                currentCourse.modules[currentModuleIndex].id,
-                lesson.id
-              )
-            "
+            *ngIf="!isLessonCompleted(currentCourse.modules[currentModuleIndex].id, lesson.id)"
+            (click)="completeLesson(currentCourse.modules[currentModuleIndex].id, lesson.id)"
           >
             Завершить урок
           </button>
@@ -93,4 +99,8 @@
       </ng-template>
     </div>
   </div>
+</div>
+
+<div *ngIf="loading" class="loading-indicator">
+  Загрузка данных курса...
 </div>

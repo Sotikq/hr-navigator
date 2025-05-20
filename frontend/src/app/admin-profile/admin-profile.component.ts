@@ -30,9 +30,9 @@ import { Teacher } from '../models/teacher.models';
   styleUrl: './admin-profile.component.scss',
 })
 export class AdminProfileComponent {
-  tabs = ['Review', 'Courses', 'analytics', 'messages', 'teachers', 'Settings'];
+  tabs = ['Обзор', 'Курсы', 'Аналитика', 'Сообщения', 'Учителя', 'Настройки'];
   user: any = null;
-  currentPage: string = 'Review';
+  currentPage: string = 'Обзор';
   profileForm!: FormGroup;
   passwordForm!: FormGroup;
   allTeachers: any = [];
