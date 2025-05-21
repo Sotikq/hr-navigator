@@ -11,6 +11,8 @@ import { CreateCourse1Component } from './create-course1/create-course1.componen
 import { CourseCompeletionStudentComponent } from './course-compeletion-student/course-compeletion-student.component';
 import { AboutUsComponent } from './about-us/about-us.component';
 import { TeacherProfileComponent } from './teacher-profile/teacher-profile.component';
+import { TermsOfServiceComponent } from './terms-of-service/terms-of-service.component';
+import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 
 export const routes: Routes = [
   {
@@ -57,4 +59,12 @@ export const routes: Routes = [
     path: 'aboutus',
     component: AboutUsComponent,
   },
+  {
+    path: 'terms-of-service',
+    component: TermsOfServiceComponent,
+  },
+  {
+    path: 'privacy-policy',
+    component: PrivacyPolicyComponent,
+  }
 ];
