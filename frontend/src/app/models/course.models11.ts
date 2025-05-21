@@ -78,9 +78,9 @@ export interface Module {
   id?: string;
   title: string;
   description: string;
-  lessons: LessonRequest[];
+  lessons: Lesson[];
 }
 
-export interface Lesson{
+export interface Lesson extends LessonRequest {
   id: string;
 }

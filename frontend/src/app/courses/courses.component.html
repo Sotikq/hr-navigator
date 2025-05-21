@@ -1,35 +1,20 @@
 <main class="courses-container">
   <h1 style="text-align: center; margin-bottom: 30px">Все курсы</h1>
 
-  <div
-    style="
-      margin-bottom: 30px;
-      display: flex;
-      justify-content: flex-start;
-      gap: 15px;
-    "
-  >
+  <div class="filters-container">
     <input
       type="text"
       id="courseSearch"
-      placeholder="Поиск по названию курса"
+      placeholder="Поиск по названию или описанию"
       [(ngModel)]="searchQuery"
-      style="
-        padding: 10px;
-        border-radius: 10px;
-        border: 1px solid #ccc;
-        min-width: 250px;
-      "
+      (input)="onFilterChange()"
+      class="search-input"
     />
     <select
       id="categoryFilter"
       [(ngModel)]="selectedCategory"
-      style="
-        padding: 10px;
-        border-radius: 10px;
-        border: 1px solid #ccc;
-        min-width: 200px;
-      "
+      (change)="onFilterChange()"
+      class="category-select"
     >
       <option value="all">Все категории</option>
       <option value="Рекрутинг и подбор">Рекрутинг и подбор</option>
@@ -39,56 +24,23 @@
     </select>
   </div>
 
-  <div id="courseList" class="course-list">
-    <!-- Рекрутинг -->
-    @for (course of getFilteredCourses(); track $index) {
-    <div class="course-card" (click)="openModal(course)">
-      <div class="course-category">{{ course.category }}</div>
-      <img src="{{ course.cover_url }}" alt="Recruiting" />
-      <div class="course-info" (click)="goToCourse(course.id)">
-        <h3>{{ course.title }}</h3>
-        <p>{{ course.description }}</p>
-        <p class="course-price"><strong>Цена:</strong> {{ course.price }}</p>
+  <div class="course-list">
+    @if (getFilteredCourses().length > 0) {
+      @for (course of getFilteredCourses(); track course.id) {
+        <div class="course-card" (click)="openModal(course)">
+          <div class="course-category">{{ course.category }}</div>
+          <img [src]="course.cover_url" [alt]="course.title" />
+          <div class="course-info" (click)="goToCourse(course.id)">
+            <h3>{{ course.title }}</h3>
+            <p>{{ course.description }}</p>
+            <p class="course-price"><strong>Цена:</strong> {{ course.price }}</p>
+          </div>
+        </div>
+      }
+    } @else {
+      <div class="no-results">
+        <p>Курсы по вашему запросу не найдены</p>
       </div>
-    </div>
     }
   </div>
-<!-- 
-  <div *ngIf="showModal" id="courseModal" class="modal" (click)="closeModal()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <span class="close-btn">&times;</span>
-      <div class="modal-body">
-        <div class="modal-left">
-          <img
-            id="modalImage"
-            src="{{ selectedCourse.image }}"
-            alt="Course Image"
-          />
-          <h3 id="modalTitle">{{ selectedCourse.title }}</h3>
-          <p>
-            <strong>Цена:</strong>
-            <span id="modalPrice">{{ selectedCourse.price }}</span>
-          </p>
-          <p>
-            <strong>Сроки прохождения:</strong>
-            <span id="modalDuration">{{ selectedCourse.Duration }}</span>
-          </p>
-
-          <a id="modalLink" class="modal-button" target="_blank" 
-            >Перейти к курсу</a
-          >
-        </div>
-        <div class="modal-right">
-          <p id="modalDescription">{{ selectedCourse.description }}</p>
-
-          <p>
-            <strong>Подробная информация:</strong><br /><span
-              id="modalBigDescription"
-              >{{ selectedCourse.bigDescription }}</span
-            >
-          </p>
-        </div>
-      </div>
-    </div>
-  </div> -->
 </main>

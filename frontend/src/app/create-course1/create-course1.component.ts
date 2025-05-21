@@ -256,6 +256,7 @@ export class CreateCourse1Component implements OnInit {
         this.crs.deleteModule(id).subscribe({
           next: (next) => {
             console.log(next);
+            this.currentCourse.modules = this.currentCourse.modules.filter((module:Module) => module.id !== id);
           },
           error: (err) => {
             console.error(err);
@@ -264,7 +265,7 @@ export class CreateCourse1Component implements OnInit {
       }
     });
   }
-  onDeleteLesson(id: Lesson['id']) {
+  onDeleteLesson(id: Lesson['id'], module:Module) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: { message: 'Вы уверены, то что хотите удалить урок?' },
     });
@@ -273,6 +274,7 @@ export class CreateCourse1Component implements OnInit {
         this.crs.deleteLesson(id).subscribe({
           next: (next) => {
             console.log(next);
+            module.lessons = module.lessons.filter((lesson: Lesson) => lesson.id !== id);
           },
           error: (err) => {
             console.error(err);
