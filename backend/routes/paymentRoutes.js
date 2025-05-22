@@ -170,25 +170,4 @@ router.patch('/:id/confirm',
   confirmPaymentHandler
 );
 
-/**
- * @swagger
- * /courses/{id}/access:
- *   get:
- *     tags: [Courses]
- *     summary: Check if user has access to course
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- */
-router.get('/courses/:id/access',
-  authMiddleware,
-  validateApiKey(),
-  checkCourseAccessHandler
-);
-
 module.exports = router;

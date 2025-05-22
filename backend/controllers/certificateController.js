@@ -21,4 +21,35 @@ async function generateCertificate(req, res, next) {
   }
 }
 
-module.exports = { generateCertificate }; 
+async function validateCertificate(req, res, next) {
+  try {
+    const { certificateNumber } = req.params;
+    const ip = req.ip;
+    
+    logger.info('Certificate validation request', { 
+      certificateNumber,
+      ip,
+      userAgent: req.headers['user-agent']
+    });
+
+    const result = await certificateService.validateCertificate(certificateNumber);
+    
+    logger.info('Certificate validation result', { 
+      certificateNumber,
+      status: result.status
+    });
+
+    res.json(result);
+  } catch (err) {
+    logger.error('Certificate validation failed', { 
+      error: err.message,
+      certificateNumber: req.params.certificateNumber
+    });
+    next(ApiError.internal(err.message));
+  }
+}
+
+module.exports = { 
+  generateCertificate,
+  validateCertificate
+}; 

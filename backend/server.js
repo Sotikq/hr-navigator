@@ -64,6 +64,9 @@ app.use('/uploads/reviews', express.static(path.join(__dirname, 'uploads/reviews
 // 📂 Статическая папка для обложек и других загружаемых файлов
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// 📂 Публичная папка для верификации сертификатов
+app.use(express.static(path.join(__dirname, 'public')));
+
 // 📚 Маршруты
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
