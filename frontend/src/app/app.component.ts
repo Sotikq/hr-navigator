@@ -14,6 +14,13 @@ export class AppComponent implements OnInit {
   title = 'hr';
   user$: Observable<any>;
 
+  menuOpen = false;
+
+toggleMenu() {
+  this.menuOpen = !this.menuOpen;
+}
+
+
   currentUserJs = localStorage.getItem('currentUser');
   currentUser: any;
 
