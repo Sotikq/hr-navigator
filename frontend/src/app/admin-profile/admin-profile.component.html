@@ -195,100 +195,104 @@
     </section>
 
     } @if (currentPage=='Настройки') {
-    <div class="profile-section" id="settings">
-      <h2 style="color: #2962ff; margin-bottom: 20px">Настройки аккаунта</h2>
-
-      <!-- Фото профиля -->
-      <div style="text-align: center; margin-bottom: 30px">
-        <label for="profileImageInput" style="cursor: pointer">
-          <img
-            id="profileImagePreview"
-            src="/avatar.jpg"
-            alt="Аватар"
-            style="
-              width: 100px;
-              height: 100px;
-              border-radius: 50%;
-              object-fit: cover;
-              box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-            "
+    <section id="settings" class="teacher-section">
+      <h2>Настройки аккаунта</h2>
+      <div class="profile-section">
+        <!-- Фото профиля -->
+        <div style="text-align: center; margin-bottom: 30px">
+          <label for="profileImageInput" style="cursor: pointer">
+            <img
+              id="profileImagePreview"
+              src="/avatar.jpg"
+              alt="Аватар"
+              style="
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                object-fit: cover;
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+              "
+            />
+          </label>
+          <input
+            type="file"
+            id="profileImageInput"
+            accept="image/*"
+            style="display: none"
           />
-        </label>
-        <input
-          type="file"
-          id="profileImageInput"
-          accept="image/*"
-          style="display: none"
-        />
-        <p style="font-size: 14px; color: #777">
-          Нажмите на фото, чтобы изменить
-        </p>
+          <p style="font-size: 14px; color: #777">
+            Нажмите на фото, чтобы изменить
+          </p>
+        </div>
+        <div class="profile-form">
+          <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+            <label>Email</label>
+            <input formControlName="email" type="email" />
+
+            <label>Username</label>
+            <input formControlName="username" type="text" />
+
+            <button type="submit" [disabled]="profileForm.invalid">
+              Сохранить
+            </button>
+          </form>
+        </div>
+        <div class="profile-form">
+          <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
+            <label>Старый пароль</label>
+            <input formControlName="oldPassword" type="password" />
+
+            <label>Новый пароль</label>
+            <input formControlName="newPassword" type="password" />
+
+            <label>Подтвердите новый пароль</label>
+            <input formControlName="confirmPassword" type="password" />
+
+            <button type="submit" [disabled]="passwordForm.invalid">
+              Изменить пароль
+            </button>
+          </form>
+        </div>
       </div>
-      <div class="profile-form">
-        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
-          <label>Email</label>
-          <input formControlName="email" type="email" />
-
-          <label>Username</label>
-          <input formControlName="username" type="text" />
-
-          <button type="submit" [disabled]="profileForm.invalid">
-            Сохранить
-          </button>
-        </form>
-      </div>
-      <div class="profile-form">
-        <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
-          <label>Старый пароль</label>
-          <input formControlName="oldPassword" type="password" />
-
-          <label>Новый пароль</label>
-          <input formControlName="newPassword" type="password" />
-
-          <label>Подтвердите новый пароль</label>
-          <input formControlName="confirmPassword" type="password" />
-
-          <button type="submit" [disabled]="passwordForm.invalid">
-            Изменить пароль
-          </button>
-        </form>
-      </div>
-    </div>
+    </section>
     } @if (currentPage == "Учителя") {
-    <div class="table-container">
-      <table class="teachers-table">
-        <thead>
-          <tr>
-            <th>Учитель</th>
-            <th>Почта</th>
-            <th>Курсы</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let teacher of allTeachers">
-            <td class="teacher-name">{{ teacher.name }}</td>
-            <td class="teacher-email">{{ teacher.email }}</td>
-            <td class="teacher-courses">
-              @for (course of teacher.courses; track $index) {
-              <span class="course-badge">
-                {{ course.title }}
-                <span
-                  class="delete-icon"
-                  (click)="removeCourseFromTeacher(teacher, course.id)"
-                >
-                  ×
+    <section id="teachers" class="teacher-section">
+      <h2>Управление учителями</h2>
+      <div class="table-container">
+        <table class="teachers-table">
+          <thead>
+            <tr>
+              <th>Учитель</th>
+              <th>Почта</th>
+              <th>Курсы</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let teacher of allTeachers">
+              <td class="teacher-name">{{ teacher.name }}</td>
+              <td class="teacher-email">{{ teacher.email }}</td>
+              <td class="teacher-courses">
+                @for (course of teacher.courses; track $index) {
+                <span class="course-badge">
+                  {{ course.title }}
+                  <span
+                    class="delete-icon"
+                    (click)="removeCourseFromTeacher(teacher, course.id)"
+                  >
+                    ×
+                  </span>
                 </span>
-              </span>
-              }
-              <button (click)="openTeacherCoursesDialog(teacher)">
-                Добавить Курс
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <button>Создать нового учителя</button>
+                }
+                <button (click)="openTeacherCoursesDialog(teacher)">
+                  Добавить Курс
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button>Создать нового учителя</button>
+    </section>
     }
   </main>
 </div>
