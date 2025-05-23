@@ -19,7 +19,7 @@ const generateCertificate = async (req, res, next) => {
     });
   } catch (error) {
     logger.error('Certificate generation failed', { error: error.message, userId, courseId });
-    next(new ApiError(error.message, 400));
+    next(new ApiError(400, error.message));
   }
 };
 
@@ -43,7 +43,7 @@ const getUserCertificates = async (req, res, next) => {
     });
   } catch (error) {
     logger.error('Failed to fetch user certificates', { error: error.message, userId });
-    next(new ApiError('Failed to fetch certificates', 500));
+    next(new ApiError(500, 'Failed to fetch certificates'));
   }
 };
 
@@ -54,7 +54,7 @@ const viewCertificate = async (req, res, next) => {
 
   // Validate format
   if (!['pdf', 'jpg'].includes(format)) {
-    return next(new ApiError('Invalid format. Supported formats: pdf, jpg', 400));
+    return next(new ApiError(400, 'Invalid format. Supported formats: pdf, jpg'));
   }
 
   try {
@@ -65,7 +65,7 @@ const viewCertificate = async (req, res, next) => {
     );
 
     if (!certificate) {
-      throw new ApiError('Certificate not found', 404);
+      throw new ApiError(404, 'Certificate not found');
     }
 
     let filePath;
@@ -98,7 +98,7 @@ const downloadCertificate = async (req, res, next) => {
 
   // Validate format
   if (!['pdf', 'jpg'].includes(format)) {
-    return next(new ApiError('Invalid format. Supported formats: pdf, jpg', 400));
+    return next(new ApiError(400, 'Invalid format. Supported formats: pdf, jpg'));
   }
 
   try {
@@ -109,7 +109,7 @@ const downloadCertificate = async (req, res, next) => {
     );
 
     if (!certificate) {
-      throw new ApiError('Certificate not found', 404);
+      throw new ApiError(404, 'Certificate not found');
     }
 
     let filePath;

@@ -5,7 +5,8 @@ const {
   updateUserPassword,
   findUserById,
   getAllTeachers,
-  getAllTeachersWithCourses
+  getAllTeachersWithCourses,
+  findUserByEmail
 } = require('../models/User');
 const ApiError = require('../utils/ApiError');
 const logger = require('../utils/logger');
@@ -131,6 +132,28 @@ async function getAccessibleCoursesHandler(req, res, next) {
   }
 }
 
+async function createTeacher(req, res, next) {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Only admins can create teachers' });
+    }
+    const { email, name, password } = req.body;
+    if (!email || !name || !password) {
+      return res.status(400).json({ error: 'Email, name, and password are required' });
+    }
+    const existing = await findUserByEmail(email);
+    if (existing) {
+      return res.status(409).json({ error: 'User with this email already exists' });
+    }
+    const passwordHash = await bcrypt.hash(password, 10);
+    const teacher = await require('../models/User').createUser({ email, passwordHash, name, role: 'teacher' });
+    res.status(201).json(teacher);
+  } catch (err) {
+    logger.error('Ошибка создания учителя:', err);
+    next(new ApiError(500, 'Ошибка создания учителя'));
+  }
+}
+
 module.exports = {
   getProfile,
   updateName,
@@ -138,5 +161,6 @@ module.exports = {
   getAllTeachersList,
   getTeachersWithCourses,
   unassignCourseFromTeacher,
-  getAccessibleCoursesHandler
+  getAccessibleCoursesHandler,
+  createTeacher
 };

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getProfile, updateName, updatePassword, getAllTeachersList, getTeachersWithCourses, unassignCourseFromTeacher, getAccessibleCoursesHandler } = require('../controllers/userController');
+const { getProfile, updateName, updatePassword, getAllTeachersList, getTeachersWithCourses, unassignCourseFromTeacher, getAccessibleCoursesHandler, createTeacher } = require('../controllers/userController');
 const authMiddleware = require('../middleware/authMiddleware');
 const checkRole = require('../middleware/roleMiddleware');
 const validateApiKey = require('../middleware/apiKeyMiddleware');
@@ -228,5 +228,60 @@ router.delete('/admin/teachers/:teacherId/courses/:courseId',
  *                 $ref: '#/components/schemas/Course'
  */
 router.get('/me/courses', authMiddleware, getAccessibleCoursesHandler);
+
+/**
+ * @swagger
+ * /auth/admin/teachers:
+ *   post:
+ *     summary: Создать нового учителя (только для админов)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - name
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *               name:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Учитель успешно создан
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 name:
+ *                   type: string
+ *                 role:
+ *                   type: string
+ *                 is_active:
+ *                   type: boolean
+ *                 created_at:
+ *                   type: string
+ *                   format: date-time
+ *       400:
+ *         description: Некорректные данные
+ *       403:
+ *         description: Только для админов
+ *       409:
+ *         description: Email уже занят
+ */
+router.post('/admin/teachers', authMiddleware, checkRole(['admin']), createTeacher);
 
 module.exports = router;
