@@ -87,11 +87,26 @@
           <button
             *ngIf="!isLessonCompleted(currentCourse.modules[currentModuleIndex].id, lesson.id)"
             (click)="completeLesson(currentCourse.modules[currentModuleIndex].id, lesson.id)"
+            class="complete-lesson-btn"
           >
             Завершить урок
           </button>
-          <button (click)="nextLesson()">Следующий урок</button>
+          <button 
+            *ngIf="!(currentModuleIndex === currentCourse.modules.length - 1 && currentLessonIndex === currentCourse.modules[currentModuleIndex].lessons.length - 1)"
+            (click)="nextLesson()"
+            class="next-lesson-btn"
+          >
+            Следующий урок
+          </button>
+          <button
+            *ngIf="isCourseCompleted"
+            class="get-certificate-btn"
+            (click)="getCertificate()"
+          >
+            Получить сертификат
+          </button>
         </div>
+
       </div>
 
       <ng-template #noLesson>

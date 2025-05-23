@@ -5,7 +5,7 @@
 
       <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
         <div class="input-group">
-          <label for="email">Email</label>
+          <label for="email">Почта</label>
           <input
             id="email"
             type="email"
@@ -137,8 +137,8 @@
               (change)="onTermsCheck($event)"
             />
             Я согласен с
-            <a href="/terms" target="_blank">условиями использования</a> и
-            <a href="/privacy" target="_blank">политикой конфиденциальности</a>
+            <a [routerLink]="['/terms-of-service']" target="_blank">условиями использования</a> и
+            <a [routerLink]="['/privacy-policy']" target="_blank">политикой конфиденциальности</a>
           </label>
           <div
             class="error"

@@ -4,7 +4,7 @@ import { CourseService1 } from '../course1.service';
 import { lessonModel } from '../models/course.models11';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-
+import { CertificateService } from '../certificate.service';
 interface CourseProgress {
   courseId: string;
   totalLessons: number;
@@ -35,7 +35,8 @@ export class CourseCompeletionStudentComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private courseService: CourseService1,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private certificateService: CertificateService
   ) {}
 
   ngOnInit(): void {
@@ -113,7 +114,6 @@ export class CourseCompeletionStudentComponent implements OnInit {
     this.currentModuleIndex = moduleIndex;
     this.currentLessonIndex = lessonIndex;
   }
-
   completeLesson(moduleId: string, lessonId: string): void {
     if (!this.courseId) return;
     console.log(lessonId, 'lessonId');
@@ -155,5 +155,26 @@ export class CourseCompeletionStudentComponent implements OnInit {
 
   goBack(): void {
     this.router.navigate(['/courses']);
+  }
+
+  get isCourseCompleted(): boolean {
+    // Если прогресс не загружен — не показываем кнопку
+    if (!this.courseProgress) return false;
+    // Если количество завершённых уроков равно общему количеству уроков — курс завершён
+    return this.courseProgress.completedLessons === this.courseProgress.totalLessons;
+  }
+
+  getCertificate() {
+    // Ваш код для получения сертификата
+    
+    this.certificateService.createCertificate(this.courseId!).subscribe({
+      next: (response) => {
+        console.log(response, 'response');
+        this.router.navigate(['/student',]);
+      },
+      error: (err) => {
+        console.error('Ошибка при получении сертификата:', err);
+      }
+    });
   }
 }

@@ -36,7 +36,7 @@
   <main class="teacher-main">
     <!-- ОБЗОР -->
     <section
-      *ngIf="currentPage == 'Review'"
+      *ngIf="currentPage == 'Обзор'"
       id="Review"
       class="teacher-section"
     >
@@ -50,7 +50,7 @@
     </section>
 
     <!-- КУРСЫ -->
-    @if (currentPage=="Courses") {
+    @if (currentPage=="Курсы") {
     <section id="Courses" class="teacher-section">
       <div class = "course-header">
 
@@ -176,7 +176,7 @@
     </div>
 
     <!-- АНАЛИТИКА -->
-    @if (currentPage=='analytics') {
+    @if (currentPage=='Аналитика') {
 
     <section id="analytics" class="teacher-section">
       <h2>Аналитика</h2>
@@ -185,7 +185,7 @@
     }
 
     <!-- СООБЩЕНИЯ -->
-    @if (currentPage == 'messages') {
+    @if (currentPage == 'Сообщения') {
 
     <section id="messages" class="teacher-section">
       <h2>Сообщения от студентов</h2>
@@ -195,7 +195,7 @@
       </div>
     </section>
 
-    } @if (currentPage=='Settings') {
+    } @if (currentPage=='Настройки') {
     <div class="profile-section" id="settings">
       <h2 style="color: #2962FF; margin-bottom: 20px">Настройки аккаунта</h2>
 
@@ -227,10 +227,10 @@
       </div>
       <div class="profile-form">
         <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
-          <label>Email</label>
+          <label>Почта</label>
           <input formControlName="email" type="email" />
 
-          <label>Username</label>
+          <label>Имя</label>
           <input formControlName="username" type="text" />
 
           <button type="submit" [disabled]="profileForm.invalid">

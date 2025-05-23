@@ -226,10 +226,10 @@
         </div>
         <div class="profile-form">
           <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
-            <label>Email</label>
+            <label>Почта</label>
             <input formControlName="email" type="email" />
 
-            <label>Username</label>
+            <label>Имя</label>
             <input formControlName="username" type="text" />
 
             <button type="submit" [disabled]="profileForm.invalid">
