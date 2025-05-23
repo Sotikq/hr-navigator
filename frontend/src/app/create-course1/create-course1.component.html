@@ -54,6 +54,7 @@
         accept="image/*"
         (change)="onImageUpload($event)"
         id="cover-upload"
+        required
       />
       <label for="cover-upload" class="upload-button">Выбрать файл</label>
       <img
@@ -71,7 +72,9 @@
         <option value="Развитие карьеры">Развитие карьеры</option>
       </select>
     </div>
-    <button (click)="onSaveCourse1()">Сохранить Обложку Курса</button>
+    <button (click)="onSaveCourse()" [disabled]="isSaving">
+      {{ isSaving ? 'Сохранение...' : 'Сохранить Обложку Курса' }}
+    </button>
     <button class="deleteBtn" (click)="onDeleteCourse(currentCourse.id)">Удалить Курс</button>
 
     <div class="modules">
