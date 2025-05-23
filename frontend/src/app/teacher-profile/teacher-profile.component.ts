@@ -21,9 +21,9 @@ import { TeacherService } from '../teacher.service';
   styleUrl: './teacher-profile.component.scss',
 })
 export class TeacherProfileComponent {
-  tabs = ['Review', 'Courses', 'analytics', 'messages', 'Settings'];
+  tabs = ['Обзор', 'Курсы', 'Аналитика', 'Сообщения', 'Настройки'];
   user: any = null;
-  currentPage: string = 'Review';
+  currentPage: string = 'Обзор';
   profileForm!: FormGroup;
   passwordForm!: FormGroup;
   courses: Course[] = []; // Массив курсов

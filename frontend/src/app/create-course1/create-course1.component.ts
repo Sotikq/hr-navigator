@@ -222,6 +222,7 @@ export class CreateCourse1Component implements OnInit {
         this.crs.deleteCourse(id).subscribe({
           next: (next) => {
             console.log(next);
+            this.router.navigate(['/admin']);
           },
           error: (err) => {
             console.error(err);

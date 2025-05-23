@@ -1,11 +1,23 @@
 /* Сброс стилей */
 @import "./../styles/variables";
 
+:host {
+  display: block;
+  width: 100%;
+  overflow-x: hidden;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-family: Arial, sans-serif;
+}
+
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+  position: relative;
 }
 
 .header {
@@ -15,6 +27,7 @@
   top: 0;
   z-index: 1000;
   width: 100%;
+  overflow-x: hidden;
 
   .header-container {
     max-width: 1400px;
@@ -24,6 +37,7 @@
     align-items: center;
     padding: 10px 20px;
     position: relative;
+    overflow-x: hidden;
   }
 
   .logo {

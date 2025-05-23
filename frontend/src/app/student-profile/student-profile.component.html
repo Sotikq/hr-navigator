@@ -101,10 +101,10 @@
       </div>
       <div class="profile-form">
         <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
-          <label>Email</label>
+          <label>Почта</label>
           <input formControlName="email" type="email" />
 
-          <label>Username</label>
+          <label>Имя</label>
           <input formControlName="username" type="text" />
 
           <button type="submit" [disabled]="profileForm.invalid">
@@ -134,22 +134,14 @@
     @if (currentPage=="Сертификаты") {
     <div class="profile-section" id="certificates">
       <h2 style="color: #2962ff; margin-bottom: 20px">Сертификаты</h2>
-      <div class="certificate-grid">
-        <div class="certificate-card">
-          <img src=" /certificate.webp" alt="Сертификат 1" />
+      <div class="certificate-grid" >
+        <div class="certificate-card" *ngFor="let certificate of certificates">
+          <img [src]="certificate.file_path" alt="Сертификат" />
           <div class="certificate-info">
-            <h3>Эффективный рекрутинг</h3>
-            <p>Дата завершения: 25 мая 2025</p>
-            <a href=" /certificate.webp" target="_blank" class="cert-button"
-              >Посмотреть</a
-            >
-            <a
-              href=" /certificate.webp"
-              download
-              class="cert-button"
-              style="background-color: #00b894"
-              >Скачать</a
-            >
+            <h3>{{ certificate.certificate_number }}</h3>
+            <p>Дата завершения: {{ certificate.issued_at | date:'dd MMMM yyyy' }}</p>
+            <a [href]="certificate.file_path" target="_blank" class="cert-button">Посмотреть</a>
+            <a [href]="certificate.file_path" download class="cert-button" style="background-color: #00b894">Скачать</a>
           </div>
         </div>
 

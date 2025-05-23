@@ -11,9 +11,12 @@ import {
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { RouterModule } from '@angular/router';
+
 @Component({
   selector: 'app-register',
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })

@@ -10,6 +10,7 @@ import {
 } from '@angular/forms';
 import { CourseService1 } from '../course1.service';
 import { Course } from '../courses';
+import { CertificateService } from '../certificate.service';
 @Component({
   selector: 'app-student-profile',
   imports: [RouterModule, ReactiveFormsModule, CommonModule],
@@ -20,7 +21,7 @@ export class StudentProfileComponent implements OnInit {
   profileForm!: FormGroup;
   passwordForm!: FormGroup;
   tabs = ['Мои Курсы', 'Сертификаты', 'Настройки'];
-
+  certificates: any[] = [];
   currentPage: string = 'Мои Курсы'; // Default page is 'profile'
   user: any = null;
   courses: Course[] = [];
@@ -28,7 +29,8 @@ export class StudentProfileComponent implements OnInit {
     private router: Router,
     private auth: AuthService,
     private fb: FormBuilder,
-    private crs: CourseService1
+    private crs: CourseService1,
+    private certificateService: CertificateService,
   ) {}
 
   userFill() {
@@ -41,6 +43,7 @@ export class StudentProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.userFill();
+    this.getCertificates();
     console.log(this.user);
     this.profileForm = this.fb.group({
       email: [this.user.email],
@@ -59,7 +62,17 @@ export class StudentProfileComponent implements OnInit {
       this.courses = data;
     });
   }
-
+  
+  
+  getCertificates() {
+    this.certificateService.getCertificates().subscribe((response: any) => {
+      this.certificates = response.data as any[];
+      console.log(this.certificates);
+    });
+  }
+  
+  
+  
   onSubmit(): void {
     const usernametoupdate = this.profileForm.get('username')?.value;
     if (this.profileForm.valid) {
@@ -116,4 +129,5 @@ export class StudentProfileComponent implements OnInit {
     this.auth.setUser(null);
     this.router.navigate(['']);
   }
+
 }
