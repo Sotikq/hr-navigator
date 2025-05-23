@@ -1,55 +1,139 @@
-const certificateService = require('../certificateService');
+const path = require('path');
+const fs = require('fs/promises');
+const fsSync = require('fs');
 const ApiError = require('../utils/ApiError');
 const logger = require('../utils/logger');
+const certificateService = require('../certificateService');
+const pool = require('../config/db');
 
-async function generateCertificate(req, res, next) {
+// Generate certificate for a course
+const generateCertificate = async (req, res, next) => {
+  const { courseId } = req.params;
+  const userId = req.user.id;
+
   try {
-    const userId = req.user.id;
-    const { courseId } = req.params;
-    logger.info(`API: Generating certificate for user ${userId}, course ${courseId}`);
-    const cert = await certificateService.generateCertificate(userId, courseId);
-    res.status(201).json(cert);
-  } catch (err) {
-    logger.error('Certificate generation failed', { error: err.message });
-    if (err.message === 'Course not completed') {
-      return next(ApiError.badRequest('Course not completed'));
-    }
-    if (err.message === 'User or course not found') {
-      return next(ApiError.notFound('User or course not found'));
-    }
-    next(ApiError.internal(err.message));
+    const certificate = await certificateService.generateCertificate(userId, courseId);
+    res.status(201).json({
+      success: true,
+      data: certificate
+    });
+  } catch (error) {
+    logger.error('Certificate generation failed', { error: error.message, userId, courseId });
+    next(new ApiError(error.message, 400));
   }
-}
+};
 
-async function validateCertificate(req, res, next) {
+// Get all certificates for current user
+const getUserCertificates = async (req, res, next) => {
+  const userId = req.user.id;
+
   try {
-    const { certificateNumber } = req.params;
-    const ip = req.ip;
-    
-    logger.info('Certificate validation request', { 
-      certificateNumber,
-      ip,
-      userAgent: req.headers['user-agent']
-    });
+    const { rows: certificates } = await pool.query(
+      'SELECT * FROM certificates WHERE user_id = $1 AND revoked_at IS NULL ORDER BY created_at DESC',
+      [userId]
+    );
 
-    const result = await certificateService.validateCertificate(certificateNumber);
-    
-    logger.info('Certificate validation result', { 
-      certificateNumber,
-      status: result.status
+    res.json({
+      success: true,
+      data: certificates
     });
-
-    res.json(result);
-  } catch (err) {
-    logger.error('Certificate validation failed', { 
-      error: err.message,
-      certificateNumber: req.params.certificateNumber
-    });
-    next(ApiError.internal(err.message));
+  } catch (error) {
+    logger.error('Failed to fetch user certificates', { error: error.message, userId });
+    next(new ApiError('Failed to fetch certificates', 500));
   }
-}
+};
 
-module.exports = { 
+// View certificate file (PDF/JPG)
+const viewCertificate = async (req, res, next) => {
+  const { id, format } = req.params;
+  const userId = req.user.id;
+
+  // Validate format
+  if (!['pdf', 'jpg'].includes(format)) {
+    return next(new ApiError('Invalid format. Supported formats: pdf, jpg', 400));
+  }
+
+  try {
+    // Verify certificate ownership
+    const { rows: [certificate] } = await pool.query(
+      'SELECT * FROM certificates WHERE id = $1 AND user_id = $2 AND revoked_at IS NULL',
+      [id, userId]
+    );
+
+    if (!certificate) {
+      throw new ApiError('Certificate not found', 404);
+    }
+
+    let filePath;
+    if (format === 'pdf') {
+      filePath = path.join(__dirname, '..', certificate.file_path.replace('.jpg', '.pdf'));
+    } else {
+      filePath = path.join(__dirname, '..', certificate.file_path);
+    }
+
+    if (!fsSync.existsSync(filePath)) {
+      return next(ApiError.notFound(`Certificate file not found: ${format}`));
+    }
+
+    // Set appropriate headers
+    res.setHeader('Content-Type', format === 'pdf' ? 'application/pdf' : 'image/jpeg');
+    res.setHeader('Content-Disposition', `inline; filename="certificate.${format}"`);
+    
+    // Stream the file
+    res.sendFile(filePath);
+  } catch (error) {
+    logger.error('Failed to view certificate', { error: error.message, userId, certificateId: id });
+    next(error);
+  }
+};
+
+// Download certificate file (PDF/JPG)
+const downloadCertificate = async (req, res, next) => {
+  const { id, format } = req.params;
+  const userId = req.user.id;
+
+  // Validate format
+  if (!['pdf', 'jpg'].includes(format)) {
+    return next(new ApiError('Invalid format. Supported formats: pdf, jpg', 400));
+  }
+
+  try {
+    // Verify certificate ownership
+    const { rows: [certificate] } = await pool.query(
+      'SELECT * FROM certificates WHERE id = $1 AND user_id = $2 AND revoked_at IS NULL',
+      [id, userId]
+    );
+
+    if (!certificate) {
+      throw new ApiError('Certificate not found', 404);
+    }
+
+    let filePath;
+    if (format === 'pdf') {
+      filePath = path.join(__dirname, '..', certificate.file_path.replace('.jpg', '.pdf'));
+    } else {
+      filePath = path.join(__dirname, '..', certificate.file_path);
+    }
+
+    if (!fsSync.existsSync(filePath)) {
+      return next(ApiError.notFound(`Certificate file not found: ${format}`));
+    }
+
+    // Set appropriate headers for download
+    res.setHeader('Content-Type', format === 'pdf' ? 'application/pdf' : 'image/jpeg');
+    res.setHeader('Content-Disposition', `attachment; filename="certificate.${format}"`);
+    
+    // Stream the file
+    res.sendFile(filePath);
+  } catch (error) {
+    logger.error('Failed to download certificate', { error: error.message, userId, certificateId: id });
+    next(error);
+  }
+};
+
+module.exports = {
   generateCertificate,
-  validateCertificate
+  getUserCertificates,
+  viewCertificate,
+  downloadCertificate
 }; 

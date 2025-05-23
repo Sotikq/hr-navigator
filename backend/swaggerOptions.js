@@ -27,35 +27,14 @@ const options = {
         }
       },
       security: [
-        {
-          bearerAuth: [],
-          ApiKeyAuth: []
-        }
-      ],
-      tags: [
-        {
-          name: 'Auth',
-          description: 'Аутентификация пользователей (регистрация, вход, профиль)'
-        },
-        {
-          name: 'Courses',
-          description: 'Управление курсами, модулями и уроками'
-        },
-        {
-          name: 'Users',
-          description: 'Управление данными профиля пользователей'
-        },
-        {
-          name: 'Certificates',
-          description: 'Certificate generation and management'
-        }
-      ],
-      externalDocs: {
-        description: 'GitHub Repository',
-        url: 'https://github.com/your-repo/hr-navigator'
-      }  
+        { bearerAuth: [] },
+        { ApiKeyAuth: [] }
+      ]
     },
-    apis: ['./routes/*.js', './routes/certificateRoutes.js']
+    apis: [
+      './routes/*.js',
+      './controllers/*.js'
+    ]
   };
   
   module.exports = options;

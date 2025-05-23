@@ -3,38 +3,6 @@ const router = express.Router();
 const certificateController = require('../controllers/certificateController');
 const authMiddleware = require('../middleware/authMiddleware');
 const apiKeyMiddleware = require('../middleware/apiKeyMiddleware');
-const rateLimit = require('express-rate-limit');
-const mcache = require('memory-cache');
-
-// Rate limiting middleware
-const validateLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
-  message: {
-    status: 'error',
-    message: 'Too many requests, please try again later'
-  }
-});
-
-// Cache middleware
-const cache = (duration) => {
-  return (req, res, next) => {
-    const key = `__express__${req.originalUrl || req.url}`;
-    const cachedBody = mcache.get(key);
-    
-    if (cachedBody) {
-      res.json(cachedBody);
-      return;
-    }
-    
-    res.sendResponse = res.json;
-    res.json = (body) => {
-      mcache.put(key, body, duration * 1000);
-      res.sendResponse(body);
-    };
-    next();
-  };
-};
 
 /**
  * @swagger
@@ -47,7 +15,12 @@ const cache = (duration) => {
  * @swagger
  * /certificates/generate/{courseId}:
  *   post:
- *     summary: Generate a certificate for a completed course
+ *     summary: Сгенерировать сертификат для завершенного курса
+ *     description: |
+ *       Генерирует сертификат в форматах PDF и JPG для пользователя, который:
+ *       - Завершил курс на 100%
+ *       - Подтвердил оплату
+ *       - Еще не имеет сертификата для этого курса
  *     tags: [Certificates]
  *     security:
  *       - bearerAuth: []
@@ -55,105 +28,265 @@ const cache = (duration) => {
  *     parameters:
  *       - in: path
  *         name: courseId
+ *         required: true
  *         schema:
  *           type: string
- *         required: true
- *         description: The ID of the course
+ *           format: uuid
+ *         description: ID курса
  *     responses:
- *       201:
- *         description: Certificate generated successfully
+ *       '201':
+ *         description: Сертификат успешно сгенерирован
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 id:
- *                   type: string
- *                 certificate_number:
- *                   type: string
- *                 user_id:
- *                   type: string
- *                 course_id:
- *                   type: string
- *                 hours:
- *                   type: integer
- *                 issued_at:
- *                   type: string
- *                   format: date-time
- *                 file_path:
- *                   type: string
- *                 qr_code_url:
- *                   type: string
- *                 is_valid:
+ *                 success:
  *                   type: boolean
- *                 created_at:
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       format: uuid
+ *                     certificate_number:
+ *                       type: string
+ *                     pdf_path:
+ *                       type: string
+ *                     jpg_path:
+ *                       type: string
+ *                     created_at:
+ *                       type: string
+ *                       format: date-time
+ *       '400':
+ *         description: Ошибка валидации или генерации
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
  *                   type: string
- *                   format: date-time
- *                 updated_at:
- *                   type: string
- *                   format: date-time
- *                 version:
- *                   type: integer
- *       400:
- *         description: Bad request
- *       401:
- *         description: Unauthorized
- *       500:
- *         description: Internal server error
+ *                   example: "Course not completed or payment not confirmed"
+ *       '401':
+ *         description: Не авторизован
+ *       '403':
+ *         description: Неверный API ключ
+ *       '409':
+ *         description: Сертификат уже существует
+ *       '500':
+ *         description: Внутренняя ошибка сервера
  */
-router.post('/generate/:courseId', authMiddleware, apiKeyMiddleware, certificateController.generateCertificate);
 
 /**
  * @swagger
- * /certificates/verify/{certificateNumber}:
+ * /certificates:
  *   get:
- *     summary: Verify a certificate by its number
+ *     summary: Получить все сертификаты текущего пользователя
+ *     description: Возвращает список всех сертификатов пользователя, отсортированных по дате создания
  *     tags: [Certificates]
- *     parameters:
- *       - in: path
- *         name: certificateNumber
- *         schema:
- *           type: string
- *         required: true
- *         description: The certificate number to verify
+ *     security:
+ *       - bearerAuth: []
+ *       - ApiKeyAuth: []
  *     responses:
- *       200:
- *         description: Certificate verification result
+ *       '200':
+ *         description: Список сертификатов
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 status:
- *                   type: string
- *                   enum: [valid, revoked, error]
- *                 message:
- *                   type: string
- *                 certificate:
- *                   type: object
- *                   properties:
- *                     certificateNumber:
- *                       type: string
- *                     userName:
- *                       type: string
- *                     courseTitle:
- *                       type: string
- *                     issuedAt:
- *                       type: string
- *                     version:
- *                       type: integer
- *                 details:
- *                   type: object
- *                   properties:
- *                     revokedAt:
- *                       type: string
- *                     revocationReason:
- *                       type: string
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         format: uuid
+ *                       certificate_number:
+ *                         type: string
+ *                       course_id:
+ *                         type: string
+ *                         format: uuid
+ *                       pdf_path:
+ *                         type: string
+ *                       jpg_path:
+ *                         type: string
+ *                       created_at:
+ *                         type: string
+ *                         format: date-time
+ *       '401':
+ *         description: Не авторизован
+ *       '403':
+ *         description: Неверный API ключ
+ *       '500':
+ *         description: Внутренняя ошибка сервера
  */
-router.get('/verify/:certificateNumber', 
-  validateLimiter,
-  cache(3600), // Cache for 1 hour
-  certificateController.validateCertificate
-);
 
-module.exports = router; 
+/**
+ * @swagger
+ * /certificates/{id}/view/{format}:
+ *   get:
+ *     summary: Просмотр сертификата
+ *     description: Отображает сертификат в браузере (inline)
+ *     tags: [Certificates]
+ *     security:
+ *       - bearerAuth: []
+ *       - ApiKeyAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID сертификата
+ *       - in: path
+ *         name: format
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum: [pdf, jpg]
+ *         description: Формат сертификата
+ *     responses:
+ *       '200':
+ *         description: Файл сертификата
+ *         content:
+ *           application/pdf:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *           image/jpeg:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       '400':
+ *         description: Неверный формат
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: "Invalid format. Supported formats: pdf, jpg"
+ *       '401':
+ *         description: Не авторизован
+ *       '403':
+ *         description: Неверный API ключ
+ *       '404':
+ *         description: Сертификат не найден
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: "Certificate not found"
+ *       '500':
+ *         description: Внутренняя ошибка сервера
+ */
+
+/**
+ * @swagger
+ * /certificates/{id}/download/{format}:
+ *   get:
+ *     summary: Скачать сертификат
+ *     description: Скачивает сертификат в выбранном формате
+ *     tags: [Certificates]
+ *     security:
+ *       - bearerAuth: []
+ *       - ApiKeyAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: ID сертификата
+ *       - in: path
+ *         name: format
+ *         required: true
+ *         schema:
+ *           type: string
+ *           enum: [pdf, jpg]
+ *         description: Формат сертификата
+ *     responses:
+ *       '200':
+ *         description: Файл сертификата для скачивания
+ *         content:
+ *           application/pdf:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *           image/jpeg:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       '400':
+ *         description: Неверный формат
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: "Invalid format. Supported formats: pdf, jpg"
+ *       '401':
+ *         description: Не авторизован
+ *       '403':
+ *         description: Неверный API ключ
+ *       '404':
+ *         description: Сертификат не найден
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: "Certificate not found"
+ *       '500':
+ *         description: Внутренняя ошибка сервера
+ */
+
+// Apply auth and API key middleware to all routes
+router.use(authMiddleware);
+router.use(apiKeyMiddleware());
+
+// Generate certificate for a course
+router.post('/generate/:courseId', certificateController.generateCertificate);
+
+// Get all certificates for current user
+router.get('/', certificateController.getUserCertificates);
+
+// View certificate files
+router.get('/:id/view/:format', certificateController.viewCertificate);
+
+// Download certificate files
+router.get('/:id/download/:format', certificateController.downloadCertificate);
+
+module.exports = router;

@@ -77,6 +77,7 @@ const paymentRoutes = require('./routes/paymentRoutes');
 const lessonProgressRoutes = require('./routes/lessonProgressRoutes');
 const certificateRoutes = require('./routes/certificateRoutes');
 
+
 // 🔒 Роуты авторизации (регистрация, логин)
 app.use('/api/auth', authRoutes);
 
@@ -98,6 +99,7 @@ app.use('/api/progress', lessonProgressRoutes);
 // 📜 Роуты сертификатов
 app.use('/api/certificates', certificateRoutes);
 
+
 // 🌐 Главная страница для теста
 app.get('/', (req, res) => {
   res.send('HR Navigator backend is running!');
@@ -115,8 +117,10 @@ app.get('/api/healthz', async (req, res) => {
 // 🔒 Роуты учителя
 app.use('/api', teacherRoutes);
 
+
 // Error handling middleware (must be last)
 app.use(errorHandler);
+
 
 // Global error handlers
 process.on('unhandledRejection', (reason, promise) => {

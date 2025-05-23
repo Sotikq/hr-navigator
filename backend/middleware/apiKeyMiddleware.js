@@ -9,6 +9,7 @@ const ApiError = require('../utils/ApiError');
  */
 const validateApiKey = (options = { required: true }) => {
   return (req, res, next) => {
+    logger.info('validateApiKey: start', { path: req.path, method: req.method });
     try {
       // Get API key from headers (case-insensitive) or query
       const apiKey = req.headers['x-api-key'] || 
@@ -28,6 +29,7 @@ const validateApiKey = (options = { required: true }) => {
 
       // If API key is not required and not provided, allow the request
       if (!options.required && !apiKey) {
+        logger.info('validateApiKey: API key not required and not provided, calling next()', { apiKey });
         return next();
       }
 
@@ -53,6 +55,7 @@ const validateApiKey = (options = { required: true }) => {
       }
 
       // API key is valid
+      logger.info('validateApiKey: key valid, calling next()', { apiKey });
       next();
     } catch (error) {
       next(error);
