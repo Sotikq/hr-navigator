@@ -26,6 +26,7 @@ import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.compone
 export class CreateCourse1Component implements OnInit {
   currentCourse: any;
   courseLoaded = false;
+  isSaving = false;
 
   selectedCoverFile: File | null = null;
 
@@ -72,69 +73,47 @@ export class CreateCourse1Component implements OnInit {
     }
   }
 
-  onSaveCourse1(): void {
-    if (!this.currentCourse) return;
+  async onSaveCourse(): Promise<void> {
+    this.isSaving = true;
+    try {
+      if (!this.currentCourse) return;
 
-    // Создаем FormData
-    const formData = new FormData();
+      // Создаем FormData
+      const formData = new FormData();
 
-    // Добавляем текстовые данные
-    formData.append('title', this.currentCourse.title.toString());
-    formData.append('description', this.currentCourse.description.toString());
-    formData.append('details', this.currentCourse.details.toString());
-    formData.append('price', this.currentCourse.price.toString());
-    formData.append('duration', this.currentCourse.duration.toString());
-    formData.append('category', this.currentCourse.category.toString());
-    formData.append(
-      'is_published',
-      this.currentCourse.is_published ? 'true' : 'false'
-    );
+      // Добавляем текстовые данные
+      formData.append('title', this.currentCourse.title.toString());
+      formData.append('description', this.currentCourse.description.toString());
+      formData.append('details', this.currentCourse.details.toString());
+      formData.append('price', this.currentCourse.price.toString());
+      formData.append('duration', this.currentCourse.duration.toString());
+      formData.append('category', this.currentCourse.category.toString());
+      formData.append(
+        'is_published',
+        this.currentCourse.is_published ? 'true' : 'false'
+      );
 
-    // Добавляем файл обложки, если он был выбран
-    if (this.currentCourse.cover_url) {
-      formData.append('cover', this.currentCourse.cover_url);
+      // Добавляем файл обложки, если он был выбран
+      if (this.currentCourse.cover_url) {
+        formData.append('cover', this.currentCourse.cover_url);
+      }
+
+      // Отправляем FormData на сервер
+      const updatedCourse = await lastValueFrom(
+        this.crs.updateCourseWithCover(formData, this.currentCourse.id)
+      );
+
+      
+      this.selectedCoverFile = null;
+      console.log('Course updated successfully', updatedCourse);
+    } catch (error) {
+      console.error('Error updating course', error);
+    } finally {
+      this.isSaving = false;
     }
-
-    // Отправляем FormData на сервер
-    this.crs.updateCourseWithCover(formData, this.currentCourse.id).subscribe({
-      next: (course) => {
-        console.log('Course updated successfully', course);
-        this.currentCourse = course;
-        this.selectedCoverFile = null;
-      },
-      error: (error) => {
-        console.error('Error updating course', error);
-      },
-    });
   }
 
-  onSaveCourse() {
-    console.log('Saving course:', this.currentCourse);
-    const updatedCourse: UpdatedCourseRequest = {
-      title: this.currentCourse.title,
-      description: this.currentCourse.description,
-      details: this.currentCourse.details,
-      price: this.currentCourse.price,
-      duration: this.currentCourse.duration,
-      cover_url: this.currentCourse.cover_url,
-      category: this.currentCourse.category,
-      is_published: this.currentCourse.is_published,
-      id: this.currentCourse.id,
-    };
-    this.crs.updateCourse(updatedCourse, this.currentCourse.id).subscribe({
-      next: (course) => {
-        this.currentCourse = course;
-        console.log('Course updated:', course);
-      },
-      error: (error) => {
-        console.error('Error updating course:', error);
-      },
-    });
-  }
-
-  save() {}
-
-  async onSubmit() {
+  async save() {
     console.log(this.currentCourse.modules);
     if (this.currentCourse.modules) {
       console.log('QWEQWWWWW');
@@ -185,6 +164,10 @@ export class CreateCourse1Component implements OnInit {
           },
         });
     }
+  }
+
+   onSubmit() {
+    
   }
   addModule() {
     const createdModule: addModuletoCourseRequest = {
@@ -251,12 +234,14 @@ export class CreateCourse1Component implements OnInit {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: { message: 'Вы уверены, то что хотите удалить модуль?' },
     });
+
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.crs.deleteModule(id).subscribe({
-          next: (next) => {
-            console.log(next);
-            this.currentCourse.modules = this.currentCourse.modules.filter((module:Module) => module.id !== id);
+          next: () => {
+            this.currentCourse.modules = this.currentCourse.modules.filter(
+              (module: Module) => module.id !== id
+            );
           },
           error: (err) => {
             console.error(err);
@@ -265,16 +250,18 @@ export class CreateCourse1Component implements OnInit {
       }
     });
   }
-  onDeleteLesson(id: Lesson['id'], module:Module) {
+  onDeleteLesson(id: Lesson['id'], module: Module) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: { message: 'Вы уверены, то что хотите удалить урок?' },
     });
+
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.crs.deleteLesson(id).subscribe({
-          next: (next) => {
-            console.log(next);
-            module.lessons = module.lessons.filter((lesson: Lesson) => lesson.id !== id);
+          next: () => {
+            module.lessons = module.lessons.filter(
+              (lesson: Lesson) => lesson.id !== id
+            );
           },
           error: (err) => {
             console.error(err);

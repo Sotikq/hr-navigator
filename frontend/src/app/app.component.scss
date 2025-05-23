@@ -1,209 +1,333 @@
 /* Сброс стилей */
 @import "./../styles/variables";
+
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
   font-family: Arial, sans-serif;
 }
 
 .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 40px;
   background-color: white;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
   z-index: 1000;
+  width: 100%;
+
+  .header-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    position: relative;
+  }
+
   .logo {
+    display: none; // Hidden by default on mobile
+  }
+
+  .mobile-header {
     display: flex;
     align-items: center;
-    .logo-img {
-      width: 40px;
-      height: 40px;
-      margin-right: 10px;
-    }
-    .logo-text {
+    gap: 15px;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .mobile-logo {
+    h2 {
+      color: $primary-color;
       font-size: 24px;
       font-weight: bold;
-      color: $primary-color;
+      margin: 0;
     }
   }
 
-  .nav ul {
-    display: flex;
-    list-style: none;
-    gap: 20px;
-    padding: 0;
-    margin: 0;
+  .nav {
+    ul {
+      display: flex;
+      list-style: none;
+      gap: 20px;
+      padding: 0;
+      margin: 0;
+    }
+
+    a {
+      text-decoration: none;
+      color: gray;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      padding: 5px 0;
+
+      &:after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 0;
+        background-color: $primary-color;
+        transition: width 0.3s ease;
+      }
+
+      &:hover, &.active {
+        color: $primary-color;
+        &:after {
+          width: 100%;
+        }
+      }
+    }
   }
-  .nav a {
-    text-decoration: none;
-    color: gray;
-    font-size: 16px;
-    transition: color 0.3s;
+
+  .auth-container {
+    display: flex;
+    align-items: center;
+    z-index: 1002;
+  }
+
+  .buttons {
+    display: flex;
+    gap: 10px;
+  }
+
+  .auth-button, .register-button {
+    padding: 10px 20px;
+    color: white;
+    border: none;
+    border-radius: 20px;
     cursor: pointer;
-  }
-  .nav a:hover {
-    color: $primary-color-on-hover;
-  }
-  .buttons{
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    font-weight: 500;
     display: flex;
-    gap:10px;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
   }
+
   .auth-button {
-    padding: 10px 20px;
     background-color: $primary-color;
-    color: white;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+    &:hover {
+      background-color: $primary-color-on-hover;
+    }
   }
+
   .register-button {
-    padding: 10px 20px;
     background-color: rgb(34, 252, 56);
-    color: white;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+    &:hover {
+      background-color: darken(rgb(34, 252, 56), 10%);
+    }
   }
 
+  .profile-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
 
-  .auth-button:hover {
+    .user-name {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .user-role {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+  }
+}
+
+/* Mobile Menu Toggle Button */
+.mobile-menu-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  z-index: 1001;
+  transition: all 0.3s ease;
+
+  .hamburger-line {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: $primary-color;
+    margin: 5px 0;
+    transition: all 0.3s ease;
+    border-radius: 3px;
+  }
+
+  &:hover .hamburger-line {
     background-color: $primary-color-on-hover;
   }
-}
 
-
-// Адаптация для мобильных устройств
-/* Базовые стили остаются без изменений */
-
-/* Адаптивность для планшетов (768px - 1024px) */
-@media (max-width: 1024px) {
-  .header {
-    padding: 10px 25px;
-    
-    .logo {
-      .logo-img {
-        width: 35px;
-        height: 35px;
-      }
-      .logo-text {
-        font-size: 21px;
-      }
+  &.active {
+    .hamburger-line:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
     }
-
-    .nav ul {
-      gap: 12px;
+    .hamburger-line:nth-child(2) {
+      opacity: 0;
+      transform: translateX(-20px);
     }
-    
-    .auth-button,
-    .register-button {
-      padding: 8px 15px;
-      font-size: 14px;
+    .hamburger-line:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -7px);
     }
   }
 }
 
-/* Адаптивность для телефонов (481px - 767px) */
-@media (max-width: 767px) {
+/* Tablet (768px - 1024px) */
+@media (min-width: 768px) {
   .header {
-    padding: 8px 15px;
-    
+    .header-container {
+      padding: 10px 40px;
+    }
+
     .logo {
-      .logo-img {
-        width: 30px;
-        height: 30px;
-        margin-right: 8px;
-      }
+      display: flex;
+      align-items: center;
+      z-index: 1002;
+
       .logo-text {
-        font-size: 18px;
-        white-space: nowrap;
+        font-size: 24px;
+        font-weight: bold;
+        color: $primary-color;
+        transition: font-size 0.3s ease;
       }
+    }
+
+    .mobile-header {
+      display: none;
     }
 
     .nav {
-      display: none; /* Скрываем навигацию на мобильных */
+      ul {
+        gap: 15px;
+      }
     }
-    
-    .buttons {
-      gap: 8px;
-      
+
+    .auth-button,
+    .register-button {
+      padding: 8px 16px;
+      font-size: 14px;
+      min-width: 90px;
+    }
+  }
+}
+
+/* Mobile (up to 767px) */
+@media (max-width: 767px) {
+  .header {
+    .header-container {
+      padding: 8px 15px;
+    }
+
+    .nav {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: white;
+      padding-top: 80px;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease-in-out;
+      z-index: 1001;
+
+      &.active {
+        display: block;
+        transform: translateX(0);
+      }
+
+      ul {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        padding: 20px;
+      }
+
+      a {
+        font-size: 18px;
+        display: block;
+        padding: 10px;
+        width: 100%;
+        text-align: center;
+
+        &:after {
+          display: none;
+        }
+
+        &:hover, &.active {
+          background-color: rgba($primary-color, 0.1);
+          border-radius: 8px;
+        }
+      }
+    }
+
+    .auth-container {
+      .buttons {
+        gap: 8px;
+      }
+
       .auth-button,
       .register-button {
-        padding: 7px 12px;
+        padding: 8px 12px;
         font-size: 13px;
-        white-space: nowrap;
+        min-width: 80px;
       }
     }
   }
 }
 
-/* Адаптивность для маленьких телефонов (до 480px) */
+/* Small Mobile (up to 480px) */
 @media (max-width: 480px) {
   .header {
-    padding: 6px 10px;
-    
-    .logo {
-      .logo-img {
-        width: 25px;
-        height: 25px;
-      }
-      .logo-text {
-        font-size: 16px;
-      }
+    .header-container {
+      padding: 6px 10px;
     }
-    
-    .buttons {
-      gap: 6px;
-      
+
+    .mobile-logo h2 {
+      font-size: 20px;
+    }
+
+    .auth-container {
+      .buttons {
+        gap: 6px;
+      }
+
       .auth-button,
       .register-button {
         padding: 6px 10px;
         font-size: 12px;
+        min-width: 70px;
       }
     }
-  }
-}
 
-/* Меню-гамбургер для мобильной навигации */
-.mobile-menu-toggle {
-  display: none;
-  background: none;
-  border: none;
-  font-size: 24px;
-  color: $primary-color;
-  cursor: pointer;
-  margin-right: 15px;
-}
-
-@media (max-width: 767px) {
-  .mobile-menu-toggle {
-    display: block;
-  }
-  
-  /* Стили для открытого мобильного меню */
-  .nav.active {
-    display: block;
-    position: absolute;
-    top: 60px;
-    left: 0;
-    width: 100%;
-    background: white;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    padding: 15px 0;
-    
-    ul {
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
-    }
-    
-    a {
-      font-size: 16px;
+    .profile-button {
+      padding: 6px 10px;
+      
+      .user-name {
+        font-size: 12px;
+      }
+      
+      .user-role {
+        font-size: 10px;
+      }
     }
   }
 }

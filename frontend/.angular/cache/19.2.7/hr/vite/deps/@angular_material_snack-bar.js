@@ -1,10 +1,3 @@
-import {
-  MAT_RIPPLE_GLOBAL_OPTIONS,
-  MatRippleModule,
-  RippleRenderer,
-  _StructuralStylesLoader,
-  defaultRippleAnimationConfig
-} from "./chunk-QEEQCHO3.js";
 import "./chunk-OIBNGD5S.js";
 import {
   BasePortalOutlet,
@@ -15,8 +8,15 @@ import {
   OverlayModule,
   PortalModule,
   TemplatePortal
-} from "./chunk-PVUKNNNH.js";
-import "./chunk-MYSKEX2F.js";
+} from "./chunk-TY5EKMLC.js";
+import "./chunk-WACICUHG.js";
+import {
+  MAT_RIPPLE_GLOBAL_OPTIONS,
+  MatRippleModule,
+  RippleRenderer,
+  _StructuralStylesLoader,
+  defaultRippleAnimationConfig
+} from "./chunk-N3FQGHWO.js";
 import "./chunk-Y7JK27CY.js";
 import "./chunk-MD3L2FJT.js";
 import {
@@ -28,11 +28,11 @@ import {
   _IdGenerator,
   _bindEventWithOptions,
   _getEventTarget
-} from "./chunk-GS5T3VK2.js";
+} from "./chunk-VBQPZ5PO.js";
+import "./chunk-M3HR6BUY.js";
 import {
   Platform
-} from "./chunk-IZLWGWBC.js";
-import "./chunk-M3HR6BUY.js";
+} from "./chunk-2SQG3G3F.js";
 import "./chunk-BBZY6V46.js";
 import "./chunk-HUVON4BP.js";
 import {

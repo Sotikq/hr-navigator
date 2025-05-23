@@ -1,27 +1,48 @@
 <header class="header">
-    <div class="logo">
-        <!-- <img src="images/logo.png" alt="HR Навигатор" class="logo-img"> -->
-        <h1 class="logo-text">HR Навигатор</h1>
-    </div>
-    <nav class="nav" id="navMenu">
-        <ul>
-            <li><a (click)="goToPage('')">Главная</a></li>
-            <li><a (click)="goToPage('courses')">Курсы</a></li>
-            <li><a (click)="goToPage('aboutus')">О нас</a></li>
-        </ul>
-    </nav>
-    <div  >
-      
-      <ng-container *ngIf="user$ | async as user; else guest">
-        <button class="auth-button" (click)="goToProfile()">{{ user.name }}</button>
-      </ng-container>
-  
-      <ng-template #guest>
-        <div class="buttons">
-          <button class="register-button" (click)="goToRegister()"> Регистрация</button>
-          <button class="auth-button" (click)="goToLogin()">Вход </button>
+    <div class="header-container">
+        <div class="logo">
+            <!-- <img src="images/logo.png" alt="HR Навигатор" class="logo-img"> -->
+            <h1 class="logo-text">HR Навигатор</h1>
         </div>
-      </ng-template>
+        
+        <div class="mobile-header">
+            <button 
+                class="mobile-menu-toggle" 
+                (click)="toggleMenu()" 
+                [class.active]="menuOpen"
+                [attr.aria-expanded]="menuOpen"
+                aria-label="Toggle navigation menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+
+           
+        </div>
+
+        <nav class="nav" [class.active]="menuOpen" id="navMenu" role="navigation">
+            <ul>
+                <li><a (click)="goToPage('')" [class.active]="isCurrentRoute('')">Главная</a></li>
+                <li><a (click)="goToPage('courses')" [class.active]="isCurrentRoute('courses')">Курсы</a></li>
+                <li><a (click)="goToPage('aboutus')" [class.active]="isCurrentRoute('aboutus')">О нас</a></li>
+            </ul>
+        </nav>
+
+        <div class="auth-container">
+            <ng-container *ngIf="user$ | async as user; else guest">
+                <button class="auth-button profile-button" (click)="goToProfile()">
+                    <span class="user-name">{{ user.name }}</span>
+                    
+                </button>
+            </ng-container>
+    
+            <ng-template #guest>
+                <div class="buttons">
+                    <button class="register-button" (click)="goToRegister()">Регистрация</button>
+                    <button class="auth-button" (click)="goToLogin()">Вход</button>
+                </div>
+            </ng-template>
+        </div>
     </div>
-  </header>
-  <router-outlet></router-outlet>
+</header>
+<router-outlet></router-outlet>
