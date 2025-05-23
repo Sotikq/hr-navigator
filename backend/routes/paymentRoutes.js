@@ -7,7 +7,8 @@ const {
   createPaymentHandler,
   getPaymentHandler,
   confirmPaymentHandler,
-  checkCourseAccessHandler
+  checkCourseAccessHandler,
+  getPendingPaymentsHandler
 } = require('../controllers/paymentController');
 
 /**
@@ -16,6 +17,59 @@ const {
  *   name: Payments
  *   description: Payment management endpoints
  */
+
+/**
+ * @swagger
+ * /payments/pending:
+ *   get:
+ *     tags: [Payments]
+ *     summary: Get all payments pending confirmation (admin only)
+ *     security:
+ *       - bearerAuth: []
+ *       - ApiKeyAuth: []
+ *     responses:
+ *       200:
+ *         description: List of pending payments
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   user_id:
+ *                     type: string
+ *                   user_email:
+ *                     type: string
+ *                   user_name:
+ *                     type: string
+ *                   course_id:
+ *                     type: string
+ *                   course_title:
+ *                     type: string
+ *                   course_price:
+ *                     type: number
+ *                   amount:
+ *                     type: number
+ *                   status:
+ *                     type: string
+ *                   created_at:
+ *                     type: string
+ *                     format: date-time
+ *                   payment_expires_at:
+ *                     type: string
+ *                     format: date-time
+ *       403:
+ *         description: Only admins can access this endpoint
+ */
+router.get('/pending',
+  authMiddleware,
+  validateApiKey(),
+  checkRole(['admin']),
+  getPendingPaymentsHandler
+);
 
 /**
  * @swagger

@@ -10,6 +10,7 @@ const {
 const ApiError = require('../utils/ApiError');
 const logger = require('../utils/logger');
 const { unassignTeacherFromCourse } = require('../models/CourseTeacher');
+const { getAccessibleCourses } = require('../models/Payment');
 
 async function getProfile(req, res) {
   try {
@@ -116,11 +117,26 @@ async function unassignCourseFromTeacher(req, res, next) {
   }
 }
 
+/**
+ * Получить все курсы, к которым у студента есть доступ (купленные)
+ */
+async function getAccessibleCoursesHandler(req, res, next) {
+  try {
+    const userId = req.user.id;
+    const courses = await getAccessibleCourses(userId);
+    res.json(courses);
+  } catch (err) {
+    logger.error('Ошибка получения доступных курсов студента:', err);
+    next(new ApiError(500, 'Ошибка получения доступных курсов'));
+  }
+}
+
 module.exports = {
   getProfile,
   updateName,
   updatePassword,
   getAllTeachersList,
   getTeachersWithCourses,
-  unassignCourseFromTeacher
+  unassignCourseFromTeacher,
+  getAccessibleCoursesHandler
 };

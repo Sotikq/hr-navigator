@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getProfile, updateName, updatePassword, getAllTeachersList, getTeachersWithCourses, unassignCourseFromTeacher } = require('../controllers/userController');
+const { getProfile, updateName, updatePassword, getAllTeachersList, getTeachersWithCourses, unassignCourseFromTeacher, getAccessibleCoursesHandler } = require('../controllers/userController');
 const authMiddleware = require('../middleware/authMiddleware');
 const checkRole = require('../middleware/roleMiddleware');
 const validateApiKey = require('../middleware/apiKeyMiddleware');
@@ -208,5 +208,25 @@ router.delete('/admin/teachers/:teacherId/courses/:courseId',
   validateApiKey(),
   unassignCourseFromTeacher
 );
+
+/**
+ * @swagger
+ * /auth/me/courses:
+ *   get:
+ *     summary: Получить все курсы, к которым у студента есть доступ (купленные)
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Список курсов
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Course'
+ */
+router.get('/me/courses', authMiddleware, getAccessibleCoursesHandler);
 
 module.exports = router;

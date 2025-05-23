@@ -204,9 +204,45 @@ async function checkCourseAccess(userId, courseId) {
   return hasAccess;
 }
 
+/**
+ * Get all courses accessible to a user (student)
+ * @param {string} userId - User ID
+ * @returns {Promise<Array>} List of courses
+ */
+async function getAccessibleCourses(userId) {
+  const query = `
+    SELECT c.*
+    FROM course_access ca
+    JOIN courses c ON ca.course_id = c.id
+    WHERE ca.user_id = $1
+    ORDER BY c.created_at DESC
+  `;
+  const { rows } = await pool.query(query, [userId]);
+  return rows;
+}
+
+/**
+ * Get all payments with status 'pending' (for admin confirmation)
+ * @returns {Promise<Array>} List of pending payments with user and course info
+ */
+async function getPendingPayments() {
+  const query = `
+    SELECT p.*, u.email as user_email, u.name as user_name, c.title as course_title, c.price as course_price
+    FROM payments p
+    JOIN users u ON p.user_id = u.id
+    JOIN courses c ON p.course_id = c.id
+    WHERE p.status = 'pending'
+    ORDER BY p.created_at ASC
+  `;
+  const { rows } = await pool.query(query);
+  return rows;
+}
+
 module.exports = {
   createPayment,
   getPaymentById,
   confirmPayment,
-  checkCourseAccess
+  checkCourseAccess,
+  getAccessibleCourses,
+  getPendingPayments
 }; 

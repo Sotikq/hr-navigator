@@ -29,7 +29,11 @@ const getUserCertificates = async (req, res, next) => {
 
   try {
     const { rows: certificates } = await pool.query(
-      'SELECT * FROM certificates WHERE user_id = $1 AND revoked_at IS NULL ORDER BY created_at DESC',
+      `SELECT c.*, co.title as course_title
+       FROM certificates c
+       JOIN courses co ON c.course_id = co.id
+       WHERE c.user_id = $1 AND c.revoked_at IS NULL
+       ORDER BY c.created_at DESC`,
       [userId]
     );
 

@@ -1,6 +1,7 @@
 const Payment = require('../models/Payment');
 const logger = require('../utils/logger');
 const ApiError = require('../utils/ApiError');
+const { getPendingPayments } = require('../models/Payment');
 
 /**
  * Create a new payment
@@ -114,9 +115,24 @@ async function checkCourseAccessHandler(req, res, next) {
   }
 }
 
+/**
+ * Получить все платежи, ожидающие подтверждения (pending)
+ * Только для админов
+ */
+async function getPendingPaymentsHandler(req, res, next) {
+  try {
+    const payments = await getPendingPayments();
+    res.json(payments);
+  } catch (err) {
+    logger.error('Ошибка получения платежей на подтверждение:', err);
+    next(new ApiError(500, 'Ошибка получения платежей на подтверждение'));
+  }
+}
+
 module.exports = {
   createPaymentHandler,
   getPaymentHandler,
   confirmPaymentHandler,
-  checkCourseAccessHandler
+  checkCourseAccessHandler,
+  getPendingPaymentsHandler
 }; 
