@@ -78,6 +78,9 @@ export class CourseService1 {
 completeLesson(lessonId: string): Observable<any> {
   return this.http.post(`${this.apiUrl}progress/lesson/${lessonId}`, {lessonId});
 }
+getMyCoursesForStudent(){
+  return this.http.get(`${this.apiUrl}auth/me/courses`);
+}
   // getCourseByIdWithModules(id: string) {
   //   return this.http.get<CourseResponse>(`${this.apiUrl}courses/${id}`);
   // }

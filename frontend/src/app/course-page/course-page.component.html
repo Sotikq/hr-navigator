@@ -82,7 +82,8 @@
     <div class="course_body_buy">
       <h3>Цена курса</h3>
       <p class="course_price">₸{{ course.price }}</p>
-      <button class="buy_button">Купить курс</button>
+      <button class="buy_button" *ngIf="!isCourseBought" (click)="buyCourse()">Купить курс</button>
+      <button class="buy_button" *ngIf="isCourseBought" [routerLink]="['/student']">Вы уже купили этот курс</button>
     </div>
   </div>
 </div>

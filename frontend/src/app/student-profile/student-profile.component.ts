@@ -58,9 +58,7 @@ export class StudentProfileComponent implements OnInit {
       });
     });
     this.profileForm.controls['email'].disable();
-    this.crs.getCourses().subscribe((data) => {
-      this.courses = data;
-    });
+    this.getMyCourses();
   }
   
   
@@ -70,9 +68,13 @@ export class StudentProfileComponent implements OnInit {
       console.log(this.certificates);
     });
   }
-  
-  
-  
+  getMyCourses(){
+    this.crs.getMyCoursesForStudent().subscribe((response) => {
+      this.courses = response as any[];
+      console.log("my courses",response);
+    }
+  );
+  }
   onSubmit(): void {
     const usernametoupdate = this.profileForm.get('username')?.value;
     if (this.profileForm.valid) {

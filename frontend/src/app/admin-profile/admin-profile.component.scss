@@ -28,7 +28,7 @@
   width: 280px;
   background-color: #ffffff;
   border-right: 1px solid rgba(0, 0, 0, 0.05);
-  padding: 40px 20px;
+  padding: 20px;
   position: fixed;
   height: 100vh;
   overflow-y: auto;
@@ -39,12 +39,14 @@
     width: 100%;
     height: auto;
     position: relative;
-    padding: 20px;
+    padding: 15px;
     border-right: none;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   }
 
   #sidebarAvatar {
+    width: 80px;
+    height: 80px;
     transition: transform 0.3s ease;
     &:hover {
       transform: scale(1.05);
@@ -52,8 +54,8 @@
   }
 
   #sidebarUsername {
-    margin-top: 15px;
-    font-size: 18px;
+    margin-top: 10px;
+    font-size: 16px;
     color: #1a1a1a;
     font-weight: 600;
   }
@@ -62,21 +64,21 @@
 .sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-top: 30px;
+  gap: 8px;
+  margin-top: 20px;
 
   @media (max-width: 1024px) {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
+    gap: 8px;
+    margin-top: 15px;
   }
 }
 
 .sidebar-link {
-  padding: 14px 20px;
-  border-radius: 12px;
+  padding: 10px 15px;
+  border-radius: 8px;
   background-color: #f8fafc;
   color: #64748b;
   text-decoration: none;
@@ -85,10 +87,14 @@
   text-align: center;
   cursor: pointer;
   border: 1px solid transparent;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   @media (max-width: 1024px) {
-    padding: 10px 15px;
-    font-size: 14px;
+    padding: 8px 12px;
+    font-size: 13px;
   }
 
   &:hover {
@@ -697,3 +703,10 @@ button, .btn {
     }
   }
 }
+
+.no-payments {
+  color: #64748b;
+  font-size: 16px;
+  text-align: center;
+}
+

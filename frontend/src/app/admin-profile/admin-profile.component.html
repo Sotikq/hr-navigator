@@ -255,7 +255,8 @@
         </div>
       </div>
     </section>
-    } @if (currentPage == "Учителя") {
+    } 
+    @if (currentPage == "Учителя") {
     <section id="teachers" class="teacher-section">
       <h2>Управление учителями</h2>
       <div class="table-container">
@@ -291,7 +292,44 @@
           </tbody>
         </table>
       </div>
-      <button>Создать нового учителя</button>
+      <button (click)="createTeacher()">Создать нового учителя</button>
+    </section>
+    }
+    @if (currentPage == 'Платежи') {
+    <section id="payments" class="teacher-section">
+      <h2>Платежи</h2>
+      @if (payments.length == 0) {
+      <p class="no-payments">Нет платежей</p>
+        } @else {
+      <div class="table-container">
+        <table class="teachers-table">
+          <thead>
+            <tr>
+              <th>Студент</th>
+              <th>Курс</th>
+              <th>Сумма</th>
+              <th>Дата</th>
+              <th>Статус</th>
+              <th>Действие</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (payment of payments; track $index) {
+            <tr>
+              <td class="teacher-name">{{ payment.user_name }}</td>
+              <td>{{ payment.course_title }}</td>
+              <td>{{ payment.amount }}</td>
+              <td>{{ payment.created_at }}</td>
+              <td>{{ payment.status }}</td>
+              <td>
+                <button (click)="approvePayment(payment.id)">Подтвердить платеж</button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      }
     </section>
     }
   </main>

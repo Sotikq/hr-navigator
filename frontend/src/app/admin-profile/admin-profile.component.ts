@@ -18,6 +18,8 @@ import { AdminCoursesDialogComponent } from '../admin-courses-dialog/admin-cours
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { Teacher } from '../models/teacher.models';
+import { PaymentService } from '../payment.service';
+import { RegisterTeacherComponent } from '../register-teacher/register-teacher.component';
 @Component({
   selector: 'app-admin-profile',
   imports: [
@@ -30,14 +32,15 @@ import { Teacher } from '../models/teacher.models';
   styleUrl: './admin-profile.component.scss',
 })
 export class AdminProfileComponent {
-  tabs = ['Обзор', 'Курсы', 'Аналитика', 'Сообщения', 'Учителя', 'Настройки'];
+  tabs = ['Обзор', 'Курсы', 'Аналитика', 'Сообщения', 'Учителя','Платежи', 'Настройки'];
   user: any = null;
   currentPage: string = 'Обзор';
   profileForm!: FormGroup;
   passwordForm!: FormGroup;
   allTeachers: any = [];
   courses: Course[] = []; // Массив курсов
-
+  payments: any = [];
+  paymentsLoaded: boolean = false;
   constructor(
     private router: Router,
     private crs: CourseService1, // QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQEEEESTION
@@ -46,9 +49,11 @@ export class AdminProfileComponent {
     private adminService: adminService,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
+    private paymentService: PaymentService
   ) {}
 
   ngOnInit(): void {
+    this.getPayments();
     this.crs.getCourses().subscribe((data) => {
       this.courses = data; // Получаем курсы из сервиса и сохраняем в массив
       console.log(this.courses); // Логируем курсы в консоль
@@ -71,10 +76,34 @@ export class AdminProfileComponent {
     this.profileForm.controls['email'].disable();
   }
 
+  getPayments() {
+    this.paymentService.getPayments().subscribe((data) => {
+      console.log(data, 'payments');
+      this.payments = data;
+      this.paymentsLoaded = true;
+      console.log(this.payments, 'payments');
+    });
+  }
+  approvePayment(paymentId: string) {
+    // Подтверждаем платеж
+    this.paymentService.approvePayment(paymentId).subscribe({
+      next: (response) => {
+        // Удаляем платеж из списка после успешного подтверждения
+        this.payments = this.payments.filter((payment: any) => payment.id !== paymentId);
+      },
+      error: (error) => {
+        console.error('Ошибка при подтверждении платежа:', error);
+      }
+    });
+  }
   goToEditCourse(courseId: string) {
     this.router.navigate(['/edit', courseId]); // Переход на страницу редактирования курса
   }
-
+  createTeacher() {
+    this.dialog.open(RegisterTeacherComponent, {
+      width: '500px',
+    });
+  }
   onSubmit(): void {
     const usernametoupdate = this.profileForm.get('username')?.value;
     if (this.profileForm.valid) {

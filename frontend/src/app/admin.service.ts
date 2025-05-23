@@ -18,6 +18,9 @@ export class adminService {
   getTeachersWithCourses(): Observable<any>{
     return this.http.get(`${this.apiUrl}auth/admin/teachers-with-courses`);
   }
+  createTeacher(teacher: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}auth/admin/teachers`, teacher);
+  }
 
   addCourseToTeacher(teacherId: string, courseId: any){
     return this.http.post(`${this.apiUrl}courses/${courseId}/assign-teacher`, {
