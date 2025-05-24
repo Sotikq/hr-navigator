@@ -1,0 +1,45 @@
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 16px 24px;
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateX(120%);
+  transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 1000;
+
+  &.show {
+    transform: translateX(0);
+  }
+
+  &-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &-icon {
+    font-size: 20px;
+  }
+
+  &.success {
+    border-left: 4px solid #00b894;
+    .notification-icon {
+      color: #00b894;
+    }
+  }
+
+  &.error {
+    border-left: 4px solid #ff4757;
+    .notification-icon {
+      color: #ff4757;
+    }
+  }
+
+  &-message {
+    font-size: 14px;
+    color: #2d3436;
+  }
+} 

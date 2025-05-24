@@ -1,3 +1,9 @@
+<app-notification
+  [message]="(notificationService.notification$ | async)?.message ?? ''"
+  [type]="(notificationService.notification$ | async)?.type ?? 'success'"
+  [show]="(notificationService.notification$ | async)?.show ?? false"
+></app-notification>
+
 <section class="auth-container">
   <h2>Вход / Регистрация</h2>
   <div class="auth-forms">

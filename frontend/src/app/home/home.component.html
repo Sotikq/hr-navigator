@@ -310,3 +310,9 @@
     </nav>
   </div>
 </footer>
+
+<app-notification
+  [message]="(notificationService.notification$ | async)?.message ?? ''"
+  [type]="(notificationService.notification$ | async)?.type ?? 'success'"
+  [show]="(notificationService.notification$ | async)?.show ?? false"
+></app-notification>

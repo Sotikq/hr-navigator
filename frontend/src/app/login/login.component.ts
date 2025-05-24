@@ -6,8 +6,11 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router, RouterModule, RouterOutlet } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../auth.service';
+import { NotificationService } from '../services/notification.service';
+import { NotificationComponent } from '../components/notification/notification.component';
+import { AuthStateService } from '../services/auth-state.service';
 
 interface User {
   email: string;
@@ -18,7 +21,7 @@ interface User {
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, NotificationComponent],
   standalone: true,
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -36,7 +39,9 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    public notificationService: NotificationService,
+    private authStateService: AuthStateService
   ) {}
 
   ngOnInit(): void {
@@ -74,16 +79,17 @@ export class LoginComponent {
           next: (user) => {
             localStorage.setItem('currentUser', JSON.stringify(user));
             this.authService.setUser(user);
-            alert('Вы успешно вошли в систему!');
+            this.authStateService.setLoginSuccess(true);
             this.router.navigate(['/']);
           },
           error: (err) => {
             console.error('Ошибка загрузки профиля', err);
+            this.notificationService.showError('Ошибка загрузки профиля');
           },
         });
       },
       error: (err) => {
-        alert(err.error.error || 'Ошибка входа в систему');
+        this.notificationService.showError(err.error.error || 'Ошибка входа в систему');
         console.error(err);
       },
     });
@@ -104,10 +110,10 @@ export class LoginComponent {
       })
       .subscribe({
         next: (res) => {
-          alert('Регистрация прошла успешно!');
+          this.notificationService.showSuccess('Регистрация прошла успешно!');
         },
         error: (err) => {
-          alert(err.error.error || 'Ошибка регистрации');
+          this.notificationService.showError(err.error.error || 'Ошибка регистрации');
           console.error(err);
         },
       });

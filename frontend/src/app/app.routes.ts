@@ -13,6 +13,9 @@ import { AboutUsComponent } from './about-us/about-us.component';
 import { TeacherProfileComponent } from './teacher-profile/teacher-profile.component';
 import { TermsOfServiceComponent } from './terms-of-service/terms-of-service.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
+import { authGuard } from './guards/auth.guard';
+import { roleGuard } from './guards/role.guard';
+import { adminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
   {
@@ -34,14 +37,17 @@ export const routes: Routes = [
   {
     path: 'student',
     component: StudentProfileComponent,
+    canActivate: [authGuard, roleGuard(['user'])],
   }, 
   {
     path: 'admin',
     component: AdminProfileComponent,
+    canActivate: [authGuard, adminGuard],
   },
   {
-    path:'teacher',
-    component: TeacherProfileComponent
+    path: 'teacher',
+    component: TeacherProfileComponent,
+    canActivate: [authGuard, roleGuard(['teacher'])],
   },
   {
     path: 'course/:id',
@@ -50,10 +56,12 @@ export const routes: Routes = [
   {
     path: 'edit/:id',
     component: CreateCourse1Component,
+    canActivate: [authGuard, roleGuard(['teacher', 'admin'])],
   },
   {
     path: 'course/play/:id',
     component: CourseCompeletionStudentComponent,
+    canActivate: [authGuard, roleGuard(['user'])],
   },
   {
     path: 'aboutus',

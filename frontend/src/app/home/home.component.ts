@@ -4,20 +4,37 @@ import { CommonModule } from '@angular/common';
 import { VideoReviewService } from '../video-review.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router, RouterModule } from '@angular/router';
+import { NotificationComponent } from '../components/notification/notification.component';
+import { NotificationService } from '../services/notification.service';
+import { AuthStateService } from '../services/auth-state.service';
+import { take } from 'rxjs/operators';
+
 @Component({
   selector: 'app-home',
-  imports: [CommonModule,RouterModule],
+  standalone: true,
+  imports: [CommonModule, RouterModule, NotificationComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit {
-  constructor(private videoReviewService: VideoReviewService) {}
+  constructor(
+    private videoReviewService: VideoReviewService,
+    public notificationService: NotificationService,
+    private authStateService: AuthStateService
+  ) {}
+
   videos: any;
 
   videoLoaded = false;
 
   ngOnInit(): void {
     this.getVideo();
+    this.authStateService.showLoginSuccess$.pipe(take(1)).subscribe(showSuccess => {
+      if (showSuccess) {
+        this.notificationService.showSuccess('Вы успешно вошли в систему!');
+        this.authStateService.setLoginSuccess(false);
+      }
+    });
   }
   
   getVideo() {

@@ -10,7 +10,7 @@ interface CourseProgress {
   totalLessons: number;
   completedLessons: number;
   progress: number;
-  lessons?: {  // Добавляем знак вопроса, указывая что поле может отсутствовать
+  lessons?: {  
     lesson_id: string;
     completed_at: string | null;
   }[];
