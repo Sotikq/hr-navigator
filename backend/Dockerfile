@@ -1,7 +1,5 @@
-# Используем Node.js 18 на базе Debian (glibc)
 FROM node:18
 
-# Устанавливаем необходимые системные зависимости
 RUN apt-get update && apt-get install -y \
     python3 \
     make \
@@ -14,7 +12,7 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm ci
+RUN npm ci && npm rebuild sharp
 
 COPY . .
 
