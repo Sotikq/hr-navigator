@@ -1,35 +1,26 @@
-# Используем Node.js 18 Alpine как базовый образ
-FROM node:18-alpine
+# Используем Node.js 18 на базе Debian (glibc)
+FROM node:18
 
 # Устанавливаем необходимые системные зависимости
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y \
     python3 \
     make \
     g++ \
-    vips-dev \
-    build-base \
-    libc6-compat
+    libcairo2-dev \
+    libvips-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Создаем рабочую директорию
 WORKDIR /app
 
-# Копируем package.json и package-lock.json
 COPY package*.json ./
 
-# Устанавливаем зависимости
 RUN npm ci
 
-# Копируем исходный код
 COPY . .
 
-# Создаем необходимые директории
 RUN mkdir -p uploads/reviews public logs
-
-# Устанавливаем права на директории
 RUN chmod -R 755 uploads public logs
 
-# Открываем порт
 EXPOSE 3000
 
-# Запускаем приложение
-CMD ["npm", "start"] 
+CMD ["npm", "start"]
