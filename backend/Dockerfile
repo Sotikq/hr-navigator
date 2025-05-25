@@ -21,6 +21,6 @@ COPY . .
 RUN mkdir -p uploads/reviews public logs
 RUN chmod -R 755 uploads public logs
 
-EXPOSE 3000
+EXPOSE 5000
 
 CMD ["npm", "start"]
