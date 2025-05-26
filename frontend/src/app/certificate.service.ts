@@ -8,9 +8,9 @@ export class CertificateService {
   private apiUrl = environment.apiUrl;
   constructor(private http: HttpClient) { }
   getCertificates(){
-    return this.http.get(`${this.apiUrl}certificates`);
+    return this.http.get(`${this.apiUrl}/certificates`);
   }
   createCertificate(courseId: string){
-    return this.http.post(`${this.apiUrl}certificates/generate/${courseId}`, {courseId: courseId});
+    return this.http.post(`${this.apiUrl}/certificates/generate/${courseId}`, {courseId: courseId});
   }
 }

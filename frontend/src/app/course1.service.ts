@@ -19,68 +19,68 @@ export class CourseService1 {
   constructor(private http: HttpClient) {}
 
   getCourseById(id: string) {
-    return this.http.get<Course>(`${this.apiUrl}courses/${id}`);
+    return this.http.get<Course>(`${this.apiUrl}/courses/${id}`);
   }
 
   createCourse(course: any) {
-    return this.http.post<Course>(`${this.apiUrl}courses`, course);
+    return this.http.post<Course>(`${this.apiUrl}/courses`, course);
   }
   deleteCourse(id:Course["id"]){
-    return this.http.delete(`${this.apiUrl}courses/${id}`);
+    return this.http.delete(`${this.apiUrl}/courses/${id}`);
   }
   deleteModule(id:Module["id"]){
-    return this.http.delete(`${this.apiUrl}courses/modules/${id}`)
+    return this.http.delete(`${this.apiUrl}/courses/modules/${id}`)
   }
   deleteLesson(id:Lesson["id"]){
-    return this.http.delete(`${this.apiUrl}courses/lessons/${id}`)
+    return this.http.delete(`${this.apiUrl}/courses/lessons/${id}`)
   }  
   
   updateCourse(course: UpdatedCourseRequest, courseId: string) {
-    return this.http.patch<any>(`${this.apiUrl}courses/${courseId}`, course);
+    return this.http.patch<any>(`${this.apiUrl}/courses/${courseId}`, course);
   }
 
   addModuletoCourse(module: addModuletoCourseRequest, courseId: string) {
     return this.http.post<any>(
-      `${this.apiUrl}courses/${courseId}/modules`,
+      `${this.apiUrl}/courses/${courseId}/modules`,
       module
     );
   }
 
   updateLesson(lesson: updateLesson, lessonId: string):Observable<any> {
     return this.http.patch<any>(
-      `${this.apiUrl}courses/lessons/${lessonId}`,
+      `${this.apiUrl}/courses/lessons/${lessonId}`,
       lesson
     );
   }
   updateModule(module: updatedModuleRequest, moduleId: string) {
-    return this.http.patch<any>(`${this.apiUrl}courses/modules/${moduleId}`, module);
+    return this.http.patch<any>(`${this.apiUrl}/courses/modules/${moduleId}`, module);
   }
   createLesson(lesson: LessonRequest, moduleId: string) {
-    return this.http.post<any>(`${this.apiUrl}courses/modules/${moduleId}/lessons`, lesson);
+    return this.http.post<any>(`${this.apiUrl}/courses/modules/${moduleId}/lessons`, lesson);
   }
 
 
   updateCourseWithCover(formData: FormData, courseId: string) {
-    return this.http.patch<any>(`${this.apiUrl}courses/${courseId}`, formData);
+    return this.http.patch<any>(`${this.apiUrl}/courses/${courseId}`, formData);
   }
   
   
   
   getCourses() {
-    return this.http.get<Course[]>(`${this.apiUrl}courses`);
+    return this.http.get<Course[]>(`${this.apiUrl}/courses`);
   }
 
 
 
   getCourseProgress(courseId: string): Observable<any> {
-  return this.http.get(`${this.apiUrl}progress/course/${courseId}`);
+  return this.http.get(`${this.apiUrl}/progress/course/${courseId}`);
 }
 
 completeLesson(lessonId: string): Observable<any> {
-  return this.http.post(`${this.apiUrl}progress/lesson/${lessonId}`, {lessonId});
+  return this.http.post(`${this.apiUrl}/progress/lesson/${lessonId}`, {lessonId});
 }
 getMyCoursesForStudent(){
-  return this.http.get(`${this.apiUrl}auth/me/courses`);
+  return this.http.get(`${this.apiUrl}/auth/me/courses`);
 }
   // getCourseByIdWithModules(id: string) {
   //   return this.http.get<CourseResponse>(`${this.apiUrl}courses/${id}`);

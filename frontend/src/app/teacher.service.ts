@@ -11,6 +11,6 @@ export class TeacherService {
   constructor(private http: HttpClient) {}
 
   getAllMyCourses(){
-    return this.http.get<Course[]>(`${this.apiUrl}courses/my/all`)
+    return this.http.get<Course[]>(`${this.apiUrl}/courses/my/all`)
   }
 }

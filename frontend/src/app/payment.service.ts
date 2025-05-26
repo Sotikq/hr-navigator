@@ -10,12 +10,12 @@ export class PaymentService {
   constructor(private http: HttpClient) {}
 
   buyCourse(courseId: string) {
-    return this.http.post(`${this.apiUrl}payments`, { course_id: courseId});
+    return this.http.post(`${this.apiUrl}/payments`, { course_id: courseId});
   }
   getPayments() {
-    return this.http.get(`${this.apiUrl}payments/pending`);
+    return this.http.get(`${this.apiUrl}/payments/pending`);
   }
   approvePayment(paymentId: string) { 
-    return this.http.patch(`${this.apiUrl}payments/${paymentId}/confirm`, {id: paymentId});
+    return this.http.patch(`${this.apiUrl}/payments/${paymentId}/confirm`, {id: paymentId});
   }
 }
