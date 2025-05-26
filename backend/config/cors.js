@@ -5,7 +5,8 @@ const logger = require('../utils/logger');
 const allowedOrigins = [
   'http://localhost:4200', // Development frontend
   'http://localhost:5000',
-  process.env.FRONTEND_URL, // Production frontend (if set)
+  'https://hr-navigator.netlify.app', // Netlify production
+  (process.env.FRONTEND_URL || '').replace(/\/$/, ''), // Production frontend (if set, без слэша на конце)
 ].filter(Boolean); // Remove any undefined values
 
 // CORS configuration
@@ -15,16 +16,11 @@ const corsOptions = {
     if (!origin) {
       return callback(null, true);
     }
-
-    if (allowedOrigins.indexOf(origin) === -1) {
-      logger.warn(`CORS blocked request from origin: ${origin}`);
-      return callback(
-        new Error('Not allowed by CORS'),
-        false
-      );
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
     }
-
-    return callback(null, true);
+    logger.warn(`CORS blocked request from origin: ${origin}`);
+    return callback(new Error('Not allowed by CORS'), false);
   },
   credentials: true, // Allow credentials (cookies, authorization headers, etc.)
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
