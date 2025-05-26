@@ -3,12 +3,13 @@ import { Injectable } from '@angular/core';
 import { Observable, switchMap } from 'rxjs';
 import { Teacher } from './models/teacher.models';
 import { Course } from './models/course.models11';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class adminService {
-  private apiUrl = 'http://localhost:5000/api/';
+  private apiUrl = environment.apiUrl + '/';
   constructor(private http: HttpClient) { }
 
   getTeachers(){

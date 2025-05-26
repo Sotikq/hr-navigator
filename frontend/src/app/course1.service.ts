@@ -10,11 +10,12 @@ import {
 } from './models/course.models11';
 import { Observable } from 'rxjs';
 import { Lesson, Module } from './models/course.models11';
+import { environment } from '../environments/environment';
 @Injectable({
   providedIn: 'root',
 })
 export class CourseService1 {
-  private apiUrl = 'http://localhost:5000/api/';
+  private apiUrl = environment.apiUrl + '/';
   constructor(private http: HttpClient) {}
 
   getCourseById(id: string) {

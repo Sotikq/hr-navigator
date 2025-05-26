@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Course } from './courses';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TeacherService {
- private apiUrl = 'http://localhost:5000/api/';
+ private apiUrl = environment.apiUrl + '/';
   constructor(private http: HttpClient) {}
 
   getAllMyCourses(){

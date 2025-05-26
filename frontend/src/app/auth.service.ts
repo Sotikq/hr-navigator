@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
+import { environment } from '../environments/environment';
+
 interface LoginResponse {
   token: string;
   user: {
@@ -12,7 +14,7 @@ interface LoginResponse {
 }
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = 'http://localhost:5000/api/auth';
+  private apiUrl = environment.apiUrl;
   private userSubject = new BehaviorSubject<any>(null);
   user$ = this.userSubject.asObservable(); // для подписки в компоненте
 
