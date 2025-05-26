@@ -6,7 +6,7 @@ import { environment } from '../environments/environment';
   providedIn: 'root'
 })
 export class PaymentService {
-  private apiUrl = environment.apiUrl + '/';
+  private apiUrl = environment.apiUrl;
   constructor(private http: HttpClient) {}
 
   buyCourse(courseId: string) {

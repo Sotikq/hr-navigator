@@ -14,7 +14,7 @@ interface LoginResponse {
 }
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.apiUrl + '/auth';
   private userSubject = new BehaviorSubject<any>(null);
   user$ = this.userSubject.asObservable(); // для подписки в компоненте
 

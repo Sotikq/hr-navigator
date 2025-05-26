@@ -5,7 +5,7 @@ import { environment } from '../environments/environment';
   providedIn: 'root'
 })
 export class CertificateService {
-  private apiUrl = environment.apiUrl + '/';
+  private apiUrl = environment.apiUrl;
   constructor(private http: HttpClient) { }
   getCertificates(){
     return this.http.get(`${this.apiUrl}certificates`);

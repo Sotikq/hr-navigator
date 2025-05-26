@@ -15,7 +15,7 @@ import { environment } from '../environments/environment';
   providedIn: 'root',
 })
 export class CourseService1 {
-  private apiUrl = environment.apiUrl + '/';
+  private apiUrl = environment.apiUrl;
   constructor(private http: HttpClient) {}
 
   getCourseById(id: string) {
