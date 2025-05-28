@@ -32,7 +32,7 @@ import { RegisterTeacherComponent } from '../register-teacher/register-teacher.c
   styleUrl: './admin-profile.component.scss',
 })
 export class AdminProfileComponent {
-  tabs = ['Обзор', 'Курсы', 'Аналитика', 'Сообщения', 'Учителя','Платежи', 'Настройки'];
+  tabs = ['Обзор', 'Курсы', 'Аналитика', 'Сообщения', 'Преподаватель','Платежи', 'Настройки'];
   user: any = null;
   currentPage: string = 'Обзор';
   profileForm!: FormGroup;

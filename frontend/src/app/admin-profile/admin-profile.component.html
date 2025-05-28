@@ -67,7 +67,7 @@
                 <h3>{{ course.title }}</h3>
                 <p>{{ course.description }}</p>
                 <p class="course-price">
-                  <strong>Цена:</strong> {{ course.price }}
+                  <strong>Стоимость:</strong> {{ course.price }}
                 </p>
               </div>
             </div>
@@ -256,14 +256,14 @@
       </div>
     </section>
     } 
-    @if (currentPage == "Учителя") {
+    @if (currentPage == "Преподаватель") {
     <section id="teachers" class="teacher-section">
-      <h2>Управление учителями</h2>
+      <h2>Управление преподавателями</h2>
       <div class="table-container">
         <table class="teachers-table">
           <thead>
             <tr>
-              <th>Учитель</th>
+              <th>Преподаватель</th>
               <th>Почта</th>
               <th>Курсы</th>
             </tr>
@@ -292,7 +292,7 @@
           </tbody>
         </table>
       </div>
-      <button (click)="createTeacher()">Создать нового учителя</button>
+      <button (click)="createTeacher()">Создать нового преподавателя</button>
     </section>
     }
     @if (currentPage == 'Платежи') {

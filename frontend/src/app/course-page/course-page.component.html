@@ -20,7 +20,7 @@
           ></path>
         </svg>
         <p class="course_header_title_duration">
-          <strong>Длительность:</strong> {{ course.duration }} 
+          <strong>Продолжительность:</strong> {{ course.duration }} 
         </p>
       </div>
       <div class="course_header_title_certificate">
@@ -80,7 +80,7 @@
       <p>{{ course.description }}</p>
     </div>
     <div class="course_body_buy">
-      <h3>Цена курса</h3>
+      <h3>Стоимость курса</h3>
       <p class="course_price">₸{{ course.price }}</p>
       <button class="buy_button" *ngIf="!isCourseBought" (click)="buyCourse()">Купить курс</button>
       <button class="buy_button" *ngIf="isCourseBought" [routerLink]="['/student']">Вы уже купили этот курс</button>
