@@ -1,6 +1,7 @@
 const pool = require('../config/db');
 const logger = require('../utils/logger');
 const ApiError = require('../utils/ApiError');
+const { v4: uuidv4 } = require('uuid');
 
 /**
  * Create a new payment record
@@ -50,7 +51,7 @@ async function createPayment({ user_id, course_id }) {
         created_at,
         updated_at
       )
-      VALUES ($1, $2, $3, 'KZT', 'kaspi_qr', 'pending', $4, NOW() + INTERVAL '30 minutes', NOW(), NOW())
+      VALUES ($1, $2, $3, 'KZT', 'Безналичный перевод по выставленному счету на оплату', 'pending', $4, NOW() + INTERVAL '30 minutes', NOW(), NOW())
       RETURNING *
     `;
 
@@ -238,11 +239,166 @@ async function getPendingPayments() {
   return rows;
 }
 
+// Создать заявку на оплату (user)
+async function createPaymentRequest({ user_id, course_id, phone }) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const courseQuery = 'SELECT id, price, title FROM courses WHERE id = $1';
+    const courseResult = await client.query(courseQuery, [course_id]);
+    if (courseResult.rows.length === 0) throw ApiError.notFound('Course not found');
+    const course = courseResult.rows[0];
+    // Проверка на дублирующую заявку
+    const existing = await client.query(
+      'SELECT id FROM payments WHERE user_id = $1 AND course_id = $2 AND status IN (\'pending\', \'invoiced\', \'paid\')',
+      [user_id, course_id]
+    );
+    if (existing.rows.length > 0) throw ApiError.badRequest('Already requested or paid');
+    const paymentId = uuidv4();
+    const paymentMethod = 'Безналичный перевод по выставленному счету на оплату';
+    const paymentQuery = `
+      INSERT INTO payments (id, user_id, course_id, amount, status, phone, payment_method, payment_expires_at, created_at, updated_at)
+      VALUES ($1, $2, $3, $4, 'pending', $5, $6, NOW() + INTERVAL '30 minutes', NOW(), NOW())
+      RETURNING *`;
+    const { rows } = await client.query(paymentQuery, [paymentId, user_id, course_id, course.price, phone, paymentMethod]);
+    await client.query('COMMIT');
+    return rows[0];
+  } catch (e) {
+    await client.query('ROLLBACK');
+    throw e;
+  } finally {
+    client.release();
+  }
+}
+
+// Получить все заявки (admin)
+async function getAllPayments() {
+  const query = `
+    SELECT p.*, u.email as user_email, u.name as user_name, c.title as course_title, c.price as course_price
+    FROM payments p
+    JOIN users u ON p.user_id = u.id
+    JOIN courses c ON p.course_id = c.id
+    ORDER BY p.created_at DESC`;
+  const { rows } = await pool.query(query);
+  return rows;
+}
+
+// Выставить счет (admin)
+async function invoicePayment(id, invoice_url) {
+  const { rowCount } = await pool.query(
+    `UPDATE payments SET status = 'invoiced', invoice_url = $1, updated_at = NOW() WHERE id = $2 AND status = 'pending'`,
+    [invoice_url, id]
+  );
+  if (!rowCount) throw ApiError.notFound('Not found or already invoiced');
+  return true;
+}
+
+// Отклонить заявку (admin)
+async function rejectPayment(id) {
+  const { rowCount } = await pool.query(
+    `UPDATE payments SET status = 'rejected', updated_at = NOW() WHERE id = $1 AND status IN ('pending', 'invoiced')`,
+    [id]
+  );
+  if (!rowCount) throw ApiError.notFound('Not found or already processed');
+  return true;
+}
+
+// Получить все заявки пользователя
+async function getPaymentsByUser(user_id) {
+  const query = `
+    SELECT p.*, c.title as course_title, c.price as course_price
+    FROM payments p
+    JOIN courses c ON p.course_id = c.id
+    WHERE p.user_id = $1
+    ORDER BY p.created_at DESC
+  `;
+  const { rows } = await pool.query(query, [user_id]);
+  return rows;
+}
+
+// Удалить заявку пользователя (только если статус pending)
+async function deletePayment(payment_id, user_id) {
+  const { rowCount } = await pool.query(
+    `DELETE FROM payments WHERE id = $1 AND user_id = $2 AND status = 'pending'`,
+    [payment_id, user_id]
+  );
+  if (!rowCount) throw ApiError.badRequest('Cannot delete: not found or already processed');
+  return true;
+}
+
+// Повторить заявку на оплату (retry)
+async function retryPayment({ user_id, course_id, phone }) {
+  // Проверка: есть ли уже подтверждённая заявка (курс куплен)
+  const confirmed = await pool.query(
+    `SELECT id FROM payments WHERE user_id = $1 AND course_id = $2 AND status = 'confirmed'`,
+    [user_id, course_id]
+  );
+  if (confirmed.rows.length > 0) throw ApiError.badRequest('You already have access to this course.');
+
+  // Проверка: есть ли активные заявки (pending, invoiced)
+  const active = await pool.query(
+    `SELECT id FROM payments WHERE user_id = $1 AND course_id = $2 AND status IN ('pending', 'invoiced')`,
+    [user_id, course_id]
+  );
+  if (active.rows.length > 0) throw ApiError.badRequest('You already have an active payment request for this course.');
+
+  // Проверка: последняя заявка должна быть rejected или expired
+  const last = await pool.query(
+    `SELECT id, status, payment_expires_at FROM payments WHERE user_id = $1 AND course_id = $2 ORDER BY created_at DESC LIMIT 1`,
+    [user_id, course_id]
+  );
+  if (last.rows.length === 0) throw ApiError.badRequest('No previous payment request found for this course.');
+  const lastStatus = last.rows[0].status;
+  const isExpired = lastStatus === 'pending' && new Date(last.rows[0].payment_expires_at) < new Date();
+  if (!(lastStatus === 'rejected' || isExpired)) {
+    throw ApiError.badRequest('Retry is only allowed after rejection or expiration of the last request.');
+  }
+
+  // Создать новую заявку
+  return await createPaymentRequest({ user_id, course_id, phone });
+}
+
+// Получить все заявки (админ, с фильтрацией)
+async function getAllPaymentsAdmin({ status, user_id, course_id }) {
+  let query = `
+    SELECT p.*, u.email as user_email, u.name as user_name, c.title as course_title, c.price as course_price
+    FROM payments p
+    JOIN users u ON p.user_id = u.id
+    JOIN courses c ON p.course_id = c.id
+    WHERE 1=1
+  `;
+  const params = [];
+  let idx = 1;
+  if (status) {
+    query += ` AND p.status = $${idx++}`;
+    params.push(status);
+  }
+  if (user_id) {
+    query += ` AND p.user_id = $${idx++}`;
+    params.push(user_id);
+  }
+  if (course_id) {
+    query += ` AND p.course_id = $${idx++}`;
+    params.push(course_id);
+  }
+  query += ' ORDER BY p.created_at DESC';
+  const { rows } = await pool.query(query, params);
+  return rows;
+}
+
 module.exports = {
   createPayment,
   getPaymentById,
   confirmPayment,
   checkCourseAccess,
   getAccessibleCourses,
-  getPendingPayments
+  getPendingPayments,
+  createPaymentRequest,
+  getAllPayments,
+  invoicePayment,
+  rejectPayment,
+  getPaymentsByUser,
+  deletePayment,
+  retryPayment,
+  getAllPaymentsAdmin
 }; 
