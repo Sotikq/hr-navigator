@@ -135,75 +135,71 @@ async function getAllUnpublishedCourses(req, res, next) {
   try {
     const courseQuery = `SELECT * FROM courses WHERE is_published = false ORDER BY created_at DESC`;
     const { rows: courseRows } = await pool.query(courseQuery);
-
     if (courseRows.length === 0) return res.json([]);
-
     const courseIds = courseRows.map(course => course.id);
-    const { rows: moduleRows } = await pool.query(`
-      SELECT * FROM modules WHERE course_id = ANY($1::uuid[]) ORDER BY position
-    `, [courseIds]);
-
+    const { rows: moduleRows } = await pool.query(`SELECT * FROM modules WHERE course_id = ANY($1::uuid[]) ORDER BY position`, [courseIds]);
     const moduleIds = moduleRows.map(m => m.id);
-    let lessonRows = [];
-
+    let topicRows = [];
     if (moduleIds.length > 0) {
-      const { rows } = await pool.query(`
-        SELECT * FROM lessons WHERE module_id = ANY($1::uuid[]) ORDER BY position
-      `, [moduleIds]);
+      const { rows } = await pool.query(`SELECT * FROM topics WHERE module_id = ANY($1::uuid[]) ORDER BY position`, [moduleIds]);
+      topicRows = rows;
+    }
+    const topicIds = topicRows.map(t => t.id);
+    let lessonRows = [];
+    if (topicIds.length > 0) {
+      const { rows } = await pool.query(`SELECT * FROM lessons WHERE topic_id = ANY($1::uuid[]) ORDER BY position`, [topicIds]);
       lessonRows = rows;
     }
-
-    const coursesWithModulesAndLessons = courseRows.map(course => {
+    const coursesWithModulesTopicsLessons = courseRows.map(course => {
       const modules = moduleRows
         .filter(m => m.course_id === course.id)
-        .map(module => ({
-          ...module,
-          lessons: lessonRows.filter(lesson => lesson.module_id === module.id)
-        }));
-
+        .map(module => {
+          const topics = topicRows
+            .filter(topic => topic.module_id === module.id)
+            .map(topic => ({
+              ...topic,
+              lessons: lessonRows.filter(lesson => lesson.topic_id === topic.id)
+            }));
+          return { ...module, topics };
+        });
       return { ...course, modules };
     });
-
-    res.json(coursesWithModulesAndLessons);
-
-  } catch (err) {
-    next(err);
-  }
+    res.json(coursesWithModulesTopicsLessons);
+  } catch (err) { next(err); }
 }
 
 // ✅ Получение курса по ID (с модулями и уроками)
 async function getCourseByIdHandler(req, res, next) {
   try {
     const courseId = req.params.id;
-
     const course = await getCourseById(courseId);
-    if (!course) {
-      throw ApiError.notFound('Course not found');
-    }
-
-    const { rows: moduleRows } = await pool.query(`
-      SELECT * FROM modules WHERE course_id = $1 ORDER BY position
-    `, [courseId]);
-
+    if (!course) throw ApiError.notFound('Course not found');
+    // Получаем модули
+    const { rows: moduleRows } = await pool.query(`SELECT * FROM modules WHERE course_id = $1 ORDER BY position`, [courseId]);
     const moduleIds = moduleRows.map(m => m.id);
-    let lessonRows = [];
-
+    let topicRows = [];
     if (moduleIds.length > 0) {
-      const result = await pool.query(`
-        SELECT * FROM lessons WHERE module_id = ANY($1::uuid[]) ORDER BY position
-      `, [moduleIds]);
-      lessonRows = result.rows;
+      const { rows } = await pool.query(`SELECT * FROM topics WHERE module_id = ANY($1::uuid[]) ORDER BY position`, [moduleIds]);
+      topicRows = rows;
     }
-
-    const modulesWithLessons = moduleRows.map(module => ({
-      ...module,
-      lessons: lessonRows.filter(lesson => lesson.module_id === module.id)
-    }));
-
-    res.json({ ...course, modules: modulesWithLessons });
-  } catch (err) {
-    next(err);
-  }
+    const topicIds = topicRows.map(t => t.id);
+    let lessonRows = [];
+    if (topicIds.length > 0) {
+      const { rows } = await pool.query(`SELECT * FROM lessons WHERE topic_id = ANY($1::uuid[]) ORDER BY position`, [topicIds]);
+      lessonRows = rows;
+    }
+    // Вложенная структура: модули → темы → уроки
+    const modulesWithTopics = moduleRows.map(module => {
+      const topics = topicRows
+        .filter(topic => topic.module_id === module.id)
+        .map(topic => ({
+          ...topic,
+          lessons: lessonRows.filter(lesson => lesson.topic_id === topic.id)
+        }));
+      return { ...module, topics };
+    });
+    res.json({ ...course, modules: modulesWithTopics });
+  } catch (err) { next(err); }
 }
 
 // ✅ Получение всех курсов преподавателя или администратора
@@ -426,6 +422,107 @@ async function deleteLessonHandler(req, res, next) {
   }
 }
 
+// ✅ Добавление темы к модулю
+async function addTopicToModule(req, res, next) {
+  try {
+    const { moduleId } = req.params;
+    const { title, description, position } = req.body;
+    const userRole = req.user.role;
+    const userId = req.user.id;
+    // Проверка существования модуля
+    const moduleQuery = `SELECT * FROM modules WHERE id = $1`;
+    const { rows: [module] } = await pool.query(moduleQuery, [moduleId]);
+    if (!module) throw ApiError.notFound('Module not found');
+    // Проверка прав
+    if (userRole !== 'admin') {
+      if (userRole === 'teacher') {
+        const isAssigned = await isTeacherAssignedToCourse(module.course_id, userId);
+        if (!isAssigned) throw ApiError.forbidden('You are not authorized to add topics to this module');
+      } else {
+        throw ApiError.forbidden('Only admins and assigned teachers can add topics');
+      }
+    }
+    const newTopic = await addTopic({ moduleId, title, description, position });
+    res.status(201).json(newTopic);
+  } catch (err) { next(err); }
+}
+
+// ✅ Обновление темы
+async function updateTopicHandler(req, res, next) {
+  try {
+    const topicId = req.params.id;
+    const fieldsToUpdate = req.body;
+    const userRole = req.user.role;
+    const userId = req.user.id;
+    // Получаем тему и модуль для проверки прав
+    const topicQuery = `SELECT t.*, m.course_id FROM topics t JOIN modules m ON t.module_id = m.id WHERE t.id = $1`;
+    const { rows: [topic] } = await pool.query(topicQuery, [topicId]);
+    if (!topic) throw ApiError.notFound('Topic not found');
+    if (userRole !== 'admin') {
+      if (userRole === 'teacher') {
+        const isAssigned = await isTeacherAssignedToCourse(topic.course_id, userId);
+        if (!isAssigned) throw ApiError.forbidden('You are not authorized to update this topic');
+      } else {
+        throw ApiError.forbidden('Only admins and assigned teachers can update topics');
+      }
+    }
+    const updatedTopic = await updateTopic(topicId, fieldsToUpdate);
+    if (!updatedTopic) throw ApiError.notFound('Topic not found or no data to update');
+    res.json(updatedTopic);
+  } catch (err) { next(err); }
+}
+
+// ✅ Удаление темы
+async function deleteTopicHandler(req, res, next) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const topicId = req.params.id;
+    const userRole = req.user.role;
+    const userId = req.user.id;
+    const topicQuery = `SELECT t.*, m.course_id FROM topics t JOIN modules m ON t.module_id = m.id WHERE t.id = $1`;
+    const { rows: [topic] } = await client.query(topicQuery, [topicId]);
+    if (!topic) throw ApiError.notFound('Topic not found');
+    if (userRole !== 'admin') {
+      if (userRole === 'teacher') {
+        const isAssigned = await isTeacherAssignedToCourse(topic.course_id, userId);
+        if (!isAssigned) throw ApiError.forbidden('You are not authorized to delete this topic');
+      } else {
+        throw ApiError.forbidden('Only admins and assigned teachers can delete topics');
+      }
+    }
+    await deleteTopic(topicId, client);
+    await client.query('COMMIT');
+    res.status(200).json({ message: 'Deleted successfully' });
+  } catch (err) {
+    await client.query('ROLLBACK');
+    next(err);
+  } finally { client.release(); }
+}
+
+// ✅ Добавление урока к теме
+async function addLessonToTopic(req, res, next) {
+  try {
+    const { topicId } = req.params;
+    const { title, description, type, content_url, position } = req.body;
+    const userRole = req.user.role;
+    const userId = req.user.id;
+    const topicQuery = `SELECT t.*, m.course_id FROM topics t JOIN modules m ON t.module_id = m.id WHERE t.id = $1`;
+    const { rows: [topic] } = await pool.query(topicQuery, [topicId]);
+    if (!topic) throw ApiError.notFound('Topic not found');
+    if (userRole !== 'admin') {
+      if (userRole === 'teacher') {
+        const isAssigned = await isTeacherAssignedToCourse(topic.course_id, userId);
+        if (!isAssigned) throw ApiError.forbidden('You are not authorized to add lessons to this topic');
+      } else {
+        throw ApiError.forbidden('Only admins and assigned teachers can add lessons');
+      }
+    }
+    const newLesson = await addLesson({ topicId, title, description, type, contentUrl: content_url, position });
+    res.status(201).json(newLesson);
+  } catch (err) { next(err); }
+}
+
 module.exports = {
   createCourse: createCourseHandler,
   updateCourse: updateCourseHandler,
@@ -440,5 +537,9 @@ module.exports = {
   assignTeacher: assignTeacherHandler,
   deleteCourse: deleteCourseHandler,
   deleteModule: deleteModuleHandler,
-  deleteLesson: deleteLessonHandler
+  deleteLesson: deleteLessonHandler,
+  addTopicToModule,
+  updateTopic: updateTopicHandler,
+  deleteTopic: deleteTopicHandler,
+  addLessonToTopic
 };

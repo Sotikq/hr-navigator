@@ -16,7 +16,11 @@ const {
   deleteCourse: deleteCourseHandler,
   deleteModule: deleteModuleHandler,
   deleteLesson: deleteLessonHandler,
-  checkCourseAccess: checkCourseAccessHandler
+  checkCourseAccess: checkCourseAccessHandler,
+  addTopicToModule,
+  updateTopic,
+  deleteTopic,
+  addLessonToTopic
 } = require('../controllers/courseController');
 const { authMiddleware, validateApiKey, checkRole } = require('../middleware');
 const { checkCourseAccessHandler: paymentCheckCourseAccessHandler } = require('../controllers/paymentController');
@@ -153,19 +157,26 @@ router.patch('/:id',
  *           type: string
  *         description: ID модуля
  *     requestBody:
+ *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: Module title
+ *               description:
+ *                 type: string
+ *                 description: Module description
+ *               position:
+ *                 type: integer
+ *                 description: Position in course
  *     responses:
  *       200:
  *         description: Модуль успешно обновлен
  */
-router.patch('/modules/:id', 
-  authMiddleware, 
-  validateApiKey(), 
-  updateModule
-);
+router.patch('/modules/:id', authMiddleware, validateApiKey(), updateModule);
 
 /**
  * @swagger
@@ -184,19 +195,33 @@ router.patch('/modules/:id',
  *           type: string
  *         description: ID урока
  *     requestBody:
+ *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: Lesson title
+ *               description:
+ *                 type: string
+ *                 description: Lesson description
+ *               type:
+ *                 type: string
+ *                 enum: [video, test, pdf]
+ *                 description: Lesson type
+ *               content_url:
+ *                 type: string
+ *                 description: URL to lesson content
+ *               position:
+ *                 type: integer
+ *                 description: Position in topic
  *     responses:
  *       200:
  *         description: Урок успешно обновлен
  */
-router.patch('/lessons/:id', 
-  authMiddleware, 
-  validateApiKey(), 
-  updateLesson
-);
+router.patch('/lessons/:id', authMiddleware, validateApiKey(), updateLesson);
 
 /**
  * @swagger
@@ -536,5 +561,150 @@ router.get('/:id/access',
   validateApiKey(),
   paymentCheckCourseAccessHandler
 );
+
+/**
+ * @swagger
+ * /courses/modules/{moduleId}/topics:
+ *   post:
+ *     tags: [Courses]
+ *     summary: Add a new topic to a module
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: moduleId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *             properties:
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               position:
+ *                 type: integer
+ *     responses:
+ *       201:
+ *         description: Topic created successfully
+ *       404:
+ *         description: Module not found
+ */
+router.post('/modules/:moduleId/topics', authMiddleware, checkRole(['admin', 'teacher']), addTopicToModule);
+
+/**
+ * @swagger
+ * /courses/topics/{id}:
+ *   patch:
+ *     summary: Update topic
+ *     tags: [Courses]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: Topic title
+ *               description:
+ *                 type: string
+ *                 description: Topic description
+ *               position:
+ *                 type: integer
+ *                 description: Position in module
+ *     responses:
+ *       200:
+ *         description: Topic updated successfully
+ *       404:
+ *         description: Topic not found
+ */
+router.patch('/topics/:id', authMiddleware, checkRole(['admin', 'teacher']), updateTopic);
+
+/**
+ * @swagger
+ * /courses/topics/{id}:
+ *   delete:
+ *     summary: Delete topic
+ *     tags: [Courses]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Topic deleted successfully
+ *       404:
+ *         description: Topic not found
+ */
+router.delete('/topics/:id', authMiddleware, checkRole(['admin', 'teacher']), deleteTopic);
+
+/**
+ * @swagger
+ * /courses/topics/{topicId}/lessons:
+ *   post:
+ *     tags: [Courses]
+ *     summary: Add a new lesson to a topic
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: topicId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *               - type
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: Lesson title
+ *               description:
+ *                 type: string
+ *                 description: Lesson description
+ *               type:
+ *                 type: string
+ *                 enum: [video, test, pdf]
+ *                 description: Lesson type
+ *               content_url:
+ *                 type: string
+ *                 description: URL to lesson content
+ *               position:
+ *                 type: integer
+ *                 description: Position in topic
+ *     responses:
+ *       201:
+ *         description: Lesson created successfully
+ *       404:
+ *         description: Topic not found
+ */
+router.post('/topics/:topicId/lessons', authMiddleware, checkRole(['admin', 'teacher']), addLessonToTopic);
 
 module.exports = router;

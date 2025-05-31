@@ -90,14 +90,61 @@ async function updateModule(moduleId, fieldsToUpdate) {
   return rows[0];
 }
 
-// 🔹 Добавление урока к модулю
-async function addLesson({ moduleId, title, description, type, contentUrl, position }) {
+// 🔹 Добавление темы к модулю
+async function addTopic({ moduleId, title, description, position }) {
   const query = `
-    INSERT INTO lessons (module_id, title, description, type, content_url, position)
+    INSERT INTO topics (module_id, title, description, position)
+    VALUES ($1, $2, $3, $4)
+    RETURNING *
+  `;
+  const values = [moduleId, title, description, position];
+  const { rows } = await pool.query(query, values);
+  return rows[0];
+}
+
+// 🔹 Обновление темы
+async function updateTopic(topicId, fieldsToUpdate) {
+  const keys = Object.keys(fieldsToUpdate);
+  if (keys.length === 0) return null;
+  const setClause = keys.map((key, index) => `${key} = $${index + 2}`).join(', ');
+  const values = [topicId, ...Object.values(fieldsToUpdate)];
+  const query = `
+    UPDATE topics
+    SET ${setClause}
+    WHERE id = $1
+    RETURNING *
+  `;
+  const { rows } = await pool.query(query, values);
+  return rows[0];
+}
+
+// 🔹 Удаление темы
+async function deleteTopic(topicId, client = pool) {
+  logger.info('deleteTopic() called', { topicId });
+  try {
+    const deleteTopicQuery = `
+      DELETE FROM topics 
+      WHERE id = $1
+      RETURNING id
+    `;
+    logger.info('deleteTopic() executing query', { topicId });
+    const { rows } = await client.query(deleteTopicQuery, [topicId]);
+    logger.info('deleteTopic() query completed', { topicId });
+    return rows[0];
+  } catch (err) {
+    logger.error('deleteTopic() error', { topicId, error: err });
+    throw err;
+  }
+}
+
+// 🔹 Добавление урока к теме
+async function addLesson({ topicId, title, description, type, contentUrl, position }) {
+  const query = `
+    INSERT INTO lessons (topic_id, title, description, type, content_url, position)
     VALUES ($1, $2, $3, $4, $5, $6)
     RETURNING *
   `;
-  const values = [moduleId, title, description, type, contentUrl, position];
+  const values = [topicId, title, description, type, contentUrl, position];
   const { rows } = await pool.query(query, values);
   return rows[0];
 }
@@ -200,6 +247,9 @@ module.exports = {
   getCoursesByAuthor,
   addModule,
   updateModule,
+  addTopic,
+  updateTopic,
+  deleteTopic,
   addLesson,
   updateLesson,
   deleteCourse,
