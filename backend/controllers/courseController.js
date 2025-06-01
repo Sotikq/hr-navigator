@@ -451,7 +451,11 @@ async function addTopicToModule(req, res, next) {
 async function updateTopicHandler(req, res, next) {
   try {
     const topicId = req.params.id;
-    const fieldsToUpdate = req.body;
+    // Фильтруем только разрешённые поля
+    const allowedFields = ['title', 'description', 'position'];
+    const fieldsToUpdate = Object.fromEntries(
+      Object.entries(req.body).filter(([key]) => allowedFields.includes(key))
+    );
     const userRole = req.user.role;
     const userId = req.user.id;
     // Получаем тему и модуль для проверки прав
