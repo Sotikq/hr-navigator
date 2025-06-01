@@ -13,7 +13,10 @@ const {
   updateLesson,
   deleteCourse,
   deleteModule,
-  deleteLesson
+  deleteLesson,
+  addTopic,
+  updateTopic,
+  deleteTopic
 } = require('../models/Course');
 const { assignTeacherToCourse, isTeacherAssignedToCourse } = require('../models/CourseTeacher');
 const logger = require('../utils/logger');
@@ -136,20 +139,40 @@ async function getAllUnpublishedCourses(req, res, next) {
     const courseQuery = `SELECT * FROM courses WHERE is_published = false ORDER BY created_at DESC`;
     const { rows: courseRows } = await pool.query(courseQuery);
     if (courseRows.length === 0) return res.json([]);
+    
     const courseIds = courseRows.map(course => course.id);
-    const { rows: moduleRows } = await pool.query(`SELECT * FROM modules WHERE course_id = ANY($1::uuid[]) ORDER BY position`, [courseIds]);
+    
+    // Get modules
+    const { rows: moduleRows } = await pool.query(
+      `SELECT * FROM modules WHERE course_id = ANY($1::uuid[]) ORDER BY position`, 
+      [courseIds]
+    );
+    
     const moduleIds = moduleRows.map(m => m.id);
+    
+    // Get topics
     let topicRows = [];
     if (moduleIds.length > 0) {
-      const { rows } = await pool.query(`SELECT * FROM topics WHERE module_id = ANY($1::uuid[]) ORDER BY position`, [moduleIds]);
+      const { rows } = await pool.query(
+        `SELECT * FROM topics WHERE module_id = ANY($1::uuid[]) ORDER BY position`, 
+        [moduleIds]
+      );
       topicRows = rows;
     }
+    
     const topicIds = topicRows.map(t => t.id);
+    
+    // Get lessons
     let lessonRows = [];
     if (topicIds.length > 0) {
-      const { rows } = await pool.query(`SELECT * FROM lessons WHERE topic_id = ANY($1::uuid[]) ORDER BY position`, [topicIds]);
+      const { rows } = await pool.query(
+        `SELECT * FROM lessons WHERE topic_id = ANY($1::uuid[]) ORDER BY position`, 
+        [topicIds]
+      );
       lessonRows = rows;
     }
+
+    // Build nested structure
     const coursesWithModulesTopicsLessons = courseRows.map(course => {
       const modules = moduleRows
         .filter(m => m.course_id === course.id)
@@ -164,6 +187,7 @@ async function getAllUnpublishedCourses(req, res, next) {
         });
       return { ...course, modules };
     });
+
     res.json(coursesWithModulesTopicsLessons);
   } catch (err) { next(err); }
 }
@@ -174,31 +198,7 @@ async function getCourseByIdHandler(req, res, next) {
     const courseId = req.params.id;
     const course = await getCourseById(courseId);
     if (!course) throw ApiError.notFound('Course not found');
-    // Получаем модули
-    const { rows: moduleRows } = await pool.query(`SELECT * FROM modules WHERE course_id = $1 ORDER BY position`, [courseId]);
-    const moduleIds = moduleRows.map(m => m.id);
-    let topicRows = [];
-    if (moduleIds.length > 0) {
-      const { rows } = await pool.query(`SELECT * FROM topics WHERE module_id = ANY($1::uuid[]) ORDER BY position`, [moduleIds]);
-      topicRows = rows;
-    }
-    const topicIds = topicRows.map(t => t.id);
-    let lessonRows = [];
-    if (topicIds.length > 0) {
-      const { rows } = await pool.query(`SELECT * FROM lessons WHERE topic_id = ANY($1::uuid[]) ORDER BY position`, [topicIds]);
-      lessonRows = rows;
-    }
-    // Вложенная структура: модули → темы → уроки
-    const modulesWithTopics = moduleRows.map(module => {
-      const topics = topicRows
-        .filter(topic => topic.module_id === module.id)
-        .map(topic => ({
-          ...topic,
-          lessons: lessonRows.filter(lesson => lesson.topic_id === topic.id)
-        }));
-      return { ...module, topics };
-    });
-    res.json({ ...course, modules: modulesWithTopics });
+    res.json(course);
   } catch (err) { next(err); }
 }
 

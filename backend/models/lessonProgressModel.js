@@ -69,10 +69,11 @@ class LessonProgressModel {
       const lessonsQuery = `
         SELECT l.id as lesson_id, lp.completed_at
         FROM lessons l
-        JOIN modules m ON l.module_id = m.id
+        JOIN topics t ON l.topic_id = t.id
+        JOIN modules m ON t.module_id = m.id
         LEFT JOIN lesson_progress lp ON l.id = lp.lesson_id AND lp.user_id = $1
         WHERE m.course_id = $2
-        ORDER BY m.position, l.position
+        ORDER BY m.position, t.position, l.position
       `;
       const { rows: lessons } = await pool.query(lessonsQuery, [userId, courseId]);
 
@@ -80,7 +81,8 @@ class LessonProgressModel {
       const totalQuery = `
         SELECT COUNT(l.id) as total_lessons
         FROM lessons l
-        JOIN modules m ON l.module_id = m.id
+        JOIN topics t ON l.topic_id = t.id
+        JOIN modules m ON t.module_id = m.id
         WHERE m.course_id = $1
       `;
       const { rows: [{ total_lessons }] } = await pool.query(totalQuery, [courseId]);

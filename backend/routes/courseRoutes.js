@@ -11,7 +11,6 @@ const {
   getCourseById,
   getMyCourses,
   addModuleToCourse,
-  addLessonToModule,
   assignTeacher,
   deleteCourse: deleteCourseHandler,
   deleteModule: deleteModuleHandler,
@@ -307,7 +306,9 @@ router.get('/my/all',
  *         name: courseId
  *         required: true
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: uuid
+ *         description: ID курса
  *     requestBody:
  *       required: true
  *       content:
@@ -332,51 +333,6 @@ router.get('/my/all',
  *         description: Course not found
  */
 router.post('/:courseId/modules', authMiddleware, checkRole(['admin', 'teacher']), addModuleToCourse);
-
-/**
- * @swagger
- * /courses/modules/{moduleId}/lessons:
- *   post:
- *     tags: [Courses]
- *     summary: Add a new lesson to a module
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: moduleId
- *         required: true
- *         schema:
- *           type: integer
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - title
- *               - type
- *             properties:
- *               title:
- *                 type: string
- *               description:
- *                 type: string
- *               type:
- *                 type: string
- *                 enum: [video, text, quiz]
- *               content_url:
- *                 type: string
- *               position:
- *                 type: integer
- *     responses:
- *       201:
- *         description: Lesson created successfully
- *       403:
- *         description: Forbidden - User not authorized
- *       404:
- *         description: Module not found
- */
-router.post('/modules/:moduleId/lessons', authMiddleware, checkRole(['admin', 'teacher']), addLessonToModule);
 
 /**
  * @swagger
@@ -428,7 +384,8 @@ router.post('/:id/assign-teacher',
  * /courses/{id}:
  *   delete:
  *     tags: [Courses]
- *     summary: Delete a course and all its modules and lessons (admin only)
+ *     summary: Delete a course and all its modules, topics, and lessons (admin only)
+ *     description: Удаляет курс, а также все его модули, темы и уроки (только для администратора)
  *     security:
  *       - bearerAuth: []
  *       - ApiKeyAuth: []
@@ -462,7 +419,8 @@ router.delete('/:id',
  * /courses/modules/{id}:
  *   delete:
  *     tags: [Courses]
- *     summary: Delete a module and all its lessons (admin only)
+ *     summary: Delete a module and all its topics and lessons (admin only)
+ *     description: Удаляет модуль, а также все его темы и уроки (только для администратора)
  *     security:
  *       - bearerAuth: []
  *       - ApiKeyAuth: []
@@ -576,6 +534,8 @@ router.get('/:id/access',
  *         required: true
  *         schema:
  *           type: string
+ *           format: uuid
+ *         description: ID модуля
  *     requestBody:
  *       required: true
  *       content:

@@ -48,9 +48,68 @@ async function getUnpublishedCourses() {
 
 // 🔹 Получение курса по ID
 async function getCourseById(courseId) {
-  const query = `SELECT * FROM courses WHERE id = $1`;
+  const query = `
+    SELECT c.*, 
+           m.id as module_id, m.title as module_title, m.description as module_description, m.position as module_position,
+           t.id as topic_id, t.title as topic_title, t.description as topic_description, t.position as topic_position,
+           l.id as lesson_id, l.title as lesson_title, l.description as lesson_description, l.type as lesson_type, 
+           l.content_url as lesson_content_url, l.position as lesson_position
+    FROM courses c
+    LEFT JOIN modules m ON c.id = m.course_id
+    LEFT JOIN topics t ON m.id = t.module_id
+    LEFT JOIN lessons l ON t.id = l.topic_id
+    WHERE c.id = $1
+    ORDER BY m.position, t.position, l.position
+  `;
   const { rows } = await pool.query(query, [courseId]);
-  return rows[0];
+  
+  if (rows.length === 0) return null;
+
+  // Transform the flat structure into a nested one
+  const course = {
+    ...rows[0],
+    modules: []
+  };
+
+  let currentModule = null;
+  let currentTopic = null;
+
+  rows.forEach(row => {
+    if (row.module_id && (!currentModule || currentModule.id !== row.module_id)) {
+      currentModule = {
+        id: row.module_id,
+        title: row.module_title,
+        description: row.module_description,
+        position: row.module_position,
+        topics: []
+      };
+      course.modules.push(currentModule);
+    }
+
+    if (row.topic_id && (!currentTopic || currentTopic.id !== row.topic_id)) {
+      currentTopic = {
+        id: row.topic_id,
+        title: row.topic_title,
+        description: row.topic_description,
+        position: row.topic_position,
+        lessons: []
+      };
+      currentModule.topics.push(currentTopic);
+    }
+
+    if (row.lesson_id) {
+      currentTopic.lessons.push({
+        id: row.lesson_id,
+        title: row.lesson_title,
+        description: row.lesson_description,
+        type: row.lesson_type,
+        content_url: row.lesson_content_url,
+        position: row.lesson_position
+      });
+    }
+  });
+
+  return course;
 }
 
 // 🔹 Получение курсов преподавателя
