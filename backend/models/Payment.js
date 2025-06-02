@@ -120,12 +120,12 @@ async function confirmPayment(paymentId) {
   try {
     await client.query('BEGIN');
 
-    // Check if payment exists and is pending
+    // Check if payment exists and is pending или invoiced
     const checkQuery = `
       SELECT p.id, p.status, p.user_id, p.course_id, p.payment_expires_at, c.title as course_title
       FROM payments p
       JOIN courses c ON p.course_id = c.id
-      WHERE p.id = $1 AND p.status = 'pending'
+      WHERE p.id = $1 AND p.status IN ('pending', 'invoiced')
     `;
     const checkResult = await client.query(checkQuery, [paymentId]);
     
