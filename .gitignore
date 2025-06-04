@@ -49,3 +49,8 @@ node_modules/
 .DS_Store
 *.log
 .env.*
+
+# Google Service Account credentials
+backend/config/*-key.json
+backend/config/*-*.json
+backend/config/hr-navigator-*.json

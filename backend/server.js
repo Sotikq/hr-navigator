@@ -76,7 +76,7 @@ const teacherRoutes = require('./routes/teacherRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const lessonProgressRoutes = require('./routes/lessonProgressRoutes');
 const certificateRoutes = require('./routes/certificateRoutes');
-
+const testResultsRoutes = require('./routes/testResultsRoutes');
 
 // 🔒 Роуты авторизации (регистрация, логин)
 app.use('/api/auth', authRoutes);
@@ -99,6 +99,8 @@ app.use('/api/progress', lessonProgressRoutes);
 // 📜 Роуты сертификатов
 app.use('/api/certificates', certificateRoutes);
 
+// 📊 Роуты результатов тестов
+app.use('/api/test-results', testResultsRoutes);
 
 // 🌐 Главная страница для теста
 app.get('/', (req, res) => {
