@@ -1,0 +1,145 @@
+<div class="course-player" *ngIf="currentCourse && !loading">
+  <div class="course-header">
+    <div class="goBack" (click)="goBack()">
+      <h3>Назад</h3>
+    </div>
+    <div class="course-header-content">
+      <h1>{{ currentCourse.title }}</h1>
+      <!-- <p>{{ currentCourse.description }}</p> -->
+      
+      <!-- Прогресс курса -->
+      <div class="course-progress" *ngIf="courseProgress">
+        <div class="progress-bar">
+          <div class="progress-completed" [style.width.%]="progressPercentage"></div>
+        </div>
+        <div class="progress-text">
+          Пройдено: {{ courseProgress.completedLessons }} из {{ courseProgress.totalLessons }} уроков ({{ progressPercentage }}%)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="course-content">
+    <!-- Боковая панель с модулями, темами и уроками -->
+    <div class="sidebar">
+      <div
+        *ngFor="let module of currentCourse.modules; let moduleIndex = index"
+        class="module"
+      >
+        <h4 (click)="navigateToModule(moduleIndex)">{{ module.title }}</h4>
+        
+        <!-- Темы внутри модуля -->
+        <div class="topics" *ngIf="module.topics && module.topics.length > 0">
+          <div
+            *ngFor="let topic of module.topics; let topicIndex = index"
+            class="topic"
+            [class.active-topic]="moduleIndex === currentModuleIndex && topicIndex === currentTopicIndex"
+          >
+            <h5 (click)="navigateToTopic(moduleIndex, topicIndex)">{{ topic.title }}</h5>
+            
+            <!-- Уроки внутри темы -->
+            <ul *ngIf="topic.lessons && topic.lessons.length > 0">
+              <li
+                *ngFor="let lesson of topic.lessons; let lessonIndex = index"
+                [class.active]="
+                  moduleIndex === currentModuleIndex &&
+                  topicIndex === currentTopicIndex &&
+                  lessonIndex === currentLessonIndex
+                "
+                [class.completed]="isLessonCompleted(topic.id, lesson.id)"
+                (click)="navigateToLesson(moduleIndex, topicIndex, lessonIndex)"
+              >
+                {{ lesson.title }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Основной контент урока -->
+    <div class="lesson-view">
+      <div *ngIf="getCurrentLesson() as lesson; else noLesson">
+        <!-- Информация о теме -->
+        <div class="topic-info" *ngIf="getCurrentTopic() as topic">
+          <span class="topic-label">Тема:</span>
+          <span class="topic-title">{{ topic.title }}</span>
+          <p style="white-space: pre-line;">{{ topic.description }}</p>
+        </div>
+
+        
+        <h2>{{ lesson.title }}</h2>
+        <p>{{ lesson.description }}</p>
+
+        <!-- Контент урока -->
+        <div *ngIf="lesson.content_url" class="lesson-media">
+          <!-- Для YouTube -->
+          <iframe
+            *ngIf="isYoutubeUrl(lesson.content_url)"
+            [src]="getSafeYoutubeUrl(lesson.content_url)"
+            width="100%"
+            height="500"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          >
+          </iframe>
+
+          <!-- Для обычных видео -->
+          <video
+            *ngIf="lesson.type === 'video' && !isYoutubeUrl(lesson.content_url)"
+            [src]="lesson.content_url"
+            controls
+            width="100%"
+          ></video>
+
+          <!-- Для PDF -->
+          <iframe
+            *ngIf="lesson.type === 'pdf'"
+            [src]="lesson.content_url"
+            width="100%"
+            height="500px"
+          >
+          </iframe>
+          <p *ngIf="lesson.type === 'quiz'">
+            <a [href]="lesson.content_url" target="_blank">Пройти тест</a>
+          </p>
+        </div>
+
+        <!-- Кнопки навигации -->
+        <div class="navigation-buttons">
+          <button
+            *ngIf="!isLessonCompleted(getCurrentTopic()?.id, lesson.id)"
+            (click)="completeLesson(getCurrentTopic()?.id, lesson.id)"
+            class="complete-lesson-btn"
+          >
+            Завершить урок
+          </button>
+          <button 
+            *ngIf="!isLastLesson()"
+            (click)="nextLesson()"
+            class="next-lesson-btn"
+          >
+            Следующий урок
+          </button>
+          <button
+            *ngIf="isCourseCompleted"
+            class="get-certificate-btn"
+            (click)="getCertificate()"
+          >
+            Получить сертификат
+          </button>
+        </div>
+
+      </div>
+
+      <ng-template #noLesson>
+        <p>Урок не найден.</p>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="loading" class="loading-indicator">
+  Загрузка данных курса...
+</div>

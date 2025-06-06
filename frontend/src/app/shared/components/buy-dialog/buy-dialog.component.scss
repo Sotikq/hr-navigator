@@ -1,0 +1,185 @@
+@import '../../../../styles/variables';
+
+:host {
+  display: block;
+}
+
+mat-dialog-content {
+  padding: 2.5rem;
+  width: 100%;
+  background: #ffffff;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+mat-form-field {
+  width: 100%;
+  
+  ::ng-deep {
+    .mat-mdc-form-field-subscript-wrapper {
+      display: none;
+    }
+    
+    .mat-mdc-form-field-infix {
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
+    }
+    
+    .mat-mdc-text-field-wrapper {
+      background-color: #f8fafc;
+      border-radius: 12px;
+      transition: all 0.2s ease;
+      border: 2px solid transparent;
+      
+      &:hover {
+        background-color: #f1f5f9;
+      }
+
+      &.mat-focused {
+        background-color: #ffffff;
+        border-color: $primary-color;
+        box-shadow: 0 0 0 4px rgba($primary-color, 0.1);
+      }
+    }
+    
+    .mat-mdc-form-field-flex {
+      padding: 0 1.25rem;
+    }
+
+    .mat-mdc-form-field-label {
+      font-size: 1rem;
+      color: #64748b;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .mat-mdc-input-element {
+      font-size: 1.25rem;
+      color: #1e293b;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      padding: 0.5rem 0;
+      
+      &::placeholder {
+        color: #94a3b8;
+        font-weight: normal;
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    .mat-mdc-form-field-icon-suffix {
+      color: #64748b;
+      opacity: 0.7;
+      transition: all 0.2s ease;
+    }
+
+    &.mat-focused {
+      .mat-mdc-form-field-label {
+        color: $primary-color;
+        transform: translateY(-1.5rem) scale(0.85);
+      }
+
+      .mat-mdc-form-field-icon-suffix {
+        color: $primary-color;
+        opacity: 1;
+      }
+    }
+  }
+}
+
+mat-dialog-actions {
+  padding: 1.5rem;
+  margin: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.25rem;
+  border-top: 1px solid #e2e8f0;
+  
+  button {
+    min-width: 120px;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    
+    &:first-child {
+      color: #64748b;
+      background-color: #f1f5f9;
+      
+      &:hover {
+        background-color: #e2e8f0;
+        color: #475569;
+      }
+    }
+    
+    &:last-child {
+      background-color: $primary-color;
+      color: white;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                  0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      
+      &:hover {
+        background-color: $primary-color-on-hover;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.1),
+                    0 3px 6px -1px rgba(0, 0, 0, 0.06);
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1),
+                    0 1px 2px -1px rgba(0, 0, 0, 0.06);
+      }
+    }
+  }
+}
+
+// Анимация появления диалога
+::ng-deep .mat-mdc-dialog-container {
+  .mdc-dialog__surface {
+    border-radius: 16px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+  }
+
+  .mdc-dialog__title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1e293b;
+    padding: 2rem 2.5rem 1rem;
+    margin: 0;
+  }
+}
+
+// Адаптивность
+@media (max-width: 640px) {
+  mat-dialog-content {
+    padding: 1.5rem;
+    min-width: 100%;
+  }
+  
+  mat-dialog-actions {
+    flex-direction: column;
+    padding-top: 1.25rem;
+    
+    button {
+      width: 100%;
+      padding: 0.875rem 1.5rem;
+    }
+  }
+
+  ::ng-deep .mat-mdc-dialog-container {
+    .mdc-dialog__title {
+      padding: 1.5rem 1.5rem 1rem;
+      font-size: 1.25rem;
+    }
+  }
+}

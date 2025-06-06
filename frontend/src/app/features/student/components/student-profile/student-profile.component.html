@@ -1,0 +1,188 @@
+<div class="profile-page">
+  <!-- Сайдбар -->
+  <aside class="sidebar">
+    <div style="text-align: center; margin-bottom: 30px">
+      <img
+        id="sidebarAvatar"
+        src=" /avatar.jpg"
+        alt="Avatar"
+        style="
+          width: 100px;
+          height: 100px;
+          border-radius: 50%;
+          object-fit: cover;
+          margin-bottom: 10px;
+        "
+      />
+      <h3 id="sidebarUsername" style="color: #333; font-size: 18px">
+        {{ user.name }}
+      </h3>
+    </div>
+    <nav class="sidebar-nav">
+      @for (tab of tabs; track $index) {
+
+      <a
+        class="sidebar-link"
+        (click)="currentPageSwitch(tab)"
+        [class.active]="currentPage == tab"
+        >{{ tab }}
+      </a>
+
+      }
+      <a class="sidebar-link" id="log_out" (click)="logout()"> Выйти</a>
+    </nav>
+  </aside>
+
+  <!-- Контент -->
+  <main class="profile-content">
+    @if (currentPage=="Мои Курсы"){
+
+    <div class="profile-section" id="profile">
+      <h2 style="color: #2962ff; margin-bottom: 20px">Мои курсы</h2>
+      <div class="course-grid">
+        <div *ngFor="let course of courses" class="student-course-card" (click)="goToCourse(course.id)">
+          <img [src]="course.cover_url"  />
+          <div class="student-course-info">
+            <h3>{{course.title}}</h3>
+            <p class="course-date">Дата окончания: 25 мая 2025</p>
+            <div class="progress-section">
+              <p>Completed: 10/15</p>
+              <div class="progress-container">
+                <div class="progress-bar" style="width: 65%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h1
+        [routerLink]="['/courses']"
+        style="
+          text-decoration: none;
+          color: #2962ff;
+          padding: 10px;
+          font-size: 20px;
+          cursor: pointer;
+        "
+      >
+        Все доступные курсы
+      </h1>
+    </div>
+    }
+    <!-- settings form -->
+    @if (currentPage=="Настройки") {
+    <div class="profile-section" id="settings">
+      <h2 style="color: #2962ff; margin-bottom: 20px">Настройки аккаунта</h2>
+
+      <!-- Фото профиля -->
+      <div style="text-align: center; margin-bottom: 30px">
+        <label for="profileImageInput" style="cursor: pointer">
+          <img
+            id="profileImagePreview"
+            src="/avatar.jpg"
+            alt="Аватар"
+            style="
+              width: 100px;
+              height: 100px;
+              border-radius: 50%;
+              object-fit: cover;
+              box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            "
+          />
+        </label>
+        <input
+          type="file"
+          id="profileImageInput"
+          accept="image/*"
+          style="display: none"
+        />
+        <p style="font-size: 14px; color: #777">
+          Нажмите на фото, чтобы изменить
+        </p>
+      </div>
+      <div class="profile-form">
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+          <label>Почта</label>
+          <input formControlName="email" type="email" />
+
+          <label>Имя</label>
+          <input formControlName="username" type="text" />
+
+          <button type="submit" [disabled]="profileForm.invalid">
+            Сохранить
+          </button>
+        </form>
+      </div>
+      <div class="profile-form">
+        <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
+          <label>Старый пароль</label>
+          <input formControlName="oldPassword" type="password" />
+
+          <label>Новый пароль</label>
+          <input formControlName="newPassword" type="password" />
+
+          <label>Подтвердите новый пароль</label>
+          <input formControlName="confirmPassword" type="password" />
+
+          <button type="submit" [disabled]="passwordForm.invalid">
+            Изменить пароль
+          </button>
+        </form>
+      </div>
+    </div>
+    }
+    <!-- Сертификаты -->
+    @if (currentPage=="Сертификаты") {
+    <div class="profile-section" id="certificates">
+      <h2 style="color: #2962ff; margin-bottom: 20px">Сертификаты</h2>
+      <div class="certificate-grid" >
+        <div class="certificate-card" *ngFor="let certificate of certificates">
+          <img [src]="certificate.file_path" alt="Сертификат" />
+          <div class="certificate-info">
+            <h3>{{ certificate.certificate_number }}</h3>
+            <p>Дата завершения: {{ certificate.issued_at | date:'dd MMMM yyyy' }}</p>
+            <a [href]="certificate.file_path" target="_blank" class="cert-button">Посмотреть</a>
+            <a [href]="certificate.file_path" download class="cert-button" style="background-color: #00b894">Скачать</a>
+          </div>
+        </div>
+
+        <!-- <div class="certificate-card">
+          <img src=" /certificate.webp" alt="Сертификат 2" />
+          <div class="certificate-info">
+            <h3>HR-менеджер с нуля</h3>
+            <p>Дата завершения: 10 июня 2025</p>
+            <a href=" /certificate.webp" target="_blank" class="cert-button"
+              >Посмотреть</a
+            >
+            <a
+              href=" /certificate.webp"
+              download
+              class="cert-button"
+              style="background-color: #00b894"
+              >Скачать</a
+            >
+          </div>
+        </div> -->
+      </div>
+    </div>
+    }
+    @if (currentPage=="Платежи") {
+    <div class="profile-section" id="payments">
+      <h2 style="color: #2962ff; margin-bottom: 20px">Платежи</h2>
+      <table>
+        <tr>
+          <th>Название курса</th>
+          <th>Дата</th>
+          <th>Сумма</th>
+          <th>Статус</th>
+        </tr>
+        <tr *ngFor="let payment of payments">
+          <td>{{ payment.course_title }}</td>
+          <td>{{payment.created_at | date:'dd MMMM yyyy HH:mm'}}</td>
+          <td>{{payment.amount}} KZT</td>
+          <td>{{payment.status}}</td>
+        </tr>
+      </table>
+    </div>
+    }
+  </main>
+</div>

@@ -1,21 +1,21 @@
 import { Component } from '@angular/core';
 import { Routes } from '@angular/router';
-import { CoursesComponent } from './courses/courses.component';
-import { HomeComponent } from './home/home.component';
-import { RegisterComponent } from './register/register.component';
-import { LoginComponent } from './login/login.component';
-import { StudentProfileComponent } from './student-profile/student-profile.component';
-import { AdminProfileComponent } from './admin-profile/admin-profile.component';
-import { CoursePageComponent } from './course-page/course-page.component';
-import { CreateCourse1Component } from './create-course1/create-course1.component';
-import { CourseCompeletionStudentComponent } from './course-compeletion-student/course-compeletion-student.component';
-import { AboutUsComponent } from './about-us/about-us.component';
-import { TeacherProfileComponent } from './teacher-profile/teacher-profile.component';
-import { TermsOfServiceComponent } from './terms-of-service/terms-of-service.component';
-import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
-import { authGuard } from './guards/auth.guard';
-import { roleGuard } from './guards/role.guard';
-import { adminGuard } from './guards/admin.guard';
+import { CoursesComponent } from './features/courses/components/courses/courses.component';
+import { HomeComponent } from './features/pages/components/home/home.component';
+import { RegisterComponent } from './features/auth/components/register/register.component';
+import { LoginComponent } from './features/auth/components/login/login.component';
+import { StudentProfileComponent } from './features/student/components/student-profile/student-profile.component';
+import { AdminProfileComponent } from './features/admin/components/admin-profile/admin-profile.component';
+import { CoursePageComponent } from './features/courses/components/course-page/course-page.component';
+import { CreateCourse1Component } from './features/courses/components/create-course1/create-course1.component';
+import { CourseCompeletionStudentComponent } from './features/courses/components/course-compeletion-student/course-compeletion-student.component';
+import { AboutUsComponent } from './features/pages/components/about-us/about-us.component';
+import { TeacherProfileComponent } from './features/teacher/components/teacher-profile/teacher-profile.component';
+import { TermsOfServiceComponent } from './features/pages/components/terms-of-service/terms-of-service.component';
+import { PrivacyPolicyComponent } from './features/pages/components/privacy-policy/privacy-policy.component';
+import { authGuard } from './core/guards/auth.guard';
+import { roleGuard } from './core/guards/role.guard';
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
   {

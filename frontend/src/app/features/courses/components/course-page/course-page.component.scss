@@ -1,0 +1,416 @@
+@import "../../../../../styles/variables";
+
+:host {
+  display: block;
+  width: 100%;
+  overflow-x: hidden;
+  background-color: #f8fafc;
+  min-height: 100vh;
+}
+
+// Индикатор загрузки
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 40px;
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e2e8f0;
+    border-top: 4px solid $primary-color;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+  }
+
+  p {
+    color: #64748b;
+    font-size: 16px;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Основной контейнер - занимает полную ширину
+.course-container {
+  width: 100%;
+  max-width: none; // Убираем ограничение ширины
+  margin: 0;
+  background-color: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+// Заголовок курса
+.course-header {
+  background: linear-gradient(135deg, $primary-color 0%, #5b21b6 100%);
+  color: white;
+  padding: 40px 5%; // Отступы в процентах для адаптивности
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    padding: 30px 20px;
+  }
+}
+
+.course-header-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+  align-items: center;
+  max-width: 1400px; // Максимальная ширина контента
+  margin: 0 auto;
+  width: 100%;
+
+  @media (max-width: 968px) {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    text-align: center;
+  }
+}
+
+.course-title-section {
+  min-width: 0; // Позволяет тексту сжиматься
+
+  h1 {
+    font-size: clamp(24px, 4vw, 42px);
+    font-weight: 700;
+    margin: 0 0 16px 0;
+    line-height: 1.2;
+    word-wrap: break-word; // Переносит длинные слова
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+
+  .course-subtitle {
+    font-size: clamp(14px, 2.5vw, 18px);
+    margin: 0 0 32px 0;
+    line-height: 1.6;
+    opacity: 0.9;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+}
+
+.course-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+.meta-item {
+  display: flex;
+  align-items: flex-start; // Выравнивание по верху для длинного текста
+  gap: 12px;
+  font-size: 14px;
+  opacity: 0.9;
+  min-width: 0; // Позволяет тексту сжиматься
+
+  .meta-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    margin-top: 2px; // Небольшой отступ для выравнивания с текстом
+  }
+
+  span {
+    line-height: 1.4;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    min-width: 0;
+  }
+}
+
+.course-image-section {
+  display: flex;
+  justify-content: center;
+
+  .course-image {
+    width: 100%;
+    max-width: 350px;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+
+    @media (max-width: 768px) {
+      max-width: 280px;
+      height: 200px;
+    }
+  }
+}
+
+// Основной контент - полная ширина
+.course-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+  padding: 40px 5%; // Отступы в процентах
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+
+  @media (max-width: 968px) {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding: 30px 20px;
+  }
+}
+
+.course-main {
+  min-width: 0; // Позволяет контенту сжиматься
+
+  .content-section {
+    margin-bottom: 32px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    h2 {
+      font-size: clamp(20px, 3vw, 28px);
+      font-weight: 600;
+      color: #1e293b;
+      margin: 0 0 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      word-wrap: break-word;
+    }
+
+    p {
+      font-size: clamp(14px, 2vw, 16px);
+      line-height: 1.7;
+      color: #475569;
+      margin: 0;
+      white-space: pre-line;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
+    }
+
+    .goal-text,
+    .audience-text {
+      background-color: #f1f5f9;
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 4px solid $primary-color;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    .learning-outcomes,
+    .study-details {
+      background-color: #fef3c7;
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 4px solid #f59e0b;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+  }
+}
+
+// Боковая панель
+.course-sidebar {
+  min-width: 0;
+
+  .purchase-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 20px;
+
+    @media (max-width: 968px) {
+      position: static;
+    }
+  }
+}
+
+.price-section {
+  text-align: center;
+  margin-bottom: 32px;
+
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 12px 0;
+  }
+
+  .price {
+    font-size: clamp(28px, 4vw, 36px);
+    font-weight: 700;
+    color: $primary-color;
+    margin: 0;
+    word-wrap: break-word;
+  }
+}
+
+.purchase-actions {
+  margin-bottom: 32px;
+
+  .buy-button {
+    width: 100%;
+    padding: 16px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: clamp(14px, 2vw, 16px);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    word-wrap: break-word;
+
+    &.primary {
+      background: $primary-color;
+      color: white;
+
+      &:hover {
+        background: darken($primary-color, 10%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+      }
+    }
+
+    &.purchased {
+      background: #10b981;
+      color: white;
+
+      &:hover {
+        background: #059669;
+      }
+    }
+  }
+}
+
+.benefits {
+  h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 16px 0;
+  }
+
+  .benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      display: flex;
+      align-items: flex-start; // Выравнивание по верху для длинного текста
+      gap: 12px;
+      padding: 8px 0;
+      font-size: 14px;
+      color: #64748b;
+      line-height: 1.5;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+
+      .benefit-icon {
+        width: 16px;
+        height: 16px;
+        color: #10b981;
+        flex-shrink: 0;
+        margin-top: 2px; // Выравнивание с первой строкой текста
+      }
+    }
+  }
+}
+
+// Сообщение об ошибке
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 40px;
+  text-align: center;
+
+  h2 {
+    font-size: 28px;
+    color: #374151;
+    margin: 0 0 16px 0;
+  }
+
+  p {
+    font-size: 16px;
+    color: #64748b;
+    margin: 0 0 32px 0;
+    max-width: 400px;
+    word-wrap: break-word;
+  }
+
+  .back-button {
+    padding: 12px 24px;
+    background: $primary-color;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: darken($primary-color, 10%);
+    }
+  }
+}
+
+// Отзывчивый дизайн
+@media (max-width: 768px) {
+  .course-header {
+    padding: 24px 16px;
+  }
+
+  .course-content {
+    padding: 24px 16px;
+  }
+
+  .course-sidebar .purchase-card {
+    padding: 24px;
+  }
+
+  .meta-item {
+    font-size: 13px;
+  }
+
+  .course-main .content-section h2 {
+    font-size: 20px;
+  }
+}
+
+// Дополнительные стили для очень длинного текста
+.course-main .content-section {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  
+  p, div {
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+}
