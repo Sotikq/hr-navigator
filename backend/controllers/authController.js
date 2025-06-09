@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const { createUser, findUserByEmail, findUserById } = require('../models/User');
 const ApiError = require('../utils/ApiError');
 const logger = require('../utils/logger');
+const emailService = require('../services/emailService');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -21,6 +22,15 @@ async function register(req, res, next) {
 
     const passwordHash = await bcrypt.hash(password, 10);
     const user = await createUser({ email, passwordHash, name, role });
+
+    // Отправляем welcome email
+    try {
+      await emailService.sendWelcomeEmail(user);
+      logger.info('Welcome email sent', { userId: user.id, email: user.email });
+    } catch (emailErr) {
+      logger.warn('Failed to send welcome email', { userId: user.id, error: emailErr.message });
+      // Не прерываем регистрацию из-за ошибки email
+    }
 
     logger.info('New user registered', { userId: user.id, email: user.email });
     res.status(201).json({ message: 'Registration successful', user });

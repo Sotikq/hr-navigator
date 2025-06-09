@@ -10,6 +10,7 @@ const logger = require('./utils/logger');
 const User = require('./models/User');
 const Course = require('./models/Course');
 const LessonProgressModel = require('./models/lessonProgressModel');
+const emailService = require('./services/emailService');
 
 const TEMPLATE_PATH = path.join(__dirname, 'uploads', 'certificates', 'certificate_template.jpg');
 const OUTPUT_DIR = path.join(__dirname, 'uploads', 'certificates');
@@ -28,13 +29,16 @@ const calculateMaxLineLength = (text, maxWidth, fontSize, font) => {
 };
 
 async function generateQRCode(certificateNumber) {
-  const verificationUrl = `http://localhost:5000/verify.html?code=${certificateNumber}`;
+  // Use environment variable for verification URL with fallback
+  const baseUrl = process.env.CERTIFICATE_VERIFICATION_URL || 'https://server.hrnavigator.kz/verify.html';
+  const verificationUrl = `${baseUrl}?code=${certificateNumber}`;
+  
   try {
     // Generate QR code as base64
     const qrCodeBase64 = await QRCode.toDataURL(verificationUrl, {
-      errorCorrectionLevel: 'H',
-      margin: 1,
-      width: 200
+      errorCorrectionLevel: process.env.QR_ERROR_CORRECTION_LEVEL || 'H',
+      margin: parseInt(process.env.QR_MARGIN) || 1,
+      width: parseInt(process.env.QR_WIDTH) || 200
     });
     return qrCodeBase64;
   } catch (err) {
@@ -138,10 +142,12 @@ async function generateCertificate(userId, courseId) {
     const qrSize = 120;
     let qrCodeBase64;
     try {
+      // Use environment variable for verification URL with fallback
+      const baseUrl = process.env.CERTIFICATE_VERIFICATION_URL || 'https://server.hrnavigator.kz/verify.html';
       qrCodeBase64 = await Promise.race([
-        QRCode.toDataURL(`http://localhost:5000/verify.html?code=${certNumber}`, {
-          errorCorrectionLevel: 'H',
-          margin: 1,
+        QRCode.toDataURL(`${baseUrl}?code=${certNumber}`, {
+          errorCorrectionLevel: process.env.QR_ERROR_CORRECTION_LEVEL || 'H',
+          margin: parseInt(process.env.QR_MARGIN) || 1,
           width: qrSize
         }),
         new Promise((_, reject) => setTimeout(() => reject(new Error('QR code generation timeout')), 10000))
@@ -377,7 +383,7 @@ async function generateCertificate(userId, courseId) {
       course.duration,    // hours
       issuedAt,           // issued_at
       fileUrl,            // file_path
-      `http://localhost:5000/verify.html?code=${certNumber}`, // qr_code_url
+              `${process.env.CERTIFICATE_VERIFICATION_URL || 'https://server.hrnavigator.kz/verify.html'}?code=${certNumber}`, // qr_code_url
       true,               // is_valid
       null,               // revoked_at
       null,               // revocation_reason
@@ -422,6 +428,17 @@ async function generateCertificate(userId, courseId) {
     }
 
     clearTimeout(timeout);
+    
+    // Отправляем email уведомление о выдаче сертификата
+    try {
+      const certificateUrl = `${process.env.BASE_URL || 'https://server.hrnavigator.kz'}${fileUrl}`;
+      await emailService.sendCertificateIssued(user, course, certificateUrl);
+      logger.info('[CERT] Certificate email sent successfully', { userId, courseId });
+    } catch (emailErr) {
+      logger.warn('[CERT] Failed to send certificate email', { userId, courseId, error: emailErr.message });
+      // Не прерываем процесс из-за ошибки email
+    }
+    
     logger.info('[CERT] Генерация сертификата завершена УСПЕШНО', { userId, courseId });
     return certRecord;
   } catch (err) {

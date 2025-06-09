@@ -1,6 +1,6 @@
 {
   "/uploads": {
-    "target": "http://localhost:5000",
+    "target": "https://server.hrnavigator.kz",
     "secure": false,
     "changeOrigin": true
   }

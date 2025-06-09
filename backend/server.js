@@ -78,6 +78,7 @@ const lessonProgressRoutes = require('./routes/lessonProgressRoutes');
 const certificateRoutes = require('./routes/certificateRoutes');
 const testResultsRoutes = require('./routes/testResultsRoutes');
 const courseDetailsRoutes = require('./routes/courseDetailsRoutes');
+const emailRoutes = require('./routes/emailRoutes');
 
 // 🔒 Роуты авторизации (регистрация, логин)
 app.use('/api/auth', authRoutes);
@@ -106,11 +107,15 @@ app.use('/api/test-results', testResultsRoutes);
 // 📚 Роуты деталей курса
 app.use('/api/course-details', courseDetailsRoutes);
 
+// 📧 Email сервисы
+app.use('/api/email', emailRoutes);
+
 // 🌐 Главная страница для теста
 app.get('/', (req, res) => {
   res.send('HR Navigator backend is running!');
 });
 
+// 🏥 Health Check Endpoints
 app.get('/api/healthz', async (req, res) => {
   try {
     await pool.query('SELECT 1');
@@ -118,6 +123,77 @@ app.get('/api/healthz', async (req, res) => {
   } catch (err) {
     res.status(500).json({ status: 'error', error: err.message });
   }
+});
+
+app.get('/health', async (req, res) => {
+  try {
+    const startTime = process.hrtime();
+    await pool.query('SELECT 1');
+    const [seconds, nanoseconds] = process.hrtime(startTime);
+    const dbResponseTime = seconds * 1000 + nanoseconds / 1000000;
+    
+    res.status(200).json({ 
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      environment: process.env.NODE_ENV || 'development',
+      database: {
+        status: 'connected',
+        responseTime: `${dbResponseTime.toFixed(2)}ms`
+      },
+      memory: {
+        used: `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`,
+        total: `${Math.round(process.memoryUsage().heapTotal / 1024 / 1024)}MB`
+      }
+    });
+  } catch (err) {
+    res.status(503).json({ 
+      status: 'unhealthy', 
+      error: err.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/ready', async (req, res) => {
+  try {
+    // Check critical dependencies
+    await pool.query('SELECT 1');
+    
+    // Check if uploads directory exists
+    const uploadsPath = path.join(__dirname, 'uploads');
+    const uploadsExist = require('fs').existsSync(uploadsPath);
+    
+    const services = {
+      database: 'ready',
+      filesystem: uploadsExist ? 'ready' : 'not_ready',
+      api: 'ready'
+    };
+    
+    const allReady = Object.values(services).every(status => status === 'ready');
+    
+    res.status(allReady ? 200 : 503).json({
+      status: allReady ? 'ready' : 'not_ready',
+      services,
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    res.status(503).json({ 
+      status: 'not_ready', 
+      error: err.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+app.get('/live', (req, res) => {
+  // Simple liveness check - if this endpoint responds, the service is alive
+  res.status(200).json({ 
+    status: 'alive',
+    timestamp: new Date().toISOString(),
+    pid: process.pid,
+    version: require('./package.json').version
+  });
 });
 
 // 🔒 Роуты учителя

@@ -1,6 +1,9 @@
 const Payment = require('../models/Payment');
 const logger = require('../utils/logger');
 const ApiError = require('../utils/ApiError');
+const emailService = require('../services/emailService');
+const { findUserById } = require('../models/User');
+const Course = require('../models/Course');
 
 // Создать заявку (user)
 async function createPaymentRequest(req, res, next) {
@@ -45,7 +48,22 @@ async function invoicePayment(req, res, next) {
 async function confirmPayment(req, res, next) {
   try {
     const { id } = req.params;
+    
+    // Получаем информацию о платеже перед подтверждением
+    const paymentInfo = await Payment.getPaymentById(id);
+    const user = await findUserById(paymentInfo.user_id);
+    const course = await Course.getCourseById(paymentInfo.course_id);
+    
     await Payment.confirmPayment(id);
+    
+    // Отправляем email уведомление
+    try {
+      await emailService.sendPaymentConfirmation(user, course, paymentInfo);
+      logger.info('Payment confirmation email sent', { paymentId: id, userId: user.id });
+    } catch (emailErr) {
+      logger.warn('Failed to send payment confirmation email', { paymentId: id, error: emailErr.message });
+    }
+    
     res.json({ success: true });
   } catch (e) {
     logger.error('Error confirming payment:', e);
@@ -57,7 +75,23 @@ async function confirmPayment(req, res, next) {
 async function rejectPayment(req, res, next) {
   try {
     const { id } = req.params;
+    const { reason } = req.body; // Причина отклонения
+    
+    // Получаем информацию о платеже перед отклонением
+    const paymentInfo = await Payment.getPaymentById(id);
+    const user = await findUserById(paymentInfo.user_id);
+    const course = await Course.getCourseById(paymentInfo.course_id);
+    
     await Payment.rejectPayment(id);
+    
+    // Отправляем email уведомление
+    try {
+      await emailService.sendPaymentRejection(user, course, paymentInfo, reason);
+      logger.info('Payment rejection email sent', { paymentId: id, userId: user.id });
+    } catch (emailErr) {
+      logger.warn('Failed to send payment rejection email', { paymentId: id, error: emailErr.message });
+    }
+    
     res.json({ success: true });
   } catch (e) {
     logger.error('Error rejecting payment:', e);
