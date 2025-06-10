@@ -1,6 +1,35 @@
 // 📦 Первым делом загружаем переменные окружения
 require('dotenv').config();
 
+// 📁 Создаем необходимые папки при запуске
+const fs = require('fs');
+const createDirectories = require('./createDirectories');
+
+// Запускаем создание папок
+if (require.main === module) {
+  // Только если запускаем напрямую, а не через тесты
+  try {
+    require('./createDirectories');
+  } catch (err) {
+    console.log('Directory creation script not found, creating directories manually...');
+    
+    const directories = [
+      'uploads/assignments',
+      'uploads/chat', 
+      'uploads/assignments/submissions',
+      'uploads/assignments/files'
+    ];
+    
+    directories.forEach(dir => {
+      const fullPath = require('path').join(__dirname, dir);
+      if (!fs.existsSync(fullPath)) {
+        fs.mkdirSync(fullPath, { recursive: true });
+        console.log(`✅ Created directory: ${dir}`);
+      }
+    });
+  }
+}
+
 const express = require('express');
 const path = require('path'); // для правильной работы статики
 const morgan = require('morgan');
@@ -79,6 +108,9 @@ const certificateRoutes = require('./routes/certificateRoutes');
 const testResultsRoutes = require('./routes/testResultsRoutes');
 const courseDetailsRoutes = require('./routes/courseDetailsRoutes');
 const emailRoutes = require('./routes/emailRoutes');
+const assignmentRoutes = require('./routes/assignmentRoutes');
+const messageRoutes = require('./routes/messageRoutes');
+const analyticsRoutes = require('./routes/analyticsRoutes');
 
 // 🔒 Роуты авторизации (регистрация, логин)
 app.use('/api/auth', authRoutes);
@@ -109,6 +141,15 @@ app.use('/api/course-details', courseDetailsRoutes);
 
 // 📧 Email сервисы
 app.use('/api/email', emailRoutes);
+
+// 📝 Домашние задания
+app.use('/api/assignments', assignmentRoutes);
+
+// 💬 Личные сообщения
+app.use('/api/messages', messageRoutes);
+
+// 📊 Аналитика (только для админа)
+app.use('/api/analytics', analyticsRoutes);
 
 // 🌐 Главная страница для теста
 app.get('/', (req, res) => {
