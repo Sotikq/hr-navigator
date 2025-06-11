@@ -12,7 +12,7 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm ci && npm rebuild sharp
+RUN npm ci && npm rebuild sharp && apt-get update && apt-get install nano
 
 COPY . .
 

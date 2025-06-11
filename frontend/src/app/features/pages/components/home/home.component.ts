@@ -60,7 +60,8 @@ export class HomeComponent implements OnInit {
   }
   
   getVideo() {
-    const videoId = '09a35cf0-cb6b-49f2-91da-b507953ffe73';
+    // const videoId = '09a35cf0-cb6b-49f2-91da-b507953ffe73';
+    const videoId = '107d6054-bd25-4d73-b91a-407618d9d064';
     this.videoReviewService.getVideo().subscribe({
       next: (res) => {
         this.videos = res.map((video: any) => ({

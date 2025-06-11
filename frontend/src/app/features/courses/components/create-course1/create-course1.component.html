@@ -57,11 +57,8 @@
         required
       />
       <label for="cover-upload" class="upload-button">Выбрать файл</label>
-      <img
-        *ngIf="currentCourse.cover_url"
-        [src]="currentCourse.cover_url"
-        class="cover-preview"
-      />
+      <img *ngIf="coverPreviewUrl" class="cover-preview" [src]="coverPreviewUrl" alt="Предпросмотр">
+
     </div>
     <div class="form-group">
       <label>Категория</label>

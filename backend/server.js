@@ -122,7 +122,7 @@ app.use('/api/auth', userRoutes);
 app.use('/api/courses', courseRoutes);
 
 // 📝 Роуты отзывов
-app.use('/api/reviews', reviewRoutes);
+app.use('/api/uploads', reviewRoutes);
 
 // 💰 Роуты платежей
 app.use('/api/payments', paymentRoutes);

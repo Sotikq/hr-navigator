@@ -25,4 +25,27 @@ async function addReviewHandler(req, res) {
   }
 }
 
-module.exports = { getReviewsHandler, addReviewHandler };
+
+async function getReviewByNameHandler(req, res) {
+  try {
+    const { filename } = req.params;
+    const filePath = path.join(__dirname, '..', 'uploads', 'reviews', filename);
+
+    // Проверка: существует ли файл
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: 'Файл не найден' });
+    }
+
+    // Определение MIME-типа (например, video/mp4)
+    const mime = require('mime-types');
+    const mimeType = mime.lookup(filePath) || 'application/octet-stream';
+
+    res.setHeader('Content-Type', mimeType);
+    res.sendFile(filePath);
+  } catch (err) {
+    console.error('Ошибка при отправке файла:', err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+}
+
+module.exports = { getReviewsHandler, addReviewHandler, getReviewByNameHandler };

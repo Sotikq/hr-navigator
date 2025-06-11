@@ -6,7 +6,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class VideoReviewService {
-  private apiUrl = environment.apiUrl + '/reviews';
+  private apiUrl = environment.apiUrl + '/uploads';
   constructor(private http: HttpClient) {}
   getVideo(){
     return this.http.get<any>(this.apiUrl);

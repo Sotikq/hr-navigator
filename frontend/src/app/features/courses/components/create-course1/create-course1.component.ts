@@ -34,6 +34,7 @@ export class CreateCourse1Component implements OnInit {
   courseLoaded = false;
   isSaving = false;
   isSavingCourse = false;
+  coverPreviewUrl: string | null = null;
 
   selectedCoverFile: File | null = null;
 
@@ -242,9 +243,16 @@ export class CreateCourse1Component implements OnInit {
   onImageUpload(event: any): void {
     const input = event.target as HTMLInputElement;
     if (input.files?.length) {
-      this.currentCourse.cover_url = input.files[0];
+      const file = input.files[0];
+      this.currentCourse.cover_url = file;
+  
+      // Предпросмотр изображения
+      this.coverPreviewUrl = URL.createObjectURL(file);
+      console.log(this.coverPreviewUrl);
+      
     }
   }
+  
 
   async onSaveCourse(): Promise<void> {
     this.onSaveCourseDetails()

@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 export class AppComponent implements OnInit, OnDestroy {
   title = 'hr';
   user$: Observable<any>;
+  currentRoute: string = '';
 
   menuOpen = false;
 
@@ -85,11 +86,14 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   isCurrentRoute(route: string): boolean {
-    const currentRoute = this.router.url.split('/')[1] || '';
-    return currentRoute === route;
+    return this.currentRoute === route;
   }
+  
+  
 
   ngOnInit(): void {
+    console.log("INIT");
+    
     const token = this.auth.getToken();
 
     if (token) {
@@ -112,6 +116,14 @@ export class AppComponent implements OnInit, OnDestroy {
         });
       }
     }
+
+    // Логика маршрута
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.currentRoute = event.urlAfterRedirects === '/' ? '' : event.urlAfterRedirects.slice(1);
+        console.log('Текущий маршрут:', this.currentRoute);
+      }
+    });
   }
 
   goToLogin() {

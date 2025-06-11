@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getReviewsHandler, addReviewHandler } = require('../controllers/reviewController');
+const { getReviewsHandler, addReviewHandler, getReviewByNameHandler } = require('../controllers/reviewController');
 const { uploadVideo } = require('../middleware/uploadMiddleware');
 const authMiddleware = require('../middleware/authMiddleware');
 
@@ -61,6 +61,7 @@ const authMiddleware = require('../middleware/authMiddleware');
  *         description: Файл не предоставлен
  */
 router.get('/', getReviewsHandler);
+router.get('/reviews/:filename', getReviewByNameHandler);
 router.post('/', authMiddleware, uploadVideo.single('video'), addReviewHandler);
 
 module.exports = router;
