@@ -61,22 +61,44 @@ export class HomeComponent implements OnInit {
   
   getVideo() {
     // const videoId = '09a35cf0-cb6b-49f2-91da-b507953ffe73';
-    const videoId = '107d6054-bd25-4d73-b91a-407618d9d064';
-    this.videoReviewService.getVideo().subscribe({
-      next: (res) => {
-        this.videos = res.map((video: any) => ({
-          ...video,
-          isPlaying: false,
-          loaded: false
-        }));
-        console.log(this.videos);
-        this.videoLoaded = true;
-        console.log("vidLoad", this.videoLoaded);
+    // const videoId = '107d6054-bd25-4d73-b91a-407618d9d064';
+    // this.videoReviewService.getVideo().subscribe({
+    //   next: (res) => {
+    //     this.videos = res.map((video: any) => ({
+    //       ...video,
+    //       isPlaying: false,
+    //       loaded: false
+    //     }));
+    //     console.log(this.videos);
+    //     this.videoLoaded = true;
+    //     console.log("vidLoad", this.videoLoaded);
+    //   },
+    //   error: (err) => {
+    //     console.error('Ошибка загрузки видео:', err);
+    //   },
+    // });
+
+    this.videos = [
+      {
+        file_url: '/uploads/reviews/video-1746383854991-363386328.MP4',
+        title: 'Video 1',
+        description: 'Description 1',
+        loaded: false,
+        isPlaying: false,
+        thumbnail: 'assets/images/video-placeholder.png',
+        testimonial: 'Testimonial 1',
+        
       },
-      error: (err) => {
-        console.error('Ошибка загрузки видео:', err);
-      },
-    });
+      {
+        file_url: '/uploads/reviews/video-1746438933445-688574231.MP4',
+        title: 'Video 1',
+        description: 'Description 1',
+        loaded: false,
+        isPlaying: false,
+        thumbnail: 'assets/images/video-placeholder.png',
+        testimonial: 'Отличные курсы! ',
+      }
+    ];
   }
 
   playVideo(video: VideoReview, index: number) {

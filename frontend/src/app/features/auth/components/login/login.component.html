@@ -42,7 +42,7 @@
         </div>
 
         <button type="submit" class="auth-button full-width">Войти</button>
-        <a href="#" class="forgot-password">Забыли пароль?</a>
+        <a routerLink="/forgot-password" class="forgot-password">Забыли пароль?</a>
       </form>
       <p class="error" *ngIf="loginError">{{ loginError }}</p>
       <p class="success" *ngIf="loginSuccess">{{ loginSuccess }}</p>

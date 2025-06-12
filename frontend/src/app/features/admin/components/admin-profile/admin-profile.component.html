@@ -43,12 +43,101 @@
     <!-- ОБЗОР -->
     <section *ngIf="currentPage == 'Обзор'" id="Review" class="teacher-section">
       <h2>Общая статистика</h2>
-      <div class="stats-grid">
-        <div class="stat-tile"><span>5</span>Курсов</div>
-        <div class="stat-tile"><span>124</span>Студентов</div>
-        <div class="stat-tile"><span>76%</span>Средний прогресс</div>
-        <div class="stat-tile"><span>21</span>Активны сегодня</div>
-      </div>
+      
+      @if (dashboardLoading || !dashboardLoaded || !dashboardStats) {
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+          <p>Загрузка статистики...</p>
+        </div>
+      } @else {
+        <div class="stats-grid">
+          <div class="stat-tile">
+            <div class="stat-icon">📚</div>
+            <span class="stat-number">{{ getFormattedNumber(dashboardStats?.total_courses) }}</span>
+            <span class="stat-label">Курсов</span>
+          </div>
+          
+          <div class="stat-tile">
+            <div class="stat-icon">👥</div>
+            <span class="stat-number">{{ getFormattedNumber(dashboardStats?.total_students) }}</span>
+            <span class="stat-label">Студентов</span>
+          </div>
+          
+          <div class="stat-tile">
+            <div class="stat-icon">👨‍🏫</div>
+            <span class="stat-number">{{ getFormattedNumber(dashboardStats?.total_teachers) }}</span>
+            <span class="stat-label">Преподавателей</span>
+          </div>
+          
+          <div class="stat-tile">
+            <div class="stat-icon">🏆</div>
+            <span class="stat-number">{{ getFormattedNumber(dashboardStats?.total_certificates) }}</span>
+            <span class="stat-label">Сертификатов</span>
+          </div>
+          
+          <div class="stat-tile">
+            <div class="stat-icon">💰</div>
+            <span class="stat-number">{{ getFormattedNumber(dashboardStats?.total_payments) }}</span>
+            <span class="stat-label">Платежей</span>
+          </div>
+          
+          <!-- <div class="stat-tile">
+            <div class="stat-icon">📈</div>
+            <span class="stat-number">{{ getFormattedNumber(dashboardStats?.avg_revenue_per_student, 0) }}₸</span>
+            <span class="stat-label">Доход на студента</span>
+          </div>
+           -->
+          <!-- <div class="stat-tile">
+            <div class="stat-icon">✅</div>
+            <span class="stat-number">{{ getFormattedPercentage(dashboardStats?.certificate_completion_rate) }}%</span>
+            <span class="stat-label">Завершение курсов</span>
+          </div>
+           -->
+          <!-- <div class="stat-tile">
+            <div class="stat-icon">📊</div>
+            <span class="stat-number">{{ getFormattedPercentage(dashboardStats?.conversion_rate) }}%</span>
+            <span class="stat-label">Конверсия</span>
+          </div> -->
+        </div>
+
+        <!-- Дополнительная статистика -->
+        <div class="additional-stats">
+          <h3>Дополнительная информация</h3>
+          <div class="additional-stats-grid">
+            <div class="additional-stat-item">
+              <i class="fas fa-calendar-week"></i>
+              <div class="stat-content">
+                <span class="stat-value">{{ getFormattedNumber(dashboardStats?.new_users_week) }}</span>
+                <span class="stat-description">Новых пользователей за неделю</span>
+              </div>
+            </div>
+            
+            <div class="additional-stat-item">
+              <i class="fas fa-calendar-month"></i>
+              <div class="stat-content">
+                <span class="stat-value">{{ getFormattedNumber(dashboardStats?.payments_month) }}</span>
+                <span class="stat-description">Платежей за месяц</span>
+              </div>
+            </div>
+            
+            <!-- <div class="additional-stat-item">
+              <i class="fas fa-envelope"></i>
+              <div class="stat-content">
+                <span class="stat-value">{{ getFormattedNumber(dashboardStats?.messages_today) }}</span>
+                <span class="stat-description">Сообщений сегодня</span>
+              </div>
+            </div> -->
+            
+            <div class="additional-stat-item">
+              <i class="fas fa-tasks"></i>
+              <div class="stat-content">
+                <span class="stat-value">{{ getFormattedNumber(dashboardStats?.total_assignments_submitted) }}</span>
+                <span class="stat-description">Заданий выполнено</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
     </section>
 
     <!-- КУРСЫ -->
@@ -177,13 +266,13 @@
     </div>
 
     <!-- АНАЛИТИКА -->
-    @if (currentPage=='Аналитика') {
+    <!-- @if (currentPage=='Аналитика') {
 
     <section id="analytics" class="teacher-section">
       <h2>Аналитика</h2>
       <app-analytics-chart></app-analytics-chart>
     </section>
-    }
+    } -->
 
     <!-- СООБЩЕНИЯ -->
     @if (currentPage == 'Сообщения') {
@@ -196,7 +285,9 @@
       </div>
     </section>
 
-    } @if (currentPage=='Настройки') {
+    } 
+    
+    @if (currentPage=='Настройки') {
     <section id="settings" class="teacher-section">
       <h2>Настройки аккаунта</h2>
       <div class="profile-section">
@@ -257,7 +348,9 @@
         </div>
       </div>
     </section>
-    } @if (currentPage == "Преподаватель") {
+    }
+    
+    @if (currentPage == "Преподаватель") {
     <section id="teachers" class="teacher-section">
       <h2>Управление преподавателями</h2>
       <div class="table-container">
@@ -353,8 +446,14 @@
       <section id="tests" class="teacher-section">
         <div class="tests-header">
           <h2>Результаты тестов</h2>
-          <div class="tests-stats">
-            <span class="total-results">Всего результатов: {{ testsPagination.total }}</span>
+          <div class="tests-controls">
+            <div class="tests-stats">
+              <span class="total-results">Всего результатов: {{ testsPagination.total }}</span>
+            </div>
+            <button class="import-btn" (click)="openTestImportDialog()">
+              <i class="fas fa-upload"></i>
+              Тест импорт
+            </button>
           </div>
         </div>
 
@@ -576,6 +675,126 @@
             <button class="close-modal-btn" (click)="closeTestDetailsModal()">
               Закрыть
             </button>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Модальное окно импорта тестов -->
+    @if (showTestImportModal) {
+      <div class="modal-overlay" (click)="closeTestImportDialog()">
+        <div class="import-modal" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <h3>
+              <i class="fas fa-upload"></i>
+              Импорт результатов тестов из Google Sheets
+            </h3>
+            <button class="close-btn" (click)="closeTestImportDialog()">×</button>
+          </div>
+          
+          <div class="modal-content">
+            <form [formGroup]="testImportForm" (ngSubmit)="importTestResults()">
+              
+              <div class="form-group">
+                <label for="sheetId">
+                  <i class="fas fa-table"></i>
+                  ID Google Sheets <span class="required">*</span>
+                </label>
+                <input 
+                  id="sheetId"
+                  type="text" 
+                  formControlName="sheetId"
+                  placeholder="1BxiU1VqoyXD6XNJKdxKVAAaZSGmP"
+                  class="form-input"
+                />
+                <small class="help-text">
+                  Скопируйте ID из URL Google Sheets: 
+                  https://docs.google.com/spreadsheets/d/<strong>ID_ЗДЕСЬ</strong>/edit
+                </small>
+              </div>
+
+              <div class="form-group">
+                <label for="courseId">
+                  <i class="fas fa-graduation-cap"></i>
+                  Курс <span class="required">*</span>
+                </label>
+                <select 
+                  id="courseId"
+                  formControlName="courseId"
+                  class="form-select"
+                >
+                  <option value="">Выберите курс</option>
+                  @for (course of courses; track course.id) {
+                    <option [value]="course.id">{{ course.title }}</option>
+                  }
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="part">
+                  <i class="fas fa-layer-group"></i>
+                  Часть теста <span class="required">*</span>
+                </label>
+                <input 
+                  id="part"
+                  type="number" 
+                  formControlName="part"
+                  min="1"
+                  placeholder="1"
+                  class="form-input"
+                />
+                <small class="help-text">Номер части теста (обычно от 1 до 10)</small>
+              </div>
+
+              <div class="form-group">
+                <label for="range">
+                  <i class="fas fa-border-all"></i>
+                  Диапазон ячеек <span class="required">*</span>
+                </label>
+                <input 
+                  id="range"
+                  type="text" 
+                  formControlName="range"
+                  placeholder="A1:Z1000"
+                  class="form-input"
+                />
+                <small class="help-text">
+                  Диапазон ячеек для импорта (например: A1:Z1000, Sheet1!A1:Z1000)
+                </small>
+              </div>
+
+              <div class="info-box">
+                <i class="fas fa-info-circle"></i>
+                <div class="info-content">
+                  <strong>Требования к формату таблицы:</strong>
+                  <ul>
+                    <li>Первая строка должна содержать заголовки колонок</li>
+                    <li>Колонка "email" для идентификации студентов</li>
+                    <li>Колонка "score" или "Балл" для результатов</li>
+                    <li>Колонка "timestamp" для времени прохождения (опционально)</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="modal-actions">
+                <button 
+                  type="button" 
+                  class="cancel-btn"
+                  (click)="closeTestImportDialog()"
+                >
+                  <i class="fas fa-times"></i>
+                  Отмена
+                </button>
+                <button 
+                  type="submit" 
+                  class="import-submit-btn"
+                  [disabled]="testImportForm.invalid"
+                >
+                  <i class="fas fa-upload"></i>
+                  Импортировать
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>

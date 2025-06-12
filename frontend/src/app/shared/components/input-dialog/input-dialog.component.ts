@@ -44,7 +44,7 @@ export interface InputDialogData {
         <button 
           class="btn btn-primary" 
           (click)="onConfirm()"
-          [disabled]="data.required && !inputValue?.trim()">
+          [disabled]="data.required && !inputValue">
           Подтвердить
         </button>
       </div>
@@ -144,9 +144,9 @@ export class InputDialogComponent {
   }
 
   onConfirm(): void {
-    if (this.data.required && !this.inputValue?.trim()) {
+    if (this.data.required && !this.inputValue) {
       return;
     }
-    this.dialogRef.close(this.inputValue?.trim() || '');
+    this.dialogRef.close(this.inputValue);
   }
 } 

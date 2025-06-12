@@ -47,4 +47,12 @@ export class adminService {
   getTests(page: number = 1, limit: number = 10): Observable<any> {
     return this.http.get(`${this.apiUrl}/test-results/all?page=${page}&limit=${limit}`);
   }
+
+  importTestResults(importData: {sheetId: string, courseId: string, part: number, range: string}): Observable<any> {
+    return this.http.post(`${this.apiUrl}/test-results/import`, importData);
+  }
+
+  getDashboardStats(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/analytics/dashboard`);
+  }
 }

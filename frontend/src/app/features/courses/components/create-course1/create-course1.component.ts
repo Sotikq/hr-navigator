@@ -277,7 +277,7 @@ export class CreateCourse1Component implements OnInit {
 
       // Добавляем файл обложки, если он был выбран
       if (this.currentCourse.cover_url) {
-        formData.append('cover_url', this.currentCourse.cover_url);
+        formData.append('cover', this.currentCourse.cover_url);
       }
 
       // Отправляем FormData на сервер

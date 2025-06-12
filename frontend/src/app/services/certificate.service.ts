@@ -13,4 +13,7 @@ export class CertificateService {
   createCertificate(courseId: string){
     return this.http.post(`${this.apiUrl}/certificates/generate/${courseId}`, {courseId: courseId});
   }
+  getCertificate(code: string){
+    return this.http.get(`${this.apiUrl}/certificates/verify/${code}`);
+  }
 }

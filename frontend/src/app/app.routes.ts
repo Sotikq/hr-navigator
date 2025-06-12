@@ -16,6 +16,9 @@ import { PrivacyPolicyComponent } from './features/pages/components/privacy-poli
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
 import { adminGuard } from './core/guards/admin.guard';
+import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './features/auth/reset-password/reset-password.component';
+import { CertificatesComponent } from './features/pages/components/certificates/certificates.component';
 
 export const routes: Routes = [
   {
@@ -67,12 +70,28 @@ export const routes: Routes = [
     path: 'aboutus',
     component: AboutUsComponent,
   },
+  // {
+  //   path: 'terms-of-service',
+  //   component: TermsOfServiceComponent,
+  // },
+  // {
+  //   path: 'privacy-policy',
+  //   component: PrivacyPolicyComponent,
+  // },
   {
-    path: 'terms-of-service',
-    component: TermsOfServiceComponent,
+    path: 'forgot-password',
+    component: ForgotPasswordComponent,
   },
   {
-    path: 'privacy-policy',
-    component: PrivacyPolicyComponent,
-  }
+    path: 'reset-password',
+    component: ResetPasswordComponent,
+  },
+  {
+    path: 'certificates',
+    component: CertificatesComponent,
+  },
+  {
+    path: 'certificate',
+    component: CertificatesComponent,
+  },
 ];

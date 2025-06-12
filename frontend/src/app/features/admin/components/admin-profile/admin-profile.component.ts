@@ -28,7 +28,6 @@ import { InputDialogComponent, InputDialogData } from '../../../../shared/compon
   imports: [
     RouterModule,
     CommonModule,
-    AnalyticsChartComponent,
     ReactiveFormsModule,
     NotificationComponent
   ],
@@ -36,7 +35,7 @@ import { InputDialogComponent, InputDialogData } from '../../../../shared/compon
   styleUrl: './admin-profile.component.scss',
 })
 export class AdminProfileComponent implements OnDestroy {
-  tabs = ['Обзор', 'Курсы', 'Аналитика', 'Сообщения', 'Преподаватель','Платежи', 'Результаты тестов', 'Настройки'];
+  tabs = ['Обзор', 'Курсы', 'Преподаватель','Платежи', 'Результаты тестов', 'Настройки'];
   user: any = null;
   currentPage: string = 'Обзор';
   profileForm!: FormGroup;
@@ -60,6 +59,15 @@ export class AdminProfileComponent implements OnDestroy {
   selectedTest: any = null;
   showTestDetailsModal: boolean = false;
   
+  // Test import modal
+  showTestImportModal: boolean = false;
+  testImportForm!: FormGroup;
+  
+  // Dashboard stats
+  dashboardStats: any = null;
+  dashboardLoaded: boolean = false;
+  dashboardLoading: boolean = false;
+  
   // Make Math available in template
   Math = Math;
   constructor(
@@ -75,6 +83,7 @@ export class AdminProfileComponent implements OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.getDashboardStats();
     this.getTests();
     this.getPayments();
     this.crs.getCourses().subscribe((data) => {
@@ -97,6 +106,14 @@ export class AdminProfileComponent implements OnDestroy {
       });
     });
     this.profileForm.controls['email'].disable();
+    
+    // Initialize test import form
+    this.testImportForm = this.fb.group({
+      sheetId: ['', Validators.required],
+      courseId: ['', Validators.required],
+      part: [1, [Validators.required, Validators.min(1)]],
+      range: ['A1:Z1000', Validators.required]
+    });
   }
 
   
@@ -108,6 +125,46 @@ export class AdminProfileComponent implements OnDestroy {
       this.paymentsLoaded = true;
       console.log(this.payments, 'payments');
     });
+  }
+
+    getDashboardStats() {
+    this.dashboardLoading = true;
+    this.dashboardLoaded = false;
+    this.dashboardStats = null;
+    
+    // Небольшая задержка для корректного отображения состояния загрузки
+    setTimeout(() => {
+      this.adminService.getDashboardStats().subscribe({
+        next: (response: any) => {
+          console.log('Dashboard API response:', response);
+          this.dashboardStats = response.data || response;
+          this.dashboardLoading = false;
+          this.dashboardLoaded = true;
+          console.log('Dashboard stats loaded:', this.dashboardStats);
+        },
+        error: (error: any) => {
+          console.error('Error loading dashboard stats:', error);
+          this.dashboardLoading = false;
+          this.dashboardLoaded = true;
+          // Set default values in case of error
+          this.dashboardStats = {
+            total_students: 0,
+            total_teachers: 0,
+            total_courses: 0,
+            total_payments: 0,
+            total_revenue: null,
+            avg_revenue_per_student: 0,
+            certificate_completion_rate: 0,
+            conversion_rate: 0,
+            new_users_week: 0,
+            payments_month: 0,
+            messages_today: 0,
+            total_assignments_submitted: 0,
+            total_certificates: 0
+          };
+        }
+      });
+    }, 100);
   }
   approvePayment(payment: any) {
     // Подтверждаем платеж
@@ -424,6 +481,82 @@ export class AdminProfileComponent implements OnDestroy {
     localStorage.removeItem('userType');
     this.router.navigate(['/']);
     this.auth.setUser(null); // Обновляем пользователя в AuthService
+  }
+
+  // Open test import dialog
+  openTestImportDialog() {
+    this.showTestImportModal = true;
+    document.body.classList.add('modal-open');
+  }
+
+  // Close test import dialog
+  closeTestImportDialog() {
+    this.showTestImportModal = false;
+    this.testImportForm.reset({
+      sheetId: '',
+      courseId: '',
+      part: 1,
+      range: 'A1:Z1000'
+    });
+    document.body.classList.remove('modal-open');
+  }
+
+  // Import test results
+  importTestResults() {
+    if (this.testImportForm.valid) {
+      const importData = this.testImportForm.value;
+      
+      this.adminService.importTestResults(importData).subscribe({
+        next: (response: any) => {
+          this.notificationService.showSuccess(`Импорт завершен! Обработано: ${response.imported || response.total_rows || 'некоторое количество'} результатов`);
+          this.closeTestImportDialog();
+          // Refresh test results
+          this.getTests(this.testsPagination.page, this.testsPagination.limit);
+        },
+        error: (error: any) => {
+          console.error('Ошибка при импорте результатов тестов:', error);
+          let errorMessage = 'Ошибка при импорте результатов тестов';
+          if (error.error?.message) {
+            errorMessage = error.error.message;
+          }
+          this.notificationService.showError(errorMessage);
+        }
+      });
+    } else {
+      this.notificationService.showError('Пожалуйста, заполните все обязательные поля');
+    }
+  }
+
+  // Helper methods for safe number formatting
+  getFormattedNumber(value: any, decimals: number = 0): string {
+    if (value === null || value === undefined || value === '') {
+      return '0';
+    }
+    
+    const numValue = typeof value === 'string' ? parseFloat(value) : Number(value);
+    
+    if (isNaN(numValue)) {
+      return '0';
+    }
+    
+    return numValue.toFixed(decimals);
+  }
+
+  getFormattedPercentage(value: any): string {
+    if (value === null || value === undefined || value === '') {
+      return '0.0';
+    }
+    
+    const numValue = typeof value === 'string' ? parseFloat(value) : Number(value);
+    
+    if (isNaN(numValue)) {
+      return '0.0';
+    }
+    
+    // Если значение уже в процентах (больше 1), не умножаем на 100
+    const percentage = numValue > 1 ? numValue : numValue * 100;
+    
+    return percentage.toFixed(1);
   }
 
   ngOnDestroy() {

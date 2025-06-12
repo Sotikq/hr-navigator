@@ -64,7 +64,19 @@ export class AuthService {
   }
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('currentUser');
+    this.setUser(null);
+  }
+
+
+  forgorPassword(email: string) {
+    return this.http.post(`https://server.hrnavigator.kz/api/email/password-reset`, { email });
+  }
+
+  resetPassword(token: string, newPassword: string) {
+    return this.http.post(`https://server.hrnavigator.kz/api/email/reset-password`, { token : token, newPassword : newPassword });
   }
 }
+
 
 //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0QGV4YW1wbGUuY29tIn0.rkGyfsdfp4t27snxXvn32WJhP4t_zp3OiA

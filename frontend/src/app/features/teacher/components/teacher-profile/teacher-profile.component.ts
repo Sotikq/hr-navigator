@@ -21,7 +21,7 @@ import { TeacherService } from '../../../../services/teacher.service';
   styleUrl: './teacher-profile.component.scss',
 })
 export class TeacherProfileComponent {
-  tabs = ['Обзор', 'Курсы', 'Аналитика', 'Сообщения', 'Настройки'];
+  tabs = ['Обзор', 'Курсы',  'Настройки'];
   user: any = null;
   currentPage: string = 'Обзор';
   profileForm!: FormGroup;
