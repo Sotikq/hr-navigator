@@ -351,30 +351,234 @@
 
     @if(currentPage == "Результаты тестов") {
       <section id="tests" class="teacher-section">
-        <h2>Результаты тестов</h2>
-        <div class="table-container">
-          <table class="teachers-table">
-            <thead>
-              <tr>
-                <th>Студент</th>
-                <th>Курс</th>
-                <th>Результат</th>
-                <th>Дата</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (test of tests; track $index) {
-              <tr>
-                <td>{{ test.user_name }}</td>
-                <td>{{ test.course_title }}</td>
-                <td>{{ test.result }}</td>
-                <td>{{ test.created_at | date : "dd.MM.yyyy HH:mm" }}</td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
+        <div class="tests-header">
+          <h2>Результаты тестов</h2>
+          <div class="tests-stats">
+            <span class="total-results">Всего результатов: {{ testsPagination.total }}</span>
+          </div>
+        </div>
+
+        @if (!testsLoaded) {
+          <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Загрузка результатов...</p>
+          </div>
+        } @else if (tests.length === 0) {
+          <div class="no-results">
+            <p>Результаты тестов не найдены</p>
+          </div>
+        } @else {
+          <div class="table-container">
+            <table class="tests-table">
+              <thead>
+                <tr>
+                  <th>Студент</th>
+                  <th>Email</th>
+                  <th>Курс</th>
+                  <th>Часть</th>
+                  <th>Результат</th>
+                  <th>Процент</th>
+                  <th>Дата сдачи</th>
+                  <th>Действия</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (test of tests; track test.id) {
+                <tr class="test-row" (click)="showTestDetails(test)">
+                  <td class="student-name">
+                    <div class="student-info">
+                      <span class="name">{{ test.user_name }}</span>
+                    </div>
+                  </td>
+                  <td class="student-email">{{ test.email }}</td>
+                  <td class="course-title">
+                    <span class="course-name">{{ test.course_title }}</span>
+                  </td>
+                  <td class="test-part">
+                    <span class="part-badge">Часть {{ test.part }}</span>
+                  </td>
+                  <td class="test-score">
+                    <span class="score-display">{{ test.score }}/{{ test.max_score }}</span>
+                  </td>
+                  <td class="test-percentage">
+                    <span 
+                      class="percentage-badge"
+                      [style.background-color]="getScoreColor(test)"
+                    >
+                      {{ test.max_score > 0 ? ((test.score / test.max_score) * 100).toFixed(0) : 0 }}%
+                    </span>
+                  </td>
+                  <td class="test-date">{{ test.submitted_at | date : "dd.MM.yyyy HH:mm" }}</td>
+                  <td class="test-actions" (click)="$event.stopPropagation()">
+                    <button 
+                      class="view-details-btn"
+                      (click)="showTestDetails(test)"
+                      title="Посмотреть детали"
+                    >
+                      👁️
+                    </button>
+                  </td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Пагинация -->
+          <div class="pagination-container" *ngIf="testsPagination.pages > 1">
+            <div class="pagination">
+              <button 
+                class="pagination-btn prev"
+                [disabled]="testsPagination.page <= 1"
+                (click)="previousTestPage()"
+              >
+                ← Назад
+              </button>
+              
+              <div class="page-numbers">
+                @for (pageNum of [].constructor(testsPagination.pages); track $index; let i = $index) {
+                  @if (i + 1 === testsPagination.page) {
+                    <button class="pagination-btn current">{{ i + 1 }}</button>
+                  } @else if (Math.abs((i + 1) - testsPagination.page) <= 2 || i + 1 === 1 || i + 1 === testsPagination.pages) {
+                    <button 
+                      class="pagination-btn"
+                      (click)="goToTestPage(i + 1)"
+                    >
+                      {{ i + 1 }}
+                    </button>
+                  } @else if (Math.abs((i + 1) - testsPagination.page) === 3) {
+                    <span class="pagination-dots">...</span>
+                  }
+                }
+              </div>
+
+              <button 
+                class="pagination-btn next"
+                [disabled]="testsPagination.page >= testsPagination.pages"
+                (click)="nextTestPage()"
+              >
+                Вперёд →
+              </button>
+            </div>
+            
+            <div class="pagination-info">
+              <span>
+                Показано {{ ((testsPagination.page - 1) * testsPagination.limit) + 1 }}-{{ 
+                  Math.min(testsPagination.page * testsPagination.limit, testsPagination.total) 
+                }} из {{ testsPagination.total }} результатов
+              </span>
+            </div>
+          </div>
+        }
       </section>
+    }
+
+    <!-- Модальное окно с деталями теста -->
+    @if (showTestDetailsModal && selectedTest) {
+      <div class="modal-overlay" (click)="closeTestDetailsModal()">
+        <div class="test-details-modal" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <h3>Детали результата теста</h3>
+            <button class="close-btn" (click)="closeTestDetailsModal()">×</button>
+          </div>
+          
+          <div class="modal-content">
+            <!-- Основная информация -->
+            <div class="test-info-section">
+              <h4>Информация о студенте и курсе</h4>
+              <div class="info-grid">
+                <div class="info-item">
+                  <label>Студент:</label>
+                  <span>{{ selectedTest.user_name }}</span>
+                </div>
+                <div class="info-item">
+                  <label>Email:</label>
+                  <span>{{ selectedTest.email }}</span>
+                </div>
+                <div class="info-item">
+                  <label>Курс:</label>
+                  <span>{{ selectedTest.course_title }}</span>
+                </div>
+                <div class="info-item">
+                  <label>Часть теста:</label>
+                  <span>{{ selectedTest.part }}</span>
+                </div>
+                <div class="info-item">
+                  <label>Результат:</label>
+                  <span class="score-info">{{ selectedTest.score }}/{{ selectedTest.max_score }} ({{ 
+                    selectedTest.max_score > 0 ? ((selectedTest.score / selectedTest.max_score) * 100).toFixed(1) : 0 
+                  }}%)</span>
+                </div>
+                <div class="info-item">
+                  <label>Дата сдачи:</label>
+                  <span>{{ selectedTest.submitted_at | date : "dd.MM.yyyy HH:mm" }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Детали теста -->
+            @if (selectedTest.details) {
+              <div class="test-details-section">
+                <h4>Ответы студента</h4>
+                
+                @if (selectedTest.details.headers && selectedTest.details.raw_data) {
+                  <div class="answers-table">
+                    <table class="details-table">
+                      <tbody>
+                        @for (header of selectedTest.details.headers; track $index; let i = $index) {
+                          @if (i > 2) { <!-- Пропускаем timestamp, email, score -->
+                            <tr>
+                              <td class="question-cell">{{ header }}</td>
+                              <td class="answer-cell">{{ selectedTest.details.raw_data[i] || 'Не указано' }}</td>
+                            </tr>
+                          }
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                } @else {
+                  <p class="no-details">Детальная информация об ответах недоступна</p>
+                }
+
+                <!-- Техническая информация -->
+                @if (selectedTest.details.sheet_id) {
+                  <div class="technical-info">
+                    <h5>Техническая информация</h5>
+                    <div class="tech-grid">
+                      <div class="tech-item">
+                        <label>ID таблицы:</label>
+                        <span>{{ selectedTest.details.sheet_id }}</span>
+                      </div>
+                      <div class="tech-item">
+                        <label>Строка в таблице:</label>
+                        <span>{{ selectedTest.details.row_number }}</span>
+                      </div>
+                      <div class="tech-item">
+                        <label>Импортировано:</label>
+                        <span>{{ selectedTest.details.imported_at | date : "dd.MM.yyyy HH:mm" }}</span>
+                      </div>
+                      @if (selectedTest.form_url) {
+                        <div class="tech-item">
+                          <label>Ссылка на форму:</label>
+                          <a [href]="selectedTest.form_url" target="_blank" class="form-link">
+                            Открыть в Google Sheets
+                          </a>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+          
+          <div class="modal-footer">
+            <button class="close-modal-btn" (click)="closeTestDetailsModal()">
+              Закрыть
+            </button>
+          </div>
+        </div>
+      </div>
     }
   </main>
 </div>

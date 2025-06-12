@@ -111,6 +111,28 @@ async function getPaymentById(paymentId, userId) {
 }
 
 /**
+ * Get payment by ID for admin operations (no access control)
+ * @param {string} paymentId - Payment ID
+ * @returns {Promise<Object>} Payment record
+ */
+async function getPaymentByIdForAdmin(paymentId) {
+  const query = `
+    SELECT p.*, c.title as course_title 
+    FROM payments p
+    JOIN courses c ON p.course_id = c.id
+    WHERE p.id = $1
+  `;
+  const { rows } = await pool.query(query, [paymentId]);
+  
+  if (rows.length === 0) {
+    logger.warn('Payment not found', { paymentId });
+    throw ApiError.notFound('Payment not found');
+  }
+  
+  return rows[0];
+}
+
+/**
  * Confirm payment (admin only)
  * @param {string} paymentId - Payment ID
  * @returns {Promise<Object>} Updated payment record
@@ -389,6 +411,7 @@ async function getAllPaymentsAdmin({ status, user_id, course_id }) {
 module.exports = {
   createPayment,
   getPaymentById,
+  getPaymentByIdForAdmin,
   confirmPayment,
   checkCourseAccess,
   getAccessibleCourses,

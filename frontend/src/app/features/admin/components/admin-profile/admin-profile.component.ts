@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
 import { AnalyticsChartComponent } from '../../../../shared/components/analytics-chart/analytics-chart.component';
@@ -22,6 +22,7 @@ import { PaymentService } from '../../../../services/payment.service';
 import { RegisterTeacherComponent } from '../register-teacher/register-teacher.component';
 import { NotificationService } from '../../../../services/notification.service';
 import { NotificationComponent } from '../../../../shared/components/notification/notification.component';
+import { InputDialogComponent, InputDialogData } from '../../../../shared/components/input-dialog/input-dialog.component';
 @Component({
   selector: 'app-admin-profile',
   imports: [
@@ -34,7 +35,7 @@ import { NotificationComponent } from '../../../../shared/components/notificatio
   templateUrl: './admin-profile.component.html',
   styleUrl: './admin-profile.component.scss',
 })
-export class AdminProfileComponent {
+export class AdminProfileComponent implements OnDestroy {
   tabs = ['Обзор', 'Курсы', 'Аналитика', 'Сообщения', 'Преподаватель','Платежи', 'Результаты тестов', 'Настройки'];
   user: any = null;
   currentPage: string = 'Обзор';
@@ -46,6 +47,21 @@ export class AdminProfileComponent {
   paymentsLoaded: boolean = false;
   tests: any = [];
   testsLoaded: boolean = false;
+  
+  // Pagination for test results
+  testsPagination = {
+    page: 1,
+    limit: 10,
+    total: 0,
+    pages: 0
+  };
+  
+  // Selected test for detailed view
+  selectedTest: any = null;
+  showTestDetailsModal: boolean = false;
+  
+  // Make Math available in template
+  Math = Math;
   constructor(
     private router: Router,
     private crs: CourseService, // QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQEEEESTION
@@ -103,36 +119,155 @@ export class AdminProfileComponent {
       },
       error: (error) => {
         console.error('Ошибка при подтверждении платежа:', error);
+        let errorMessage = 'Ошибка при подтверждении платежа';
+        if (error.error?.message) {
+          errorMessage = error.error.message;
+        }
+        this.notificationService.showError(errorMessage);
       }
     });
   }
   invoicePayment(payment: any) {
-    this.paymentService.invoicePayment(payment.id).subscribe({
-      next: (response) => {
-        console.log(response, 'payment invoiced');
-        payment.status = 'invoiced';
-        this.notificationService.showSuccess('Платеж выставлен');
+    // Открываем диалог для ввода URL инвойса
+    const dialogData: InputDialogData = {
+      title: 'Выставить счет',
+      message: 'Введите URL инвойса для платежа:',
+      placeholder: 'https://example.com/invoice.pdf',
+      required: true,
+      inputType: 'url'
+    };
+
+    const dialogRef = this.dialog.open(InputDialogComponent, {
+      width: '450px',
+      data: dialogData
+    });
+
+    dialogRef.afterClosed().subscribe(invoiceUrl => {
+      if (invoiceUrl) {
+        this.paymentService.invoicePayment(payment.id, invoiceUrl).subscribe({
+          next: (response) => {
+            console.log(response, 'payment invoiced');
+            payment.status = 'invoiced';
+            this.notificationService.showSuccess('Платеж выставлен');
+          },
+          error: (error) => {
+            console.error('Ошибка при выставлении инвойса:', error);
+            let errorMessage = 'Ошибка при выставлении инвойса';
+            if (error.error?.message) {
+              errorMessage = error.error.message;
+            }
+            this.notificationService.showError(errorMessage);
+          }
+        });
       }
     });
   }
   rejectPayment(payment: any) {
-    this.paymentService.rejectPayment(payment.id).subscribe({
-      next: (response) => {
-        payment.status = 'rejected';
-        this.notificationService.showSuccess('Платеж отклонен');
-      },
-      error: (error) => {
-        console.error('Ошибка при отклонении платежа:', error);
+    // Открываем диалог для ввода причины отклонения
+    const dialogData: InputDialogData = {
+      title: 'Отклонить платеж',
+      message: 'Введите причину отклонения (необязательно):',
+      placeholder: 'Укажите причину отклонения...',
+      required: false,
+      inputType: 'textarea'
+    };
+
+    const dialogRef = this.dialog.open(InputDialogComponent, {
+      width: '450px',
+      data: dialogData
+    });
+
+    dialogRef.afterClosed().subscribe(reason => {
+      // Даже если reason null или пустая строка, выполняем отклонение
+      if (reason !== null) { // null означает что пользователь нажал "Отмена"
+        this.paymentService.rejectPayment(payment.id, reason || undefined).subscribe({
+          next: (response) => {
+            payment.status = 'rejected';
+            this.notificationService.showSuccess('Платеж отклонен');
+          },
+          error: (error) => {
+            console.error('Ошибка при отклонении платежа:', error);
+            let errorMessage = 'Ошибка при отклонении платежа';
+            if (error.error?.message) {
+              errorMessage = error.error.message;
+            }
+            this.notificationService.showError(errorMessage);
+          }
+        });
       }
     });
   }
 
-  getTests() {
-    this.adminService.getTests().subscribe((data) => {
-      this.tests = data;
+  getTests(page: number = 1, limit: number = 10) {
+    this.testsLoaded = false;
+    this.adminService.getTests(page, limit).subscribe((response: any) => {
+      this.tests = response.data || response; // Handle both wrapped and direct response
+      this.testsPagination = response.pagination || {
+        page: page,
+        limit: limit,
+        total: this.tests.length,
+        pages: Math.ceil(this.tests.length / limit)
+      };
       this.testsLoaded = true;
-      console.log(this.tests, 'tests');
+      console.log('Tests loaded:', this.tests);
     });
+  }
+
+  // Navigate to specific page
+  goToTestPage(page: number) {
+    if (page >= 1 && page <= this.testsPagination.pages) {
+      this.testsPagination.page = page;
+      this.getTests(page, this.testsPagination.limit);
+    }
+  }
+
+  // Previous page
+  previousTestPage() {
+    if (this.testsPagination.page > 1) {
+      this.goToTestPage(this.testsPagination.page - 1);
+    }
+  }
+
+  // Next page
+  nextTestPage() {
+    if (this.testsPagination.page < this.testsPagination.pages) {
+      this.goToTestPage(this.testsPagination.page + 1);
+    }
+  }
+
+  // Show test details in modal
+  showTestDetails(test: any) {
+    this.selectedTest = test;
+    this.showTestDetailsModal = true;
+    // Add class to body to prevent scrolling
+    document.body.classList.add('modal-open');
+  }
+
+  // Close test details modal
+  closeTestDetailsModal() {
+    this.showTestDetailsModal = false;
+    this.selectedTest = null;
+    // Remove class from body to restore scrolling
+    document.body.classList.remove('modal-open');
+  }
+
+  // Format score display
+  formatScore(test: any): string {
+    if (test.score !== undefined && test.max_score !== undefined) {
+      return `${test.score}/${test.max_score} (${Math.round((test.score / test.max_score) * 100)}%)`;
+    }
+    return 'Не оценено';
+  }
+
+  // Get score color based on percentage
+  getScoreColor(test: any): string {
+    if (test.score === undefined || test.max_score === undefined) {
+      return '#gray';
+    }
+    const percentage = (test.score / test.max_score) * 100;
+    if (percentage >= 80) return '#4CAF50'; // Green
+    if (percentage >= 60) return '#FF9800'; // Orange
+    return '#F44336'; // Red
   }
 
   goToEditCourse(courseId: string) {
@@ -289,5 +424,10 @@ export class AdminProfileComponent {
     localStorage.removeItem('userType');
     this.router.navigate(['/']);
     this.auth.setUser(null); // Обновляем пользователя в AuthService
+  }
+
+  ngOnDestroy() {
+    // Clean up modal-open class if component is destroyed while modal is open
+    document.body.classList.remove('modal-open');
   }
 }

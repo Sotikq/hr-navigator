@@ -4,8 +4,7 @@ const logger = require('../utils/logger');
 // Define allowed origins
 const allowedOrigins = [
   'http://localhost:4200', // Development frontend
-  'http://localhost:5000',
-  'https://hr-navigator.netlify.app', // Netlify production
+  'http://localhost:5000', // Netlify production
   'https://server.hrnavigator.kz',
   (process.env.FRONTEND_URL || '').replace(/\/$/, ''), // Production frontend (if set, без слэша на конце)
 ].filter(Boolean); // Remove any undefined values

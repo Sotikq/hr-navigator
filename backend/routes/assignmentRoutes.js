@@ -200,19 +200,13 @@ router.get('/:assignmentId/submissions', authMiddleware, assignmentController.ge
 
 /**
  * @swagger
- * /assignments/submissions/student/{studentId?}:
+ * /assignments/submissions/student:
  *   get:
- *     summary: Получить сдачи студента
+ *     summary: Получить сдачи текущего студента
  *     tags: [Assignments]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: path
- *         name: studentId
- *         required: false
- *         schema:
- *           type: string
- *         description: ID студента (для учителей и админов)
  *       - in: query
  *         name: courseId
  *         schema:
@@ -222,7 +216,33 @@ router.get('/:assignmentId/submissions', authMiddleware, assignmentController.ge
  *       200:
  *         description: Список сдач студента
  */
-router.get('/submissions/student/:studentId?', authMiddleware, assignmentController.getStudentSubmissions);
+router.get('/submissions/student', authMiddleware, assignmentController.getStudentSubmissions);
+
+/**
+ * @swagger
+ * /assignments/submissions/student/{studentId}:
+ *   get:
+ *     summary: Получить сдачи конкретного студента (для учителей и админов)
+ *     tags: [Assignments]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: studentId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID студента
+ *       - in: query
+ *         name: courseId
+ *         schema:
+ *           type: string
+ *         description: Фильтр по курсу
+ *     responses:
+ *       200:
+ *         description: Список сдач студента
+ */
+router.get('/submissions/student/:studentId', authMiddleware, assignmentController.getStudentSubmissions);
 
 /**
  * @swagger

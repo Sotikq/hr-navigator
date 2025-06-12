@@ -16,15 +16,15 @@ export class PaymentService {
     return this.http.get(`${this.apiUrl}/payments/pending`);
   }
   approvePayment(paymentId: string) { 
-    return this.http.patch(`${this.apiUrl}/payments/${paymentId}/confirm`, {id: paymentId});
+    return this.http.patch(`${this.apiUrl}/payments/${paymentId}/confirm`, {});
   }
   getAllMyPayments() {
     return this.http.get(`${this.apiUrl}/payments/my`);
   }
-  rejectPayment(paymentId: string) {
-    return this.http.patch(`${this.apiUrl}/payments/${paymentId}/reject`, {id: paymentId});
+  rejectPayment(paymentId: string, reason?: string) {
+    return this.http.patch(`${this.apiUrl}/payments/${paymentId}/reject`, { reason: reason || 'Отклонено администратором' });
   }
-  invoicePayment(paymentId: string) {
-    return this.http.patch(`${this.apiUrl}/payments/${paymentId}/invoice`, {id: paymentId});
+  invoicePayment(paymentId: string, invoiceUrl: string) {
+    return this.http.patch(`${this.apiUrl}/payments/${paymentId}/invoice`, { invoice_url: invoiceUrl });
   }
 }

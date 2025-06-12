@@ -3,7 +3,7 @@ const logger = require('../utils/logger');
 const ApiError = require('../utils/ApiError');
 const emailService = require('../services/emailService');
 const { findUserById } = require('../models/User');
-const Course = require('../models/Course');
+const { getCourseById } = require('../models/Course');
 
 // Создать заявку (user)
 async function createPaymentRequest(req, res, next) {
@@ -48,11 +48,12 @@ async function invoicePayment(req, res, next) {
 async function confirmPayment(req, res, next) {
   try {
     const { id } = req.params;
+    logger.info('confirmPayment called', { paymentId: id, adminId: req.user.id });
     
-    // Получаем информацию о платеже перед подтверждением
-    const paymentInfo = await Payment.getPaymentById(id);
+    // Получаем информацию о платеже перед подтверждением  
+    const paymentInfo = await Payment.getPaymentByIdForAdmin(id);
     const user = await findUserById(paymentInfo.user_id);
-    const course = await Course.getCourseById(paymentInfo.course_id);
+    const course = await getCourseById(paymentInfo.course_id);
     
     await Payment.confirmPayment(id);
     
@@ -76,11 +77,12 @@ async function rejectPayment(req, res, next) {
   try {
     const { id } = req.params;
     const { reason } = req.body; // Причина отклонения
+    logger.info('rejectPayment called', { paymentId: id, adminId: req.user.id });
     
     // Получаем информацию о платеже перед отклонением
-    const paymentInfo = await Payment.getPaymentById(id);
+    const paymentInfo = await Payment.getPaymentByIdForAdmin(id);
     const user = await findUserById(paymentInfo.user_id);
-    const course = await Course.getCourseById(paymentInfo.course_id);
+    const course = await getCourseById(paymentInfo.course_id);
     
     await Payment.rejectPayment(id);
     

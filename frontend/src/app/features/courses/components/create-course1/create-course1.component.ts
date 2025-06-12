@@ -548,4 +548,7 @@ export class CreateCourse1Component implements OnInit {
       console.error('Error setting study_details text:', error);
     }
   }
+  goBack() {
+    this.router.navigate(['/admin']);
+  }
 }

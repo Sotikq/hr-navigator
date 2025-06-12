@@ -44,7 +44,7 @@ export class adminService {
     );
   }
 
-  getTests() {
-    return this.http.get(`${this.apiUrl}/test-results/all`);
+  getTests(page: number = 1, limit: number = 10): Observable<any> {
+    return this.http.get(`${this.apiUrl}/test-results/all?page=${page}&limit=${limit}`);
   }
 }

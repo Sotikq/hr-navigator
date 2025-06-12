@@ -1,13 +1,20 @@
 @import "../../../../../styles/variables";
 
 .goBack {
-  margin-top: 20px;
-  margin-left: 20px;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
   cursor: pointer;
-  background-color: #837df6;
-  border: solid 1px #4f46e5;
-  padding: 1rem 1.5rem;
-  border-radius: 20px;
+  transition: all 0.2s ease;
+  background: $primary-color;
+  color: white;
+  margin-top: 1rem;
+  margin-left: 1rem;
+  &:hover{
+    background-color: $primary-color;
+  }
 }
 
 .deleteBtn{
