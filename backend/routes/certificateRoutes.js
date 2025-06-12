@@ -3,6 +3,9 @@ const router = express.Router();
 const certificateController = require('../controllers/certificateController');
 const authMiddleware = require('../middleware/authMiddleware');
 const apiKeyMiddleware = require('../middleware/apiKeyMiddleware');
+const certificateService = require('../certificateService');
+const logger = require('../utils/logger');
+const ApiError = require('../utils/ApiError');
 
 /**
  * @swagger
@@ -273,7 +276,72 @@ const apiKeyMiddleware = require('../middleware/apiKeyMiddleware');
  *         description: Внутренняя ошибка сервера
  */
 
-// Apply auth and API key middleware to all routes
+/**
+ * @swagger
+ * /certificates/verify/{code}:
+ *   get:
+ *     summary: Проверить валидность сертификата
+ *     description: Проверяет валидность сертификата по его номеру
+ *     tags: [Certificates]
+ *     parameters:
+ *       - in: path
+ *         name: code
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Номер сертификата
+ *     responses:
+ *       '200':
+ *         description: Результат проверки сертификата
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   enum: [valid, revoked, error]
+ *                 message:
+ *                   type: string
+ *                 certificate:
+ *                   type: object
+ *                   properties:
+ *                     certificateNumber:
+ *                       type: string
+ *                     userName:
+ *                       type: string
+ *                     courseTitle:
+ *                       type: string
+ *                     issuedAt:
+ *                       type: string
+ *                       format: date-time
+ *                     version:
+ *                       type: number
+ *                 details:
+ *                   type: object
+ *                   properties:
+ *                     revokedAt:
+ *                       type: string
+ *                       format: date-time
+ *                     revocationReason:
+ *                       type: string
+ *       '500':
+ *         description: Внутренняя ошибка сервера
+ */
+
+// Публичный endpoint — ДО middleware авторизации!
+router.get('/verify/:code', async (req, res, next) => {
+  try {
+    const { code } = req.params;
+    const result = await certificateService.validateCertificate(code);
+    res.json(result);
+  } catch (error) {
+    logger.error('Certificate validation failed', { error: error.message, code: req.params.code });
+    next(new ApiError(500, 'Failed to validate certificate'));
+  }
+});
+
+// Дальше — защищённые маршруты
 router.use(authMiddleware);
 router.use(apiKeyMiddleware());
 
