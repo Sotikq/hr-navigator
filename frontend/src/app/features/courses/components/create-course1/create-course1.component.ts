@@ -298,7 +298,7 @@ export class CreateCourse1Component implements OnInit {
     }
   }
 
-  async save() {
+    async save() {
     this.isSavingCourse = true;
     try {
       this.updatePositions();
@@ -335,22 +335,23 @@ export class CreateCourse1Component implements OnInit {
           const answermodule = await lastValueFrom(
             this.crs.updateModule(updatedModule, module.id)
           );
-        }
+        } 
       }
       if (this.currentCourse) {
-        const UpdatedCourseRequest: UpdatedCourseRequest = {
-          id: this.currentCourse.id,
-          title: this.currentCourse.title,
-          description: this.currentCourse.description,
-          details: this.currentCourse.details,
-          price: this.currentCourse.price,
-          duration: this.currentCourse.duration,
-          cover_url: this.currentCourse.cover_url,
-          category: this.currentCourse.category,
-          is_published: this.currentCourse.is_published,
-        };
+        const formData = new FormData();
+        formData.append('title', this.currentCourse.title.toString());
+        formData.append('description', this.currentCourse.description.toString());
+        formData.append('details', this.currentCourse.details.toString());
+        formData.append('price', this.currentCourse.price.toString());
+        formData.append('duration', this.currentCourse.duration.toString());
+        formData.append('category', this.currentCourse.category.toString());
+        formData.append('is_published', this.currentCourse.is_published ? 'true' : 'false');
+        if (this.currentCourse.cover_url) {
+          formData.append('cover', this.currentCourse.cover_url);
+        }
+        
         const anwserCourse = await lastValueFrom(
-          this.crs.updateCourse(UpdatedCourseRequest, this.currentCourse.id)
+          this.crs.updateCourse(formData, this.currentCourse.id)
         );
 
         this.currentCourse = this.crs

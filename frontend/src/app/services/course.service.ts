@@ -39,7 +39,7 @@ export class CourseService {
     return this.http.delete(`${this.apiUrl}/courses/lessons/${id}`)
   }  
   
-  updateCourse(course: UpdatedCourseRequest, courseId: string) {
+  updateCourse(course: any, courseId: string) {
     return this.http.patch<any>(`${this.apiUrl}/courses/${courseId}`, course);
   }
 
