@@ -272,7 +272,7 @@ router.get('/unpublished',
  *       200:
  *         description: Информация о курсе
  */
-router.get('/:id', authMiddleware, checkRole(['admin']), getCourseById);
+router.get('/:id', getCourseById);
 
 /**
  * @swagger
