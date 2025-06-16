@@ -38,11 +38,11 @@ export class TeacherProfileComponent {
   ngOnInit(): void {
     this.teacherService.getAllMyCourses().subscribe((data) => {
       this.courses = data; // Получаем курсы из сервиса и сохраняем в массив
-      console.log(this.courses); // Логируем курсы в консоль
+      //console.log(this.courses); // Логируем курсы в консоль
     });
     this.userFill();
     
-    console.log(this.user);
+    //console.log(this.user);
     this.profileForm = this.fb.group({
       email: [this.user.email],
       username: [this.user.name, Validators.required],
@@ -66,11 +66,11 @@ export class TeacherProfileComponent {
     const usernametoupdate = this.profileForm.get('username')?.value;
     if (this.profileForm.valid) {
       const updatedUser: string = this.profileForm.value;
-      //console.log('Сохраняем изменения:', updatedUser);
+      ////console.log('Сохраняем изменения:', updatedUser);
 
       this.auth.updateName({ name: usernametoupdate }).subscribe({
         next: (response) => {
-          console.log('Профиль обновлён:', response);
+          //console.log('Профиль обновлён:', response);
           this.user.name = usernametoupdate; // Обновляем имя пользователя в локальном состоянии
           localStorage.setItem('currentUser', JSON.stringify(this.user)); // Сохраняем обновлённые данные в локальном хранилище
           this.auth.setUser(this.user); // Обновляем пользователя в AuthService
@@ -95,7 +95,7 @@ export class TeacherProfileComponent {
       .updatePassword({ oldPassword, newPassword, confirmPassword })
       .subscribe({
         next: (response) => {
-          console.log('Пароль обновлён:', response);
+          //console.log('Пароль обновлён:', response);
           alert('Пароль обновлён!');
         },
         error: (error) => {
@@ -116,7 +116,7 @@ export class TeacherProfileComponent {
 
   currentPageSwitch(page: string) {
     this.currentPage = page;
-    console.log(this.currentPage);
+    //console.log(this.currentPage);
   }
   logout() {
     localStorage.removeItem('token');

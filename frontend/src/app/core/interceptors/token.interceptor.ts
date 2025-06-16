@@ -19,7 +19,7 @@ export const tokenInterceptorFn: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       // Если получили 401 ошибку - токен недействителен
       if (error.status === 401) {
-        console.log('Token expired or invalid, redirecting to login...');
+        // Token expired or invalid, redirecting to login
         
         // Очищаем все данные авторизации
         localStorage.removeItem('token');

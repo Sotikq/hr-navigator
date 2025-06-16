@@ -45,9 +45,9 @@ export class BuyDialogComponent {
 
   onConfirm(): void {
     if (this.buyForm.valid) {
-      console.log(this.data.message, this.buyForm.value.phone);
+      //console.log(this.data.message, this.buyForm.value.phone);
       this.paymentService.buyCourse(this.data.message, this.buyForm.value.phone).subscribe((response) => {
-        console.log(response);
+        //console.log(response);
         this.dialogRef.close(true);
       });
     }

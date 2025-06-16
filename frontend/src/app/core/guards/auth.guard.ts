@@ -37,7 +37,7 @@ export const authGuard: CanActivateFn = async (route, state) => {
   }
 
   // Если нет авторизации - очищаем все данные и перенаправляем на логин
-  console.log('User not authenticated, redirecting to login...');
+        // User not authenticated, redirecting to login
   localStorage.removeItem('token');
   localStorage.removeItem('currentUser');
   authService.setUser(null);

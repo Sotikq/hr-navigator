@@ -45,11 +45,11 @@ export class RegisterTeacherComponent {
   onSubmit() {
     if (this.registerForm.valid) {
       const { confirmPassword, ...formData } = this.registerForm.value;
-      console.log(formData);
+      //console.log(formData);
       // Вызываешь сервис регистрации или отправляешь данные на API
       this.adminService.createTeacher(formData).subscribe({
         next: (response) => {
-          console.log(response);
+          //console.log(response);
         },
         error: (error) => {
           console.error(error);

@@ -14,14 +14,13 @@ export class ForgotPasswordComponent {
   sent: boolean = false;
   constructor(private authService: AuthService) {}
   forgotPassword(email: string) {
-    console.log('forgotPassword');
     this.sent = true;
     this.authService.forgorPassword(email).subscribe({
       next: (res) => {
-        console.log(res);
+        // Email sent successfully
       },
       error: (err) => {
-        console.log(err);
+        // Error sending email
       },
     });
   }

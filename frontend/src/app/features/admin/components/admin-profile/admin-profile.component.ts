@@ -88,11 +88,11 @@ export class AdminProfileComponent implements OnDestroy {
     this.getPayments();
     this.crs.getCourses().subscribe((data) => {
       this.courses = data; // Получаем курсы из сервиса и сохраняем в массив
-      console.log(this.courses); // Логируем курсы в консоль
+      //console.log(this.courses); // Логируем курсы в консоль
     });
     this.userFill();
     this.getTeachers();
-    console.log(this.user);
+    //console.log(this.user);
     this.profileForm = this.fb.group({
       email: [this.user.email],
       username: [this.user.name, Validators.required],
@@ -120,10 +120,10 @@ export class AdminProfileComponent implements OnDestroy {
 
   getPayments() {
     this.paymentService.getPayments().subscribe((data) => {
-      console.log(data, 'payments');
+      //console.log(data, 'payments');
       this.payments = data;
       this.paymentsLoaded = true;
-      console.log(this.payments, 'payments');
+      //console.log(this.payments, 'payments');
     });
   }
 
@@ -136,11 +136,11 @@ export class AdminProfileComponent implements OnDestroy {
     setTimeout(() => {
       this.adminService.getDashboardStats().subscribe({
         next: (response: any) => {
-          console.log('Dashboard API response:', response);
+          //console.log('Dashboard API response:', response);
           this.dashboardStats = response.data || response;
           this.dashboardLoading = false;
           this.dashboardLoaded = true;
-          console.log('Dashboard stats loaded:', this.dashboardStats);
+          //console.log('Dashboard stats loaded:', this.dashboardStats);
         },
         error: (error: any) => {
           console.error('Error loading dashboard stats:', error);
@@ -170,7 +170,7 @@ export class AdminProfileComponent implements OnDestroy {
     // Подтверждаем платеж
     this.paymentService.approvePayment(payment.id).subscribe({
       next: (response) => {
-        console.log(response, 'payment approved');
+       // console.log(response, 'payment approved');
         payment.status = 'confirmed';
         this.notificationService.showSuccess('Платеж подтвержден');
       },
@@ -203,7 +203,7 @@ export class AdminProfileComponent implements OnDestroy {
       if (invoiceUrl) {
         this.paymentService.invoicePayment(payment.id, invoiceUrl).subscribe({
           next: (response) => {
-            console.log(response, 'payment invoiced');
+            //console.log(response, 'payment invoiced');
             payment.status = 'invoiced';
             this.notificationService.showSuccess('Платеж выставлен');
           },
@@ -266,7 +266,7 @@ export class AdminProfileComponent implements OnDestroy {
         pages: Math.ceil(this.tests.length / limit)
       };
       this.testsLoaded = true;
-      console.log('Tests loaded:', this.tests);
+      //console.log('Tests loaded:', this.tests);
     });
   }
 
@@ -368,7 +368,7 @@ export class AdminProfileComponent implements OnDestroy {
       .updatePassword({ oldPassword, newPassword, confirmPassword })
       .subscribe({
         next: (response) => {
-          console.log('Пароль обновлён:', response);
+         //console.log('Пароль обновлён:', response);
           alert('Пароль обновлён!');
         },
         error: (error) => {
@@ -388,7 +388,7 @@ export class AdminProfileComponent implements OnDestroy {
     });
   }
   openTeacherCoursesDialog(teacher: any): void {
-    console.log(teacher.courses);
+   //console.log(teacher.courses);
     const dialogRef = this.dialog.open(AdminCoursesDialogComponent, {
       width: '500px',
       data: {
@@ -402,20 +402,14 @@ export class AdminProfileComponent implements OnDestroy {
       if (selectedCourse) {
         this.addCourseToTeacher(teacher.id, selectedCourse);
       }
-      console.log(
-        'qweqeqwe',
-        teacher.id,
-        typeof teacher.id,
-        'asdasdas',
-        selectedCourse
-      );
+      
     });
   }
 
   addCourseToTeacher(teacherId: string, selectedCourse: any) {
     this.adminService.addCourseToTeacher(teacherId, selectedCourse).subscribe({
       next: (data) => {
-        console.log(data, 'added');
+        //console.log(data, 'added');
         const teacher = this.allTeachers.find(
           (t: { id: string }) => t.id === teacherId
         );
@@ -451,7 +445,7 @@ export class AdminProfileComponent implements OnDestroy {
           // Удаляем курс локально без перезагрузки
           teacher.Courses = teacher.Courses?.filter((c: any) => c.id !== courseId) || [];
           this.snackBar.open('Курс удален', 'Закрыть', { duration: 3000 });
-          console.log(response);
+          //console.log(response);
         },
         error: (err) => {
           this.snackBar.open('Ошибка при удалении', 'Закрыть', { duration: 3000 });
@@ -473,7 +467,7 @@ export class AdminProfileComponent implements OnDestroy {
 
   currentPageSwitch(page: string) {
     this.currentPage = page;
-    console.log(this.currentPage);
+    //console.log(this.currentPage);
   }
   logout() {
     localStorage.removeItem('token');

@@ -92,7 +92,6 @@ export class AppComponent implements OnInit, OnDestroy {
   
 
   ngOnInit(): void {
-    console.log("INIT");
     
     const token = this.auth.getToken();
 
@@ -121,7 +120,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.currentRoute = event.urlAfterRedirects === '/' ? '' : event.urlAfterRedirects.slice(1);
-        console.log('Текущий маршрут:', this.currentRoute);
       }
     });
   }
@@ -148,7 +146,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   check() {
-    console.log(this.currentUser);
+    // Debug method - removed console.log for production
   }
 
   ngOnDestroy() {

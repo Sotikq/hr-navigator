@@ -30,7 +30,7 @@ export class CoursePageComponent implements OnInit {
     private dialog: MatDialog
   ) {
     this.id = this.route.snapshot.paramMap.get('id');
-    console.log(this.id, typeof this.id);
+   // console.log(this.id, typeof this.id);
   }
 
   ngOnInit() {
@@ -50,7 +50,7 @@ export class CoursePageComponent implements OnInit {
     this.crs.getCourseById(this.id).subscribe({
       next: (data) => {
         this.course = data;
-        console.log('Course loaded:', this.course);
+        //console.log('Course loaded:', this.course);
         this.checkLoadingComplete();
       },
       error: (error) => {
@@ -63,11 +63,11 @@ export class CoursePageComponent implements OnInit {
     this.crs.getCourseDetails(this.id).subscribe({
       next: (details) => {
         this.courseDetails = details;
-        console.log('Course details loaded:', this.courseDetails);
+        //console.log('Course details loaded:', this.courseDetails);
         this.checkLoadingComplete();
       },
       error: (error) => {
-        console.log('No course details found or error loading details:', error);
+        //console.log('No course details found or error loading details:', error);
         this.checkLoadingComplete();
       }
     });

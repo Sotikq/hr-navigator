@@ -55,7 +55,7 @@ export class CourseCompeletionStudentComponent implements OnInit {
     this.courseService.getCourseById(courseId).subscribe({
       next: (course) => {
         this.currentCourse = course;
-        console.log('Курс загружен:', this.currentCourse);
+        //console.log('Курс загружен:', this.currentCourse);
       },
       error: (err) => {
         console.error('Ошибка загрузки курса:', err);
@@ -71,7 +71,7 @@ export class CourseCompeletionStudentComponent implements OnInit {
           this.progressPercentage = response.data.progress;
         }
         this.loading = false;
-        console.log('Прогресс курса загружен:', response);
+        //console.log('Прогресс курса загружен:', response);
       },
       error: (err) => {
         console.error('Ошибка загрузки прогресса:', err);
@@ -132,7 +132,7 @@ export class CourseCompeletionStudentComponent implements OnInit {
 
   completeLesson(topicId: string, lessonId: string): void {
     if (!this.courseId) return;
-    console.log(lessonId, 'lessonId');
+    //console.log(lessonId, 'lessonId');
     this.courseService.completeLesson(lessonId).subscribe({
       next: (response) => {
         if (response.status === 'success') {
@@ -209,7 +209,7 @@ export class CourseCompeletionStudentComponent implements OnInit {
   getCertificate() {
     this.certificateService.createCertificate(this.courseId!).subscribe({
       next: (response) => {
-        console.log(response, 'response');
+        //console.log(response, 'response');
         this.router.navigate(['/student',]);
       },
       error: (err) => {

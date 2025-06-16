@@ -73,7 +73,6 @@ export class LoginComponent {
     this.authService.login({ email: email, password: password }).subscribe({
       next: (res) => {
         this.authService.saveToken(res.token);
-        console.log(res.token);
 
         this.authService.loadUserProfile().subscribe({
           next: (user) => {
@@ -100,7 +99,6 @@ export class LoginComponent {
     const username = this.registerForm.get('username')?.value;
     const password = this.registerForm.get('password')?.value;
     const role = 'user';
-    console.log(email, password, role);
     this.authService
       .register({
         email: email,
