@@ -19,7 +19,8 @@ const {
   addTopicToModule,
   updateTopic,
   deleteTopic,
-  addLessonToTopic
+  addLessonToTopic,
+  getCourseSummaryById
 } = require('../controllers/courseController');
 const { authMiddleware, validateApiKey, checkRole } = require('../middleware');
 const { checkCourseAccessHandler: paymentCheckCourseAccessHandler } = require('../controllers/paymentController');
@@ -667,6 +668,72 @@ router.delete('/topics/:id', authMiddleware, checkRole(['admin', 'teacher']), de
  */
 router.post('/topics/:topicId/lessons', authMiddleware, checkRole(['admin', 'teacher']), addLessonToTopic);
 
+/**
+ * @swagger
+ * /courses/{id}/summary:
+ *   get:
+ *     summary: Получение краткой информации о курсе (без авторизации)
+ *     tags: [Courses]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID курса
+ *     responses:
+ *       200:
+ *         description: Успешный ответ с краткой структурой курса
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                 title:
+ *                   type: string
+ *                 description:
+ *                   type: string
+ *                 price:
+ *                   type: number
+ *                 duration:
+ *                   type: string
+ *                 cover_url:
+ *                   type: string
+ *                 modules:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       title:
+ *                         type: string
+ *                       description:
+ *                         type: string
+ *                       topics:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             title:
+ *                               type: string
+ *                             description:
+ *                               type: string
+ *                             lessons:
+ *                               type: array
+ *                               items:
+ *                                 type: object
+ *                                 properties:
+ *                                   title:
+ *                                     type: string
+ *                                   type:
+ *                                     type: string
+ *                                     enum: [video, test, pdf]
+ *                                   content_url:
+ *                                     type: string
+ *       404:
+ *         description: Курс не найден
+ */
 router.get('/:id/summary', getCourseSummaryById);
 
 module.exports = router;

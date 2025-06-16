@@ -580,5 +580,6 @@ module.exports = {
   addTopicToModule,
   updateTopic: updateTopicHandler,
   deleteTopic: deleteTopicHandler,
-  addLessonToTopic
+  addLessonToTopic,
+  getCourseSummaryById
 };
