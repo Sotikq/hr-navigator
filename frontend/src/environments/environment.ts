@@ -1,5 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://server.hrnavigator.kz/api'
+  apiUrl: 'https://server.hrnavigator.kz/api',
   //apiUrl: 'http://localhost:5000/api'
+  videoBaseUrl: '/uploads'  // localhost - через proxy
 }; 

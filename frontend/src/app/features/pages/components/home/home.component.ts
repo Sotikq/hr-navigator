@@ -8,6 +8,7 @@ import { NotificationComponent } from '../../../../shared/components/notificatio
 import { NotificationService } from '../../../../services/notification.service';
 import { AuthStateService } from '../../../../services/auth-state.service';
 import { take } from 'rxjs/operators';
+import { environment } from '../../../../../environments/environment';
 
 interface VideoReview {
   file_url: string;
@@ -79,24 +80,23 @@ export class HomeComponent implements OnInit {
     // });
 
     this.videos = [
-      {  //frontend\public\uploads\reviews\video-1746383854991-363386328.MP4
-        //frontend\public\assets\images\video-placeholder.png
-        file_url: '/uploads/reviews/video-1746383854991-363386328.MP4',
+      {
+        file_url: `${environment.videoBaseUrl}/reviews/video-1746383854991-363386328.MP4`,
         title: 'Video 1',
         description: 'Description 1',
         loaded: false,
         isPlaying: false,
-        thumbnail: '/assets/images/video-placeholder.png',
+        thumbnail: `${environment.videoBaseUrl}/assets/images/video-placeholder.png`,
         testimonial: 'Testimonial 1',
         
       },
       {
-        file_url: '/uploads/reviews/video-1746438933445-688574231.MP4',
+        file_url: `${environment.videoBaseUrl}/reviews/video-1746438933445-688574231.MP4`,
         title: 'Video 1',
         description: 'Description 1',
         loaded: false,
         isPlaying: false,
-        thumbnail: '/assets/images/video-placeholder.png',
+        thumbnail: `${environment.videoBaseUrl}/assets/images/video-placeholder.png`,
         testimonial: 'Отличные курсы! ',
       }
     ];
