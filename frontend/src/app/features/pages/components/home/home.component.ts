@@ -79,13 +79,14 @@ export class HomeComponent implements OnInit {
     // });
 
     this.videos = [
-      {
+      {  //frontend\public\uploads\reviews\video-1746383854991-363386328.MP4
+        //frontend\public\assets\images\video-placeholder.png
         file_url: '/uploads/reviews/video-1746383854991-363386328.MP4',
         title: 'Video 1',
         description: 'Description 1',
         loaded: false,
         isPlaying: false,
-        thumbnail: 'assets/images/video-placeholder.png',
+        thumbnail: '/assets/images/video-placeholder.png',
         testimonial: 'Testimonial 1',
         
       },
@@ -95,7 +96,7 @@ export class HomeComponent implements OnInit {
         description: 'Description 1',
         loaded: false,
         isPlaying: false,
-        thumbnail: 'assets/images/video-placeholder.png',
+        thumbnail: '/assets/images/video-placeholder.png',
         testimonial: 'Отличные курсы! ',
       }
     ];
