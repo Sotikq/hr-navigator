@@ -527,6 +527,41 @@ async function addLessonToTopic(req, res, next) {
   } catch (err) { next(err); }
 }
 
+// Безопасный просмотр курса: только основные поля
+async function getCourseSummaryById(req, res, next) {
+  try {
+    const courseId = req.params.id;
+    const course = await getCourseById(courseId);
+    if (!course) throw ApiError.notFound('Course not found');
+
+    const summary = {
+      id: course.id,
+      title: course.title,
+      description: course.description,
+      price: course.price,
+      duration: course.duration,
+      cover_url: course.cover_url,
+      modules: (course.modules || []).map(module => ({
+        title: module.title,
+        description: module.description,
+        topics: (module.topics || []).map(topic => ({
+          title: topic.title,
+          description: topic.description,
+          lessons: (topic.lessons || []).map(lesson => ({
+            title: lesson.title,
+            type: lesson.type,
+            content_url: lesson.content_url
+          }))
+        }))
+      }))
+    };
+
+    res.json(summary);
+  } catch (err) {
+    next(err);
+  }
+}
+
 module.exports = {
   createCourse: createCourseHandler,
   updateCourse: updateCourseHandler,

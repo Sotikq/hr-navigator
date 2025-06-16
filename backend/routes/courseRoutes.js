@@ -271,7 +271,7 @@ router.get('/unpublished',
  *       200:
  *         description: Информация о курсе
  */
-router.get('/:id', getCourseById);
+router.get('/:id', authMiddleware, checkRole(['admin']), getCourseById);
 
 /**
  * @swagger
@@ -666,5 +666,7 @@ router.delete('/topics/:id', authMiddleware, checkRole(['admin', 'teacher']), de
  *         description: Topic not found
  */
 router.post('/topics/:topicId/lessons', authMiddleware, checkRole(['admin', 'teacher']), addLessonToTopic);
+
+router.get('/:id/summary', getCourseSummaryById);
 
 module.exports = router;
