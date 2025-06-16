@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -67,6 +67,9 @@ export class CreateCourse1Component implements OnInit {
         this.crs.getCourseById(id).subscribe((course) => {
           this.currentCourse = course;
           this.courseLoaded = true;
+          if (this.currentCourse.cover_url) {
+            this.coverPreviewUrl = this.currentCourse.cover_url;
+          }
           //console.log(this.currentCourse);
           // Загружаем детали курса
           this.loadCourseDetails(id);

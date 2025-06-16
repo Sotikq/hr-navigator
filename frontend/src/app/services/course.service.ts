@@ -25,7 +25,9 @@ export class CourseService {
   getCourseById(id: string) {
     return this.http.get<Course>(`${this.apiUrl}/courses/${id}`);
   }
-
+  getCourseSummaryById(id: string) {
+    return this.http.get<Course>(`${this.apiUrl}/courses/${id}/summary`);
+  }
   createCourse(course: any) {
     return this.http.post<Course>(`${this.apiUrl}/courses`, course);
   }

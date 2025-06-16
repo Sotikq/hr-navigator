@@ -47,7 +47,7 @@ export class CoursePageComponent implements OnInit {
     if (!this.id) return;
 
     // Загружаем основную информацию о курсе
-    this.crs.getCourseById(this.id).subscribe({
+    this.crs.getCourseSummaryById(this.id).subscribe({
       next: (data) => {
         this.course = data;
         //console.log('Course loaded:', this.course);
