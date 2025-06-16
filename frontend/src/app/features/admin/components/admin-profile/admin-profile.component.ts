@@ -42,6 +42,7 @@ export class AdminProfileComponent implements OnDestroy {
   passwordForm!: FormGroup;
   allTeachers: any = [];
   courses: Course[] = []; // Массив курсов
+  unpublishedCourses: Course[] = []; // Неопубликованные курсы
   payments: any = [];
   paymentsLoaded: boolean = false;
   tests: any = [];
@@ -87,8 +88,11 @@ export class AdminProfileComponent implements OnDestroy {
     this.getTests();
     this.getPayments();
     this.crs.getCourses().subscribe((data) => {
-      this.courses = data; // Получаем курсы из сервиса и сохраняем в массив
-      //console.log(this.courses); // Логируем курсы в консоль
+      this.courses = data; 
+    });
+    // Загрузка неопубликованных курсов
+    this.crs.getUnpublishedCourses().subscribe((data) => {
+      this.unpublishedCourses = data;
     });
     this.userFill();
     this.getTeachers();

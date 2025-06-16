@@ -124,7 +124,7 @@ createTest(test: any): Observable<any> {
   // getCourseByIdWithModules(id: string) {
   //   return this.http.get<CourseResponse>(`${this.apiUrl}courses/${id}`);
   // }
-  // getUnpublishedCourses() {
-  //   return this.http.get<Course[]>(`${this.apiUrl}courses/unpublished`);
-  // }
+  getUnpublishedCourses() {
+    return this.http.get<Course[]>(`${this.apiUrl}/courses/unpublished`);
+  }
 }

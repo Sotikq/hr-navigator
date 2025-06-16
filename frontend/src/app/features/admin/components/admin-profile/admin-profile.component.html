@@ -162,32 +162,27 @@
                 </p>
               </div>
             </div>
-
-            <!-- Тут появляются курсы из localStorage -->
           </div>
         </div>
       </div>
-      <!-- <div>
-          <h1>Unpublished</h1>
-          <div class="course-grid">
-          <div id="courseList" class="course-list">
-            
-            <div *ngFor="let course of courses" class="course-card">
-              <div class="course-category">{{ course.category }}</div>
-              <img src="{{ course.cover_url }}" alt="Recruiting" />
-              <div class="course-info">
-                <h3>{{ course.title }}</h3>
-                <p>{{ course.description }}</p>
-                <p class="course-price">
-                  <strong>Цена:</strong> {{ course.price }}
-                </p>
-              </div>
+      <!-- Неопубликованные курсы -->
+      <div *ngIf="unpublishedCourses.length">
+        <h3>Неопубликованные курсы</h3>
+        <div class="unpublished-course-list">
+          <div *ngFor="let course of unpublishedCourses" class="course-card unpublished">
+            <div class="course-category">{{ course.category }}</div>
+            <img src="{{ course.cover_url }}" alt="Unpublished" />
+            <div class="course-info" (click)="goToEditCourse(course.id)">
+              <h3>{{ course.title }}</h3>
+              <p>{{ course.description }}</p>
+              <p class="course-price">
+                <strong>Стоимость:</strong> {{ course.price }}
+              </p>
+              <span style="color: #e67e22; font-weight: bold;">Не опубликован</span>
             </div>
-  
-            
           </div>
         </div>
-      </div>  -->
+      </div>
     </section>
     }
 
