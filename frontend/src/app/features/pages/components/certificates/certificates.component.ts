@@ -19,7 +19,7 @@ export class CertificatesComponent implements OnInit {
 
   ngOnInit() {
     this.code = this.route.snapshot.queryParams['code'];
-    console.log(this.code);
+    //console.log(this.code);
     
     if (this.code) {
       this.certificateGet();
@@ -30,8 +30,8 @@ export class CertificatesComponent implements OnInit {
     try {
       this.loading = true;
       this.certificate = await lastValueFrom(this.certificateService.getCertificate(this.code));
-      console.log('Certificate data:', this.certificate);
-      console.log('Certificate keys:', Object.keys(this.certificate));
+      //console.log('Certificate data:', this.certificate);
+      //console.log('Certificate keys:', Object.keys(this.certificate));
       
       // Проверяем статус сертификата
       if (this.certificate.status !== 'valid') {
@@ -41,7 +41,7 @@ export class CertificatesComponent implements OnInit {
       }
       
       if (this.certificate.certificate) {
-        console.log('Certificate inner keys:', Object.keys(this.certificate.certificate));
+        //console.log('Certificate inner keys:', Object.keys(this.certificate.certificate));
       }
     } catch (error) {
       console.error('Error loading certificate:', error);

@@ -67,7 +67,7 @@ export class CreateCourse1Component implements OnInit {
         this.crs.getCourseById(id).subscribe((course) => {
           this.currentCourse = course;
           this.courseLoaded = true;
-          console.log(this.currentCourse);
+          //console.log(this.currentCourse);
           // Загружаем детали курса
           this.loadCourseDetails(id);
         });
@@ -93,11 +93,11 @@ export class CreateCourse1Component implements OnInit {
   }
 
   onUploadTest(lesson: any) {
-    console.log(lesson);
+    //console.log(lesson);
     this.crs.createTest(lesson).subscribe({
       next: (test) => {
         
-        console.log(test);
+        //console.log(test);
       },
       error: (error) => {
         console.error(error);
@@ -127,7 +127,7 @@ export class CreateCourse1Component implements OnInit {
       // Создаем детали курса
       await lastValueFrom(this.crs.createCourseDetails(emptyDetails));
       
-      console.log('Course and course details created successfully');
+      //console.log('Course and course details created successfully');
       return courseId;
     } catch (error) {
       console.error('Error creating course or course details:', error);
@@ -141,10 +141,10 @@ export class CreateCourse1Component implements OnInit {
       next: (details) => {
         this.courseDetails = details;
         this.courseDetailsLoaded = true;
-        console.log('Course details loaded:', this.courseDetails);
+        //console.log('Course details loaded:', this.courseDetails);
       },
       error: (error) => {
-        console.log('No course details found, creating empty details');
+        //console.log('No course details found, creating empty details');
         // Если деталей нет, создаем пустые
         this.courseDetails = {
           course_id: courseId,
@@ -183,7 +183,7 @@ export class CreateCourse1Component implements OnInit {
           this.crs.updateCourseDetails(this.courseDetails.course_id, updateRequest)
         );
         this.courseDetails = updatedDetails;
-        console.log('Course details updated successfully', updatedDetails);
+        //console.log('Course details updated successfully', updatedDetails);
       } else {
         // Создаем новые детали
         const createRequest: CreateCourseDetailsRequest = {
@@ -199,7 +199,7 @@ export class CreateCourse1Component implements OnInit {
           this.crs.createCourseDetails(createRequest)
         );
         this.courseDetails = newDetails;
-        console.log('Course details created successfully', newDetails);
+        //console.log('Course details created successfully', newDetails);
       }
     } catch (error) {
       console.error('Error saving course details', error);
@@ -231,7 +231,7 @@ export class CreateCourse1Component implements OnInit {
             study_period: '',
             goal: ''
           };
-          console.log('Course details deleted successfully');
+          //console.log('Course details deleted successfully');
         } catch (error) {
           console.error('Error deleting course details', error);
         }
@@ -248,7 +248,7 @@ export class CreateCourse1Component implements OnInit {
   
       // Предпросмотр изображения
       this.coverPreviewUrl = URL.createObjectURL(file);
-      console.log(this.coverPreviewUrl);
+      //console.log(this.coverPreviewUrl);
       
     }
   }
@@ -303,7 +303,7 @@ export class CreateCourse1Component implements OnInit {
     try {
       this.updatePositions();
 
-      console.log(this.currentCourse.modules);
+      //console.log(this.currentCourse.modules);
       if (this.currentCourse.modules) {
         for (const module of this.currentCourse.modules) {
           if (module.topics) {
@@ -359,7 +359,7 @@ export class CreateCourse1Component implements OnInit {
           .subscribe({
             next: (course) => {
               this.currentCourse = course;
-              console.log('COURSE FROM SUBMITT', this.currentCourse);
+              //console.log('COURSE FROM SUBMITT', this.currentCourse);
             },
             error: (error) => {
               console.error(error);
@@ -401,15 +401,15 @@ export class CreateCourse1Component implements OnInit {
       description: '',
       positon: 0,
     };
-    console.log(createdModule);
+    //console.log(createdModule);
     this.crs.addModuletoCourse(createdModule, this.currentCourse.id).subscribe({
       next: (module) => {
-        console.log(module);
+        //console.log(module);
         this.currentCourse.modules.push({
           ...module,
           topics: [] as Topic[],
         });
-        console.log(this.currentCourse.modules);
+        //console.log(this.currentCourse.modules);
       },
       error: (error) => {
         console.error('error adding module', error);
@@ -425,7 +425,7 @@ export class CreateCourse1Component implements OnInit {
     this.crs.addTopicToModule(createdTopic, module.id).subscribe({
       next: (topic) => {
         module.topics.push({ ...topic, lessons: [] as Lesson[] });
-        console.log(module.topics);
+        //console.log(module.topics);
       },
     });
   }
@@ -453,11 +453,11 @@ export class CreateCourse1Component implements OnInit {
       position: 0,
       // created_at: "",
     };
-    console.log(topic);
+    //console.log(topic);
     this.crs.createLesson(createdLesson, topic.id).subscribe({
       next: (next) => {
         topic.lessons.push(next);
-        console.log(next);
+        //console.log(next);
       },
       error: (error) => {
         console.error(error);
@@ -473,7 +473,7 @@ export class CreateCourse1Component implements OnInit {
       if (result) {
         this.crs.deleteCourse(id).subscribe({
           next: (next) => {
-            console.log(next);
+            //console.log(next);
             this.router.navigate(['/admin']);
           },
           error: (err) => {

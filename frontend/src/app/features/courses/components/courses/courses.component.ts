@@ -21,7 +21,7 @@ export class CoursesComponent {
   constructor(private router: Router, private crs: CourseService) {
     crs.getCourses().subscribe((data) => {
       this.courses = data;
-      console.log(this.courses);
+      //console.log(this.courses);
     });
   }
 
@@ -32,7 +32,7 @@ export class CoursesComponent {
   openModal(course: any) {
     this.selectedCourse = course;
     this.showModal = true;
-    console.log(course);
+    //  console.log(course);
   }
 
   closeModal() {
@@ -61,9 +61,9 @@ export class CoursesComponent {
   }
   onFilterChange() {
   // Можно добавить дополнительную логику при изменении фильтров
-  console.log('Filters changed:', {
-    category: this.selectedCategory,
-    search: this.searchQuery
-  });
+  // console.log('Filters changed:', {
+  //   category: this.selectedCategory,
+  //   search: this.searchQuery
+  // });
 }
 }

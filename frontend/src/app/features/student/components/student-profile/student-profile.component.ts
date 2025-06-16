@@ -45,7 +45,7 @@ export class StudentProfileComponent implements OnInit {
   getPayments(){
     this.paymentService.getAllMyPayments().subscribe((response) => {
       this.payments = response as any[];
-      console.log("payments",response);
+      //console.log("payments",response);
     });
   }
 
@@ -53,7 +53,7 @@ export class StudentProfileComponent implements OnInit {
     this.getPayments();
     this.userFill();
     this.getCertificates();
-    console.log(this.user);
+    //console.log(this.user);
     this.profileForm = this.fb.group({
       email: [this.user.email],
       username: [this.user.name, Validators.required],
@@ -74,13 +74,13 @@ export class StudentProfileComponent implements OnInit {
   getCertificates() {
     this.certificateService.getCertificates().subscribe((response: any) => {
       this.certificates = response.data as any[];
-      console.log(this.certificates);
+      //console.log(this.certificates);
     });
   }
   getMyCourses(){
     this.crs.getMyCoursesForStudent().subscribe((response) => {
       this.courses = response as any[];
-      console.log("my courses",response);
+      //console.log("my courses",response);
     }
   );
   }
@@ -92,7 +92,7 @@ export class StudentProfileComponent implements OnInit {
 
       this.auth.updateName({ name: usernametoupdate }).subscribe({
         next: (response) => {
-          console.log('Профиль обновлён:', response);
+          //console.log('Профиль обновлён:', response);
           this.user.name = usernametoupdate; // Обновляем имя пользователя в локальном состоянии
           localStorage.setItem('currentUser', JSON.stringify(this.user)); // Сохраняем обновлённые данные в локальном хранилище
           this.auth.setUser(this.user); // Обновляем пользователя в AuthService
@@ -117,7 +117,7 @@ export class StudentProfileComponent implements OnInit {
       .updatePassword({ oldPassword, newPassword, confirmPassword })
       .subscribe({
         next: (response) => {
-          console.log('Пароль обновлён:', response);
+          //console.log('Пароль обновлён:', response);
           alert('Пароль обновлён!');
         },
         error: (error) => {
@@ -129,7 +129,7 @@ export class StudentProfileComponent implements OnInit {
 
   currentPageSwitch(page: string) {
     this.currentPage = page;
-    console.log(this.currentPage);
+    //console.log(this.currentPage);
   }
 
   logout() {

@@ -110,7 +110,7 @@ export class RegisterComponent implements OnInit {
     const password = this.registerForm.get('password')?.value;
     const role = 'user';
 
-    console.log(email, username, password, role);
+    // Registration data validated
     this.authService
       .register({
         email: email,
