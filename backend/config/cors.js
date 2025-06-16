@@ -4,19 +4,16 @@ const logger = require('../utils/logger');
 // Define allowed origins
 const allowedOrigins = [
   'http://localhost:4200', // Development frontend
-  'http://localhost:5000', // Netlify production
+  'https://hrnavigator.kz',
+  'https://www.hrnavigator.kz',
   'https://server.hrnavigator.kz',
-  (process.env.FRONTEND_URL || '').replace(/\/$/, ''), // Production frontend (if set, без слэша на конце)
+  (process.env.FRONTEND_URL || '').replace(/\/$/, '')
 ].filter(Boolean); // Remove any undefined values
 
 // CORS configuration
 const corsOptions = {
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps, curl, etc.)
-    if (!origin) {
-      return callback(null, true);
-    }
-    if (allowedOrigins.includes(origin)) {
+    if (!origin || allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
     logger.warn(`CORS blocked request from origin: ${origin}`);
@@ -31,7 +28,9 @@ const corsOptions = {
     'x-api-key',
     'X-API-Key', // Case-insensitive support
     'Accept',
-    'Origin'
+    'Origin',
+    'Cache-Control',
+    'X-Content-Range'
   ],
   exposedHeaders: ['Content-Range', 'X-Content-Range'],
   maxAge: 86400, // 24 hours
