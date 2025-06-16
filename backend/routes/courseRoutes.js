@@ -701,36 +701,6 @@ router.post('/topics/:topicId/lessons', authMiddleware, checkRole(['admin', 'tea
  *                   type: string
  *                 cover_url:
  *                   type: string
- *                 modules:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       title:
- *                         type: string
- *                       description:
- *                         type: string
- *                       topics:
- *                         type: array
- *                         items:
- *                           type: object
- *                           properties:
- *                             title:
- *                               type: string
- *                             description:
- *                               type: string
- *                             lessons:
- *                               type: array
- *                               items:
- *                                 type: object
- *                                 properties:
- *                                   title:
- *                                     type: string
- *                                   type:
- *                                     type: string
- *                                     enum: [video, test, pdf]
- *                                   content_url:
- *                                     type: string
  *       404:
  *         description: Курс не найден
  */

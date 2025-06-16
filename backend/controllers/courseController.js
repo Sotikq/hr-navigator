@@ -541,19 +541,6 @@ async function getCourseSummaryById(req, res, next) {
       price: course.price,
       duration: course.duration,
       cover_url: course.cover_url,
-      modules: (course.modules || []).map(module => ({
-        title: module.title,
-        description: module.description,
-        topics: (module.topics || []).map(topic => ({
-          title: topic.title,
-          description: topic.description,
-          lessons: (topic.lessons || []).map(lesson => ({
-            title: lesson.title,
-            type: lesson.type,
-            content_url: lesson.content_url
-          }))
-        }))
-      }))
     };
 
     res.json(summary);
