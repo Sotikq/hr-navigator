@@ -168,18 +168,18 @@
     @if (currentPage=="Платежи") {
     <div class="profile-section" id="payments">
       <h2 style="color: #2962ff; margin-bottom: 20px">Платежи</h2>
-      <table>
-        <tr>
-          <th>Название курса</th>
-          <th>Дата</th>
-          <th>Сумма</th>
-          <th>Статус</th>
+      <table style="width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <tr style="background-color: #f8f9fa;">
+          <th style="padding: 15px; text-align: left; border-bottom: 2px solid #e9ecef; color: #495057;">Название курса</th>
+          <th style="padding: 15px; text-align: left; border-bottom: 2px solid #e9ecef; color: #495057;">Дата</th>
+          <th style="padding: 15px; text-align: left; border-bottom: 2px solid #e9ecef; color: #495057;">Сумма</th>
+          <th style="padding: 15px; text-align: left; border-bottom: 2px solid #e9ecef; color: #495057;">Статус</th>
         </tr>
-        <tr *ngFor="let payment of payments">
-          <td>{{ payment.course_title }}</td>
-          <td>{{payment.created_at | date:'dd MMMM yyyy HH:mm'}}</td>
-          <td>{{payment.amount}} KZT</td>
-          <td>{{payment.status}}</td>
+        <tr *ngFor="let payment of payments" style="border-bottom: 1px solid #e9ecef;">
+          <td style="padding: 15px; color: #212529;">{{ payment.course_title }}</td>
+          <td style="padding: 15px; color: #212529;">{{payment.created_at | date:'dd MMMM yyyy HH:mm'}}</td>
+          <td style="padding: 15px; color: #212529;">{{payment.amount}} KZT</td>
+          <td style="padding: 15px; color: #212529;">{{payment.status}}</td>
         </tr>
       </table>
     </div>
